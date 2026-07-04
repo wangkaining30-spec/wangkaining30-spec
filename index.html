@@ -214,6 +214,10 @@
     .modal { padding:1.2rem; max-width:95vw; }
     footer { padding:2rem 1rem; font-size:0.75rem; }
   }
+
+  /* Bilingual: hide non-current language by default */
+  html.lang-zh [data-en] { display: none !important; }
+  html.lang-en [data-zh] { display: none !important; }
 </style>
 </head>
 <body>
@@ -515,6 +519,9 @@ function toggleLang() {
     document.querySelectorAll('[data-zh]').forEach(el => { el.style.display = 'none'; });
   }
 }
+
+// Initialize language on page load
+toggleLang();  // zh -> hide en (this sets display:none via JS as fallback)
 
 function openArticle(key) {
   const articles = {
