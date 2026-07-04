@@ -546,7 +546,7 @@ function toggleLang() {
 }
 
 // Initialize language on page load
-toggleLang();  // zh -> hide en (this sets display:none via JS as fallback)
+// toggleLang() removed: CSS handles initial language display via lang-zh class
 
 function openArticle(key) {
   const articles = {
