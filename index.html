@@ -1105,7 +1105,7 @@ document.getElementById('modal').addEventListener('click', function(e) {
   // ====== Usage tracking ======
   async function getTodayUsage() {
     if (!currentUser) return 999;
-    var today = new Date().toISOString().split('T')[0];
+    var today = new Date().toLocaleDateString('zh-CN').replace(/\//g, '-');
     var { count, error } = await supabase
       .from('usage_logs')
       .select('*', { count: 'exact', head: true })
@@ -1117,7 +1117,7 @@ document.getElementById('modal').addEventListener('click', function(e) {
 
   async function recordUsage() {
     if (!currentUser) return;
-    var today = new Date().toISOString().split('T')[0];
+    var today = new Date().toLocaleDateString('zh-CN').replace(/\//g, '-');
     await supabase.from('usage_logs').insert({
       user_id: currentUser.id,
       usage_date: today
