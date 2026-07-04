@@ -182,13 +182,37 @@
   .modal .close-btn:hover { color:var(--text); }
 
   /* Responsive */
-  @media (max-width:600px) {
-    nav .links { gap:0.8rem; }
-    nav .links a { font-size:0.75rem; }
+  @media (max-width:768px) {
+    nav { padding: 0 0.8rem; }
+    nav .inner { height: 48px; }
+    nav .logo { font-size:1rem; }
+    nav .links { gap:0.5rem; overflow-x:auto; flex-wrap:nowrap; }
+    nav .links a { font-size:0.68rem; white-space:nowrap; }
+    .lang-switch { font-size:0.7rem; padding:2px 7px; }
+    .hero { padding: 100px 1rem 50px; }
     .hero h1 { font-size:1.8rem; }
+    .hero .subtitle { font-size:0.9rem; }
+    .hero .meta { flex-direction:column; gap:0.3rem; font-size:0.78rem; }
+    .hero .tagline { font-size:0.82rem; }
+    section { padding: 40px 1rem; }
+    section h2 { font-size:1.2rem; }
     .about-grid { grid-template-columns:1fr; }
+    .interest-grid { grid-template-columns:1fr; }
+    .entities { grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:0.6rem; }
+    .entity-card { padding:1rem 0.6rem; }
+    .entity-card .num { font-size:1.5rem; }
+    .entity-card h4 { font-size:0.8rem; }
+    .entity-card .en { font-size:0.68rem; }
+    .entity-card p { font-size:0.7rem; }
     .cycle-row { flex-direction:column; align-items:center; }
     .cycle-arrow { transform:rotate(90deg); }
+    .cycle-step { width:100%; max-width:260px; }
+    .sig-grid { grid-template-columns:1fr; }
+    .works-grid { grid-template-columns:1fr; }
+    .article-item h4 { font-size:0.9rem; }
+    .article-item .desc { font-size:0.78rem; }
+    .modal { padding:1.2rem; max-width:95vw; }
+    footer { padding:2rem 1rem; font-size:0.75rem; }
   }
 </style>
 </head>
@@ -197,7 +221,7 @@
 <!-- Nav -->
 <nav>
   <div class="inner">
-    <div class="logo">客尘</div>
+    <div class="logo"><span data-zh>客尘</span><span data-en>Kechen</span></div>
     <div class="links">
       <a href="#about" data-zh>关于</a><a href="#about" data-en>About</a>
       <a href="#interests" data-zh>兴趣</a><a href="#interests" data-en>Interests</a>
@@ -212,7 +236,7 @@
 
 <!-- Hero -->
 <header class="hero">
-  <h1>客尘</h1>
+  <h1><span data-zh>客尘</span><span data-en>Kechen</span></h1>
   <p class="subtitle">
     <span data-zh>14 岁的宇宙探索者，热爱物理、哲学与 AI 创作。<br>相信星空之下，每一个问题都值得被追问。</span>
     <span data-en>A 14-year-old cosmos explorer passionate about physics, philosophy, and AI creation.<br>Beneath the starry sky, every question deserves to be pursued.</span>
@@ -233,7 +257,7 @@
   <h2><span data-zh>关于我</span><span data-en>About Me</span></h2>
   <div class="about-grid">
     <div class="about-card">
-      <h3>About Me</h3>
+      <h3><span data-zh>关于我</span><span data-en>About Me</span></h3>
       <div class="kv"><span class="key"><span data-zh>笔名</span><span data-en>Pen Name</span></span><span class="val">客尘</span></div>
       <div class="kv"><span class="key"><span data-zh>本名</span><span data-en>Real Name</span></span><span class="val"><span data-zh>王铠宁</span><span data-en>Wang Kaining</span></span></div>
       <div class="kv"><span class="key"><span data-zh>年龄</span><span data-en>Age</span></span><span class="val"><span data-zh>14 岁</span><span data-en>14</span></span></div>
@@ -477,6 +501,11 @@ function toggleLang() {
   currentLang = currentLang === 'zh' ? 'en' : 'zh';
   document.documentElement.className = 'lang-' + currentLang;
   document.getElementById('langBtn').textContent = currentLang === 'zh' ? 'EN' : '中';
+  // Also update modal title if open
+  const modalTitle = document.getElementById('modal-title');
+  if (modalTitle && modalTitle.hasAttribute('data-zh')) {
+    modalTitle.textContent = currentLang === 'zh' ? modalTitle.getAttribute('data-zh') : modalTitle.getAttribute('data-en');
+  }
   // toggle all data-zh / data-en elements
   document.querySelectorAll('[data-zh]').forEach(el => { el.style.display = ''; });
   document.querySelectorAll('[data-en]').forEach(el => { el.style.display = ''; });
@@ -491,25 +520,33 @@ function openArticle(key) {
   const articles = {
     article6: {
       title: '客尘宇宙模型：从-1号元素到引力元素的完整宇宙图景',
+      titleEn: 'The Kechen Cosmological Model: A Complete Cosmic Picture from Element -1 to Gravity Elements',
       body: '（完整文章内容 —— 约6700字）\n\n【摘要】\n本文尝试探讨笔者自小学至今独立构建的一套宇宙猜想模型。该模型以化学元素周期表的逻辑为框架，设想了一套完整的"宇宙元素体系"：引力元素、-1号元素、0号元素（暗能量·混沌）、时间原子、以及由它们衍生出的普通物质世界。\n\n【完整内容请参见已投稿的第六篇文章。】\n\n—— 客尘，2026年4月28日'
     },
     article4: {
       title: '从绝对零度到-1号元素：一个双向循环宇宙模型的深度追问',
+      titleEn: 'From Absolute Zero to Element -1: A Deeper Inquiry into the Bidirectional Cyclic Universe Model',
       body: '（完整文章内容 —— 约2000字）\n\n【摘要】\n本文以"绝对零度能否达到"为起点，尝试探讨暗能量作为宇宙背景能量场的存在，使得绝对零度在实际宇宙中不可能实现（暗能背景不可清零法则）。在此基础上，进一步追问暗能量的本质，设想暗能量是"0号元素"——元素周期表诞生之前的本源能量，并以中国神话中的"混沌"为其命名。\n\n【完整内容请参见已投稿的第四篇文章。】\n\n—— 客尘，2026年4月28日'
     },
     article5: {
       title: '从归源衰变到引力元素：宇宙模型的深度续论',
+      titleEn: 'From Return-to-Source Decay to Gravity Elements: An In-Depth Sequel on the Cosmological Model',
       body: '（完整文章内容 —— 约2400字）\n\n【摘要】\n本文是《从绝对零度到-1号元素》一文的续论。在前文建立的-1号元素、0号元素（暗能量·混沌）、时间原子及双向循环模型的基础上，本文进一步设想归源衰变假说、趋势不对称原理、宇宙结构失稳假说、奇点相变引爆机制、四维种子假说、相变化石与骨相假说、以及引力元素假说。\n\n【完整内容请参见已投稿的第五篇文章。】\n\n—— 客尘，2026年4月28日'
     },
     article2: {
       title: '一个宇宙双向循环模型：从黑洞到中子星的物质-能量转化',
+      titleEn: 'A Bidirectional Cyclic Universe Model: Matter-Energy Conversion from Black Holes to Neutron Stars',
       body: '（完整文章内容 —— 约2700字）\n\n【摘要】\n本文尝试探讨一个宇宙尺度的物质-能量双向循环模型：黑洞/白洞系统将普通物质转化为暗能量，驱动宇宙加速膨胀；中子星系统则将暗物质/暗能量逆向转化为普通物质与可观测辐射。两条路径在星际介质处交汇闭合，构成宇宙完整的物质-能量"呼吸"。\n\n【完整内容请参见已投稿的第二篇文章。】\n\n—— 客尘，2026年4月28日'
     }
   };
 
   const a = articles[key];
   if (!a) return;
-  document.getElementById('modal-title').textContent = a.title;
+    const mt = document.getElementById('modal-title');
+  mt.textContent = a.title;
+  mt.setAttribute('data-zh', a.title);
+  mt.setAttribute('data-en', a.titleEn || a.title);
+  if (currentLang === 'en' && a.titleEn) mt.textContent = a.titleEn;
   document.getElementById('modal-body').textContent = a.body;
   document.getElementById('modal').classList.add('active');
 }
