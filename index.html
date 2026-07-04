@@ -178,6 +178,8 @@
   }
   .modal h3 { font-size:1.3rem; color:var(--gold); margin-bottom:1rem; font-weight:400; }
   .modal .article-body { font-size:0.9rem; color:var(--text); line-height:2; white-space:pre-wrap; }
+  /* Override global lang rules for modal */
+  .modal [data-zh], .modal [data-en] { display: revert !important; }
   .modal .close-btn { float:right; background:none; border:none; color:var(--muted); font-size:1.5rem; cursor:pointer; }
   .modal .close-btn:hover { color:var(--text); }
 
@@ -216,8 +218,8 @@
   }
 
   /* Bilingual: hide non-current language by default */
-  html.lang-zh [data-en] { display: none !important; }
-  html.lang-en [data-zh] { display: none !important; }
+  html.lang-zh [data-en]:not(.modal [data-en]):not(.modal-overlay [data-en]) { display: none !important; }
+  html.lang-en [data-zh]:not(.modal [data-zh]):not(.modal-overlay [data-zh]) { display: none !important; }
 </style>
 </head>
 <body>
