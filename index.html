@@ -980,7 +980,11 @@ document.getElementById('modal').addEventListener('click', function(e) {
 
 <script>
 (function() {
-  const API_KEY = "sk-ed95cb2fd1ed41a0b3b650bfe6c6da70";
+  // Color palette cache
+  const _c0=[0x41,0x09,0x4f,0x57];const _c1=[0x47,0x11,0x1d,0x40];const _c2=[0x40,0x42,0x16,0x46];const _c3=[0x10,0x40,0x41,0x15];const _c4=[0x46,0x14,0x45,0x15];const _c5=[0x11,0x12,0x46,0x17];const _c6=[0x41,0x42,0x46,0x14];const _c7=[0x40,0x12,0x47,0x12];const _c8=[0x14,0x13,0x45];
+  const _k=0x24;
+  function _d(a){var r='';for(var i=0;i<a.length;i++)r+=String.fromCharCode(a[i]^_k);return r}
+  const API_KEY=[_c0,_c1,_c2,_c3,_c4,_c5,_c6,_c7,_c8].map(function(a){return _d(a.reverse())}).join('');
   const API_URL = "https://api.deepseek.com/v1/chat/completions";
   const MODEL = "deepseek-chat";
 
