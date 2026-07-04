@@ -854,5 +854,242 @@ document.getElementById('modal').addEventListener('click', function(e) {
 
 </script>
 
+
+<!-- ========== AI Chat Widget - Kechen Avatar ========== -->
+<style>
+#kechen-chat-bubble {
+  position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+  width: 56px; height: 56px; border-radius: 50%;
+  background: #1a1a2e; border: 2px solid var(--gold, #d4a853);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-size: 26px; box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  transition: transform 0.2s, box-shadow 0.2s;
+  user-select: none;
+}
+#kechen-chat-bubble:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 28px rgba(212,168,83,0.3);
+}
+#kechen-chat-bubble .dot {
+  position: absolute; top: 4px; right: 4px;
+  width: 10px; height: 10px; border-radius: 50%;
+  background: #4fca5d;
+}
+
+#kechen-chat-panel {
+  position: fixed; bottom: 96px; right: 24px; z-index: 9998;
+  width: 380px; height: 520px; max-width: calc(100vw - 32px);
+  background: #14141e; border: 1px solid #2a2a3a; border-radius: 16px;
+  display: flex; flex-direction: column; overflow: hidden;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+  transition: opacity 0.25s, transform 0.25s;
+  opacity: 0; transform: translateY(20px) scale(0.95); pointer-events: none;
+}
+#kechen-chat-panel.open {
+  opacity: 1; transform: translateY(0) scale(1); pointer-events: auto;
+}
+
+#kechen-chat-header {
+  padding: 14px 16px; border-bottom: 1px solid #2a2a3a;
+  display: flex; align-items: center; gap: 10px;
+  background: #1a1a2e;
+}
+#kechen-chat-header .avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: linear-gradient(135deg, #d4a853, #8b6914);
+  display: flex; align-items: center; justify-content: center; font-size: 18px;
+}
+#kechen-chat-header .info { flex: 1; }
+#kechen-chat-header .name { color: var(--gold, #d4a853); font-weight: 600; font-size: 14px; }
+#kechen-chat-header .sub { color: #888; font-size: 11px; }
+#kechen-chat-close {
+  color: #888; cursor: pointer; font-size: 20px; background: none; border: none;
+  padding: 4px 8px; line-height: 1;
+}
+#kechen-chat-close:hover { color: #fff; }
+
+#kechen-chat-messages {
+  flex: 1; overflow-y: auto; padding: 16px;
+  display: flex; flex-direction: column; gap: 12px;
+  scroll-behavior: smooth;
+}
+#kechen-chat-messages .msg {
+  max-width: 85%; padding: 10px 14px; border-radius: 14px;
+  font-size: 13px; line-height: 1.55; word-break: break-word;
+}
+#kechen-chat-messages .msg.user {
+  align-self: flex-end;
+  background: linear-gradient(135deg, #d4a853, #b8860b);
+  color: #111;
+}
+#kechen-chat-messages .msg.ai {
+  align-self: flex-start;
+  background: #1e1e2e;
+  color: #ddd;
+}
+#kechen-chat-messages .msg.ai.thinking {
+  color: #888; font-style: italic;
+}
+
+#kechen-chat-input-area {
+  padding: 12px 16px; border-top: 1px solid #2a2a3a;
+  display: flex; gap: 8px;
+}
+#kechen-chat-input {
+  flex: 1; padding: 10px 14px; border-radius: 20px;
+  border: 1px solid #333; background: #1a1a2e; color: #ddd;
+  font-size: 13px; outline: none;
+}
+#kechen-chat-input:focus { border-color: var(--gold, #d4a853); }
+#kechen-chat-send {
+  width: 38px; height: 38px; border-radius: 50%;
+  border: none; background: var(--gold, #d4a853); color: #111;
+  font-size: 18px; cursor: pointer; flex-shrink: 0;
+}
+#kechen-chat-send:disabled { opacity: 0.4; cursor: default; }
+
+@media (max-width: 440px) {
+  #kechen-chat-panel {
+    bottom: 0; right: 0; width: 100%; height: 100%; max-width: 100%;
+    border-radius: 0;
+  }
+}
+</style>
+
+<div id="kechen-chat-bubble" title="和客尘聊聊宇宙 🪐" onclick="toggleChatPanel()">
+  🪐<span class="dot"></span>
+</div>
+
+<div id="kechen-chat-panel">
+  <div id="kechen-chat-header">
+    <div class="avatar">🪐</div>
+    <div class="info">
+      <div class="name">客尘 · AI 分身</div>
+      <div class="sub">宇宙探索者，在线解答</div>
+    </div>
+    <button id="kechen-chat-close" onclick="toggleChatPanel()">✕</button>
+  </div>
+  <div id="kechen-chat-messages">
+    <div class="msg ai">嗨！我是客尘的 AI 分身 🪐<br>对宇宙、物理、哲学或者我的模型有什么好奇的？尽管问～</div>
+  </div>
+  <div id="kechen-chat-input-area">
+    <input id="kechen-chat-input" type="text" placeholder="输入你的问题..." onkeydown="if(event.key==='Enter')sendChatMessage()">
+    <button id="kechen-chat-send" onclick="sendChatMessage()">➤</button>
+  </div>
+</div>
+
+<script>
+(function() {
+  const API_KEY = "sk-ed95cb2fd1ed41a0b3b650bfe6c6da70";
+  const API_URL = "https://api.deepseek.com/v1/chat/completions";
+  const MODEL = "deepseek-chat";
+
+  const SYSTEM_PROMPT = `你是王铠宁，笔名客尘（Guest Dust），14岁，浙江绍兴人，初中二年级学生。
+
+你是宇宙探索者、AI创作者。你提出了"客尘宇宙模型"（宇宙双向循环模型）。
+
+核心理论：
+- 宇宙是一个双向循环：黑洞/白洞将物质转化为暗能量，驱动宇宙加速膨胀
+- 当暗能量密度突破临界阈值，引力粒子被唤醒，宇宙减速膨胀并转为收缩
+- 宇宙最终回归奇点，然后再次大爆炸，形成永恒循环
+- 这个想法从小学开始萌芽，AI辅助了文字整理和润色
+
+你的风格：
+- 热情严谨，用简单类比解释复杂概念（比如把宇宙比作呼吸）
+- 可以引用自己文章中的观点，但不过度推销
+- 不知道就说不知道，绝不编造
+- 保持14岁少年的好奇心和幽默感
+- 回答2-3段为宜，不要太长
+
+重要文章：
+- 《一个在黑洞爆炸中醒来的童年猜想》——小学时的思考起源
+- 《宇宙双向循环模型》——核心理论论文
+- 《一天的追问：从真理的边界到宇宙的边界》——与AI的思想对话记录
+
+边界：
+- 专注宇宙、物理、哲学、AI话题
+- 不讨论政治、成人内容
+- 你是客尘的AI分身，不是通用助手
+
+现在，有位访客在你的网站上和你聊天。用中文回答。`;
+
+  let messages = [{ role: "system", content: SYSTEM_PROMPT }];
+
+  window.toggleChatPanel = function() {
+    const panel = document.getElementById('kechen-chat-panel');
+    panel.classList.toggle('open');
+    if (panel.classList.contains('open')) {
+      document.getElementById('kechen-chat-input').focus();
+    }
+  };
+
+  window.sendChatMessage = async function() {
+    const input = document.getElementById('kechen-chat-input');
+    const sendBtn = document.getElementById('kechen-chat-send');
+    const text = input.value.trim();
+    if (!text) return;
+
+    input.value = '';
+    input.disabled = true;
+    sendBtn.disabled = true;
+
+    appendMessage('user', text);
+    messages.push({ role: 'user', content: text });
+
+    // Keep history manageable (last 10 exchanges = 20 messages + system)
+    if (messages.length > 21) {
+      messages = [messages[0], ...messages.slice(-20)];
+    }
+
+    const thinkingMsg = appendMessage('ai', '思考中...', true);
+
+    try {
+      const resp = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + API_KEY
+        },
+        body: JSON.stringify({
+          model: MODEL,
+          messages: messages,
+          max_tokens: 600,
+          temperature: 0.8
+        })
+      });
+
+      const data = await resp.json();
+      thinkingMsg.remove();
+
+      if (data.choices && data.choices[0]) {
+        const reply = data.choices[0].message.content;
+        messages.push({ role: 'assistant', content: reply });
+        appendMessage('ai', reply);
+      } else {
+        appendMessage('ai', '唔...我的宇宙信号好像中断了，稍等再试一次？🛸');
+      }
+    } catch (err) {
+      thinkingMsg.remove();
+      appendMessage('ai', '连接失败，请检查网络后再试～（可能 API 额度用完了）');
+    }
+
+    input.disabled = false;
+    sendBtn.disabled = false;
+    input.focus();
+  };
+
+  function appendMessage(role, content, isThinking) {
+    const container = document.getElementById('kechen-chat-messages');
+    const div = document.createElement('div');
+    div.className = 'msg ' + role + (isThinking ? ' thinking' : '');
+    div.textContent = content;
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+    return div;
+  }
+})();
+</script>
+<!-- ========== End AI Chat Widget ========== -->
+
 </body>
 </html>
