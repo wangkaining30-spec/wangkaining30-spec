@@ -615,10 +615,12 @@ const a = articles[key];
   mb.setAttribute('data-en', a.bodyEn || a.body || '');
   mb.textContent = (currentLang === 'en' && a.bodyEn) ? a.bodyEn : a.body;
   document.getElementById('modal').classList.add('active');
+  document.body.style.overflow = 'hidden';
 }
 
 function closeModal() {
   document.getElementById('modal').classList.remove('active');
+  document.body.style.overflow = '';
 }
 
 document.getElementById('modal').addEventListener('click', function(e) {
