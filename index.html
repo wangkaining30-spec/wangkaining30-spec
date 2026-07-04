@@ -723,7 +723,7 @@ async function autoTranslatePage() {
           for (var ei = 0; ei < elementMap.length; ei++) {
             if (elementMap[ei].text === text) {
               for (var ej = 0; ej < elementMap[ei].elements.length; ej++) {
-                elementMap[ei].elements[ej].setAttribute('data-auto-en', translated);
+                elementMap[ei].elements[ej].setAttribute('data-auto-en', translated); elementMap[ei].elements[ej].style.setProperty('display', 'revert', 'important');
               }
               break;
             }
