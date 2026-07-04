@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>翻译工具 - 客尘宇宙学</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background: #0a0a0f;
+  color: #c9c9c9;
+  font-family: 'Segoe UI', 'Noto Sans SC', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+.container { max-width: 900px; width: 100%; }
+h1 { color: #c9a84c; font-size: 2em; text-align: center; margin-bottom: 5px; }
+.subtitle { text-align: center; color: #888; margin-bottom: 30px; font-size: 0.9em; }
+.section {
+  background: #12121a;
+  border: 1px solid #2a2a3a;
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 20px;
+}
+.section h2 {
+  color: #c9a84c;
+  font-size: 1.2em;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #2a2a3a;
+}
+label { display: block; color: #aaa; margin-bottom: 5px; font-size: 0.9em; }
+input[type="text"], textarea, input[type="number"] {
+  width: 100%;
+  background: #1a1a24;
+  border: 1px solid #3a3a4a;
+  border-radius: 8px;
+  color: #ddd;
+  padding: 10px 14px;
+  font-size: 1em;
+  font-family: inherit;
+  resize: vertical;
+  margin-bottom: 15px;
+  transition: border-color 0.2s;
+}
+input:focus, textarea:focus {
+  outline: none;
+  border-color: #c9a84c;
+  box-shadow: 0 0 0 2px rgba(201,168,76,0.1);
+}
+textarea { min-height: 120px; }
+.row { display: flex; gap: 15px; flex-wrap: wrap; }
+.row > * { flex: 1; min-width: 150px; }
+button {
+  background: #c9a84c;
+  color: #0a0a0f;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 24px;
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+button:hover { background: #d4b55a; }
+button:active { transform: scale(0.97); }
+button.secondary {
+  background: #2a2a3a;
+  color: #c9a84c;
+  border: 1px solid #3a3a4a;
+}
+button.secondary:hover { background: #3a3a4a; }
+.mode-switch {
+  display: flex;
+  background: #1a1a24;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 15px;
+  width: fit-content;
+}
+.mode-switch button {
+  border-radius: 0;
+  padding: 8px 20px;
+  font-size: 0.9em;
+  background: transparent;
+  color: #888;
+  border: none;
+}
+.mode-switch button.active {
+  background: #c9a84c;
+  color: #0a0a0f;
+  font-weight: 700;
+}
+.preview-box {
+  background: #1a1a24;
+  border: 1px solid #3a3a4a;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 12px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+.preview-box h3 { color: #c9a84c; margin-bottom: 8px; }
+.preview-box p { margin-bottom: 6px; line-height: 1.6; }
+.code-output {
+  background: #0d0d14;
+  border: 1px solid #2a2a3a;
+  border-radius: 8px;
+  padding: 15px;
+  font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+  font-size: 0.85em;
+  white-space: pre-wrap;
+  word-break: break-all;
+  color: #aac;
+  max-height: 500px;
+  overflow: auto;
+  margin-bottom: 10px;
+}
+.progress {
+  width: 100%;
+  height: 6px;
+  background: #2a2a3a;
+  border-radius: 3px;
+  overflow: hidden;
+  margin: 10px 0;
+  display: none;
+}
+.progress-bar {
+  height: 100%;
+  background: #c9a84c;
+  width: 0%;
+  transition: width 0.3s;
+}
+.status { color: #888; font-size: 0.85em; margin-top: 8px; min-height: 20px; }
+.toast {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #c9a84c;
+  color: #0a0a0f;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+.toast.show { opacity: 1; }
+@media (max-width: 600px) {
+  .container { padding: 10px; }
+  .section { padding: 15px; }
+  h1 { font-size: 1.5em; }
+}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<div class="container">
+  <h1>🌍 文章翻译工具</h1>
+  <p class="subtitle">输入中文标题和正文，自动翻译为英文，生成可直接粘贴的 JS 代码片段</p>
+
+  <div class="section">
+    <h2>📝 Step 1 — 输入文章信息</h2>
+    
+    <div class="mode-switch" id="modeSwitch">
+      <button class="active" data-mode="zh2en">中文 → 英文</button>
+      <button data-mode="en2zh">英文 → 中文</button>
+    </div>
+
+    <div class="row">
+      <div>
+        <label for="articleNum">文章编号（可选）</label>
+        <input type="number" id="articleNum" placeholder="例如: 9" min="1">
+      </div>
+      <div>
+        <label for="articleDate">日期（可选）</label>
+        <input type="text" id="articleDate" placeholder="例如: 2024-07-15">
+      </div>
+    </div>
+
+    <label for="titleInput">中文标题 *</label>
+    <input type="text" id="titleInput" placeholder="输入文章标题...">
+
+    <label for="bodyInput">中文正文 *</label>
+    <textarea id="bodyInput" placeholder="输入文章正文...（可包含换行，将按段落翻译）"></textarea>
+
+    <button id="translateBtn" onclick="doTranslate()">🚀 开始翻译</button>
+    <div class="progress" id="progress"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="status" id="status"></div>
+  </div>
+
+  <div class="section" id="resultSection" style="display:none;">
+    <h2>✅ Step 2 — 预览与复制</h2>
+    
+    <div class="preview-box" id="previewBox"></div>
+
+    <label style="margin-top:10px;">可粘贴到 index.html 的代码片段：</label>
+    <div style="position:relative;">
+      <div class="code-output" id="codeOutput"></div>
+      <button class="secondary" id="copyBtn" style="position:absolute;top:12px;right:12px;" onclick="copyCode()">📋 复制</button>
+    </div>
+
+    <button class="secondary" onclick="resetAll()">🔄 重新开始</button>
+  </div>
+</div>
+
+<script>
+var currentMode = 'zh2en';
+
+function translateText(text, fromLang, toLang) {
+  return new Promise(function(resolve, reject) {
+    var url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=' 
+              + fromLang + '&tl=' + toLang + '&dt=t&q=' + encodeURIComponent(text);
+    
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.timeout = 15000;
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        try {
+          var data = JSON.parse(xhr.responseText);
+          if (data && data[0]) {
+            var result = '';
+            for (var i = 0; i < data[0].length; i++) {
+              if (data[0][i] && data[0][i][0]) {
+                result += data[0][i][0];
+              }
+            }
+            resolve(result.trim());
+          } else {
+            reject(new Error('Empty translation result'));
+          }
+        } catch(e) {
+          reject(e);
+        }
+      } else {
+        reject(new Error('HTTP ' + xhr.status));
+      }
+    };
+    xhr.onerror = function() { reject(new Error('Network error')); };
+    xhr.ontimeout = function() { reject(new Error('Request timeout')); };
+    xhr.send();
+  });
+}
+
+function splitIntoChunks(text, maxLen) {
+  maxLen = maxLen || 800;
+  var paragraphs = text.split(/\n+/);
+  var chunks = [];
+  var current = '';
+  
+  for (var i = 0; i < paragraphs.length; i++) {
+    var p = paragraphs[i].trim();
+    if (!p) continue;
+    
+    if (current && (current.length + p.length + 1) > maxLen) {
+      chunks.push(current);
+      current = p;
+    } else {
+      current = current ? (current + '\n' + p) : p;
+    }
+  }
+  if (current) chunks.push(current);
+  return chunks;
+}
+
+function switchMode(mode) {
+  currentMode = mode;
+  var buttons = document.querySelectorAll('#modeSwitch button');
+  for (var i = 0; i < buttons.length; i++) {
+    buttons[i].classList.remove('active');
+    if (buttons[i].getAttribute('data-mode') === mode) {
+      buttons[i].classList.add('active');
+    }
+  }
+  if (mode === 'zh2en') {
+    document.getElementById('titleInput').placeholder = '输入文章中文标题...';
+    document.getElementById('bodyInput').placeholder = '输入文章中文正文...';
+  } else {
+    document.getElementById('titleInput').placeholder = '输入文章英文标题...';
+    document.getElementById('bodyInput').placeholder = '输入文章英文正文...';
+  }
+}
+
+document.getElementById('modeSwitch').addEventListener('click', function(e) {
+  if (e.target.tagName === 'BUTTON') {
+    switchMode(e.target.getAttribute('data-mode'));
+  }
+});
+
+function showStatus(msg) {
+  document.getElementById('status').textContent = msg;
+}
+
+function showProgress(show) {
+  document.getElementById('progress').style.display = show ? 'block' : 'none';
+}
+
+function setProgress(pct) {
+  document.getElementById('progressBar').style.width = pct + '%';
+}
+
+function showToast(msg) {
+  var toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(function() { toast.classList.remove('show'); }, 2000);
+}
+
+async function doTranslate() {
+  var title = document.getElementById('titleInput').value.trim();
+  var body = document.getElementById('bodyInput').value.trim();
+  
+  if (!title && !body) {
+    showToast('⚠️ 请至少输入标题或正文');
+    return;
+  }
+
+  var fromLang = currentMode === 'zh2en' ? 'zh-CN' : 'en';
+  var toLang = currentMode === 'zh2en' ? 'en' : 'zh-CN';
+  
+  var translateBtn = document.getElementById('translateBtn');
+  translateBtn.disabled = true;
+  translateBtn.textContent = '⏳ 翻译中...';
+  showProgress(true);
+  setProgress(0);
+  showStatus('');
+
+  try {
+    var titleEn = '';
+    var bodyEn = '';
+    var totalTasks = 0;
+    var doneTasks = 0;
+    
+    if (title) totalTasks++;
+    if (body) {
+      var chunks = splitIntoChunks(body);
+      totalTasks += chunks.length;
+    }
+
+    if (title) {
+      showStatus('正在翻译标题...');
+      titleEn = await translateText(title, fromLang, toLang);
+      doneTasks++;
+      setProgress(Math.round(doneTasks / totalTasks * 100));
+    }
+
+    if (body) {
+      var chunks = splitIntoChunks(body);
+      var translatedChunks = [];
+      for (var i = 0; i < chunks.length; i++) {
+        showStatus('正在翻译正文... (' + (i+1) + '/' + chunks.length + ' 段)');
+        var chunkResult = await translateText(chunks[i], fromLang, toLang);
+        translatedChunks.push(chunkResult);
+        doneTasks++;
+        setProgress(Math.round(doneTasks / totalTasks * 100));
+        if (i < chunks.length - 1) {
+          await new Promise(function(r) { setTimeout(r, 200); });
+        }
+      }
+      bodyEn = translatedChunks.join('\n\n');
+    }
+
+    setProgress(100);
+    showStatus('✅ 翻译完成！');
+    showResults(title, body, titleEn, bodyEn);
+
+  } catch(err) {
+    showStatus('❌ 翻译出错: ' + (err.message || err));
+    console.error(err);
+  } finally {
+    translateBtn.disabled = false;
+    translateBtn.textContent = '🚀 开始翻译';
+    setTimeout(function() { showProgress(false); }, 500);
+  }
+}
+
+function showResults(titleZh, bodyZh, titleEn, bodyEn) {
+  var resultSection = document.getElementById('resultSection');
+  resultSection.style.display = 'block';
+  
+  var previewBox = document.getElementById('previewBox');
+  var fromLabel = currentMode === 'zh2en' ? '中文' : '英文';
+  var toLabel = currentMode === 'zh2en' ? '英文' : '中文';
+  
+  var articleNum = document.getElementById('articleNum').value || '?';
+  
+  previewBox.innerHTML = 
+    '<h3>📌 文章 ' + articleNum + ' 翻译预览</h3>' +
+    (titleZh ? '<p><strong>' + fromLabel + '标题：</strong>' + escapeHtml(titleZh) + '</p>' : '') +
+    (titleEn ? '<p><strong>' + toLabel + '标题：</strong>' + escapeHtml(titleEn) + '</p>' : '') +
+    (bodyZh ? '<p><strong>' + fromLabel + '正文摘要：</strong>' + escapeHtml(bodyZh.substring(0, 200)) + '...</p>' : '') +
+    (bodyEn ? '<p><strong>' + toLabel + '正文摘要：</strong>' + escapeHtml(bodyEn.substring(0, 200)) + '...</p>' : '');
+  
+  generateCode(articleNum, titleZh, bodyZh, titleEn, bodyEn);
+  resultSection.scrollIntoView({ behavior: 'smooth' });
+}
+
+function generateCode(num, titleZh, bodyZh, titleEn, bodyEn) {
+  var output = document.getElementById('codeOutput');
+  var date = document.getElementById('articleDate').value;
+  
+  var code = '';
+  if (date) {
+    code += '    // ' + date + '\n';
+  }
+  
+  if (currentMode === 'zh2en') {
+    code += '    article' + num + ': {\n';
+    code += '      title: `' + escapeBacktick(titleZh || '') + '`,\n';
+    code += '      titleEn: `' + escapeBacktick(titleEn || '') + '`,\n';
+    code += '      body: `' + escapeBacktick(bodyZh || '') + '`,\n';
+    code += '      bodyEn: `' + escapeBacktick(bodyEn || '') + '`,\n';
+    code += '    },';
+  } else {
+    code += '    article' + num + ': {\n';
+    code += '      title: `' + escapeBacktick(titleEn || '') + '`,\n';
+    code += '      titleEn: `' + escapeBacktick(titleZh || '') + '`,\n';
+    code += '      body: `' + escapeBacktick(bodyEn || '') + '`,\n';
+    code += '      bodyEn: `' + escapeBacktick(bodyZh || '') + '`,\n';
+    code += '    },';
+  }
+  
+  output.textContent = code;
+}
+
+function escapeBacktick(str) {
+  return str.replace(/`/g, '\\`').replace(/\\/g, '\\\\').replace(/`/g, '\\`');
+}
+
+function copyCode() {
+  var code = document.getElementById('codeOutput').textContent;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(code).then(function() {
+      showToast('📋 已复制到剪贴板！');
+    }).catch(function() {
+      fallbackCopy(code);
+    });
+  } else {
+    fallbackCopy(code);
+  }
+}
+
+function fallbackCopy(text) {
+  var ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.left = '-9999px';
+  document.body.appendChild(ta);
+  ta.select();
+  document.execCommand('copy');
+  document.body.removeChild(ta);
+  showToast('📋 已复制到剪贴板！');
+}
+
+function resetAll() {
+  document.getElementById('titleInput').value = '';
+  document.getElementById('bodyInput').value = '';
+  document.getElementById('articleNum').value = '';
+  document.getElementById('articleDate').value = '';
+  document.getElementById('resultSection').style.display = 'none';
+  document.getElementById('status').textContent = '';
+  showProgress(false);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function escapeHtml(str) {
+  var div = document.createElement('div');
+  div.appendChild(document.createTextNode(str));
+  return div.innerHTML;
+}
+</script>
+</body>
+</html>
