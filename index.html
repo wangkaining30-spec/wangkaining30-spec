@@ -628,10 +628,13 @@ async function autoTranslatePage() {
     for (var i = 0; i < elements.length; i++) {
       var el = elements[i];
       if (el.closest('script, style, noscript')) continue;
-      if (el.closest('nav a, nav button, button')) continue;
+      if (el.closest('button')) continue;  // skip translate button itself
 
-      var zhText = el.getAttribute('data-zh') || el.textContent || '';
-      zhText = zhText.trim();
+      var zhText = el.getAttribute('data-zh');
+      if (!zhText || zhText.trim() === '') {
+        zhText = (el.textContent || '').trim();
+        el.setAttribute('data-zh', zhText);  // persist original for restore
+      }
       if (!zhText || zhText.length < 2) continue;
 
       if (el.hasAttribute('data-auto-en')) continue;
@@ -791,6 +794,26 @@ const a = articles[key];
     const mb = document.getElementById('modal-body');
   mb.setAttribute('data-zh', a.body || '');
   mb.textContent = a.body;
+  // Auto-translate modal if translation is active
+  if (typeof autoTransActive !== 'undefined' && autoTransActive) {
+    var modalEls = document.querySelectorAll('#modal-title, #modal-body');
+    for (var mi = 0; mi < modalEls.length; mi++) {
+      var mel = modalEls[mi];
+      var origText = mel.getAttribute('data-zh') || '';
+      if (origText && origText.trim()) {
+        if (autoTransCache[origText]) {
+          mel.setAttribute('data-auto-en', autoTransCache[origText]);
+          mel.textContent = autoTransCache[origText];
+        } else {
+          translateViaGoogle(origText, 'zh-CN', 'en').then(function(trans) {
+            autoTransCache[origText] = trans;
+            mel.setAttribute('data-auto-en', trans);
+            mel.textContent = trans;
+          }).catch(function(){});
+        }
+      }
+    }
+  }
   document.getElementById('modal').classList.add('active');
   document.body.style.overflow = 'hidden';
 }
