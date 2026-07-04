@@ -432,7 +432,7 @@ function generateCode(num, titleZh, bodyZh, titleEn, bodyEn) {
 }
 
 function escapeBacktick(str) {
-  return str.replace(/`/g, '\\`').replace(/\\/g, '\\\\').replace(/`/g, '\\`');
+  return str.replace(/\\/g, '\\\\').replace(/`/g, '\\`');
 }
 
 function copyCode() {
