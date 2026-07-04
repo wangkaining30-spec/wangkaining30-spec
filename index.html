@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" class="lang-zh">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>客尘 · 宇宙探索者</title>
+<title data-zh="客尘 · 宇宙探索者" data-en="Kechen · Cosmos Explorer">客尘 · 宇宙探索者</title>
 <style>
   :root {
     --bg: #0a0a0f;
@@ -199,255 +199,267 @@
   <div class="inner">
     <div class="logo">客尘</div>
     <div class="links">
-      <a href="#about">关于</a>
-      <a href="#interests">兴趣</a>
-      <a href="#framework">模型</a>
-      <a href="#articles">文章</a>
-      <a href="#works">作品</a>
-      <a href="#contact">联系</a>
+      <a href="#about" data-zh>关于</a><a href="#about" data-en>About</a>
+      <a href="#interests" data-zh>兴趣</a><a href="#interests" data-en>Interests</a>
+      <a href="#framework" data-zh>模型</a><a href="#framework" data-en>Model</a>
+      <a href="#articles" data-zh>文章</a><a href="#articles" data-en>Articles</a>
+      <a href="#works" data-zh>作品</a><a href="#works" data-en>Works</a>
+      <a href="#contact" data-zh>联系</a><a href="#contact" data-en>Contact</a>
     </div>
-    <button class="lang-switch" onclick="toggleLang()">EN</button>
+    <button class="lang-switch" onclick="toggleLang()" id="langBtn">EN</button>
   </div>
 </nav>
 
 <!-- Hero -->
 <header class="hero">
   <h1>客尘</h1>
-  <p class="subtitle">14 岁的宇宙探索者，热爱物理、哲学与 AI 创作。<br>相信星空之下，每一个问题都值得被追问。</p>
+  <p class="subtitle">
+    <span data-zh>14 岁的宇宙探索者，热爱物理、哲学与 AI 创作。<br>相信星空之下，每一个问题都值得被追问。</span>
+    <span data-en>A 14-year-old cosmos explorer passionate about physics, philosophy, and AI creation.<br>Beneath the starry sky, every question deserves to be pursued.</span>
+  </p>
   <div class="meta">
-    <span>📍 浙江绍兴</span>
-    <span>🌌 宇宙探索者</span>
-    <span>🤖 AI 创作者</span>
+    <span>📍 <span data-zh>浙江绍兴</span><span data-en>Shaoxing, Zhejiang</span></span>
+    <span>🌌 <span data-zh>宇宙探索者</span><span data-en>Cosmos Explorer</span></span>
+    <span>🤖 <span data-zh>AI 创作者</span><span data-en>AI Creator</span></span>
   </div>
-  <p class="tagline">「在宇宙的呼吸中，寻找意识的坐标。」</p>
+  <p class="tagline">
+    <span data-zh>「在宇宙的呼吸中，寻找意识的坐标。」</span>
+    <span data-en>"Within the breathing of the cosmos, seek the coordinates of consciousness."</span>
+  </p>
 </header>
 
 <!-- About -->
 <section id="about">
-  <h2>关于我</h2>
+  <h2><span data-zh>关于我</span><span data-en>About Me</span></h2>
   <div class="about-grid">
     <div class="about-card">
       <h3>About Me</h3>
-      <div class="kv"><span class="key">笔名</span><span class="val">客尘</span></div>
-      <div class="kv"><span class="key">本名</span><span class="val">王铠宁</span></div>
-      <div class="kv"><span class="key">年龄</span><span class="val">14 岁</span></div>
-      <div class="kv"><span class="key">坐标</span><span class="val">浙江绍兴</span></div>
+      <div class="kv"><span class="key"><span data-zh>笔名</span><span data-en>Pen Name</span></span><span class="val">客尘</span></div>
+      <div class="kv"><span class="key"><span data-zh>本名</span><span data-en>Real Name</span></span><span class="val"><span data-zh>王铠宁</span><span data-en>Wang Kaining</span></span></div>
+      <div class="kv"><span class="key"><span data-zh>年龄</span><span data-en>Age</span></span><span class="val"><span data-zh>14 岁</span><span data-en>14</span></span></div>
+      <div class="kv"><span class="key"><span data-zh>坐标</span><span data-en>Location</span></span><span class="val"><span data-zh>浙江绍兴</span><span data-en>Shaoxing, Zhejiang</span></span></div>
     </div>
     <div class="about-card">
-      <h3>更新日志</h3>
-      <div class="kv"><span class="key">2026.7.3</span><span class="val">个人网站上线</span></div>
-      <div class="kv"><span class="key">2026.6.27</span><span class="val">与俄罗斯物理学者 Youri Melnichenko 建立学术友谊</span></div>
-      <div class="kv"><span class="key">2026.6.25</span><span class="val">完成《Physics Essays》审稿（PHES-26-202）</span></div>
-      <div class="kv"><span class="key">2026.4.30</span><span class="val">第六篇理论文章定稿投稿</span></div>
-      <div class="kv"><span class="key">2026.4.18</span><span class="val">首次整理童年猜想，开启写作</span></div>
+      <h3><span data-zh>更新日志</span><span data-en>Changelog</span></h3>
+      <div class="kv"><span class="key">2026.7.3</span><span class="val"><span data-zh>个人网站上线</span><span data-en>Personal website launched</span></span></div>
+      <div class="kv"><span class="key">2026.6.27</span><span class="val"><span data-zh>与俄罗斯物理学者 Youri Melnichenko 建立学术友谊</span><span data-en>Established academic friendship with Russian physicist Youri Melnichenko</span></span></div>
+      <div class="kv"><span class="key">2026.6.25</span><span class="val"><span data-zh>完成《Physics Essays》审稿（PHES-26-202）</span><span data-en>Completed review for Physics Essays (PHES-26-202)</span></span></div>
+      <div class="kv"><span class="key">2026.4.30</span><span class="val"><span data-zh>第六篇理论文章定稿投稿</span><span data-en>Final draft of 6th theoretical article submitted</span></span></div>
+      <div class="kv"><span class="key">2026.4.18</span><span class="val"><span data-zh>首次整理童年猜想，开启写作</span><span data-en>First organized childhood conjectures; began writing</span></span></div>
     </div>
   </div>
 </section>
 
 <!-- Interests -->
 <section id="interests">
-  <h2>兴趣领域</h2>
+  <h2><span data-zh>兴趣领域</span><span data-en>Areas of Interest</span></h2>
   <div class="interest-grid">
     <div class="interest-item">
-      <h4>🌌 宇宙物理与科幻</h4>
-      <p>探索黑洞演化、暗能量与宇宙呼吸模型，热爱天文摄影</p>
+      <h4>🌌 <span data-zh>宇宙物理与科幻</span><span data-en>Cosmological Physics &amp; Sci-Fi</span></h4>
+      <p><span data-zh>探索黑洞演化、暗能量与宇宙呼吸模型，热爱天文摄影</span><span data-en>Exploring black hole evolution, dark energy, and cosmic breathing models; passionate about astrophotography</span></p>
     </div>
     <div class="interest-item">
-      <h4>🧠 哲学思辨</h4>
-      <p>探讨意识本质、AI 本质与虚拟世界真实性</p>
+      <h4>🧠 <span data-zh>哲学思辨</span><span data-en>Philosophical Inquiry</span></h4>
+      <p><span data-zh>探讨意识本质、AI 本质与虚拟世界真实性</span><span data-en>Investigating the nature of consciousness, the essence of AI, and the reality of virtual worlds</span></p>
     </div>
     <div class="interest-item">
-      <h4>🤖 AI 创作与开发</h4>
-      <p>关注大模型 API 开发，探索陪伴式 AI 平台</p>
+      <h4>🤖 <span data-zh>AI 创作与开发</span><span data-en>AI Creation &amp; Development</span></h4>
+      <p><span data-zh>关注大模型 API 开发，探索陪伴式 AI 平台</span><span data-en>Focused on large model API development, exploring companion AI platforms</span></p>
     </div>
     <div class="interest-item">
-      <h4>🎨 视觉艺术创作</h4>
-      <p>超现实风格，油彩黑底、点彩几何、五维空间扭曲</p>
+      <h4>🎨 <span data-zh>视觉艺术创作</span><span data-en>Visual Art Creation</span></h4>
+      <p><span data-zh>超现实风格，油彩黑底、点彩几何、五维空间扭曲</span><span data-en>Surreal style: oil on black, pointillist geometry, five-dimensional spatial distortions</span></p>
     </div>
     <div class="interest-item">
-      <h4>🎮 游戏探索</h4>
-      <p>深度玩家，精通《我的世界》指令与高级玩法</p>
+      <h4>🎮 <span data-zh>游戏探索</span><span data-en>Game Exploration</span></h4>
+      <p><span data-zh>深度玩家，精通《我的世界》指令与高级玩法</span><span data-en>Deep gamer, proficient in Minecraft commands and advanced gameplay</span></p>
     </div>
     <div class="interest-item">
-      <h4>✍️ 写作与创作</h4>
-      <p>保持创作热情，不断探索新事物的边界</p>
+      <h4>✍️ <span data-zh>写作与创作</span><span data-en>Writing &amp; Creation</span></h4>
+      <p><span data-zh>保持创作热情，不断探索新事物的边界</span><span data-en>Maintaining creative passion, constantly exploring the boundaries of the new</span></p>
     </div>
   </div>
 </section>
 
 <!-- Framework -->
 <section id="framework">
-  <h2>客尘宇宙模型 · 五大基本实体</h2>
+  <h2><span data-zh>客尘宇宙模型 · 五大基本实体</span><span data-en>Kechen Cosmological Model · Five Fundamental Entities</span></h2>
   <p style="color:var(--muted);font-size:0.9rem;margin-bottom:2rem;">
-    Elemental Cosmology — 从负一物质到引力粒子阈值觉醒的假说框架
+    <span data-zh>Elemental Cosmology — 从负一物质到引力粒子阈值觉醒的假说框架</span>
+    <span data-en>Elemental Cosmology — A hypothetical framework from Negative-One Matter to the threshold-awakening of Gravity Particles</span>
   </p>
 
   <!-- Five Entities -->
   <div class="entities">
     <div class="entity-card">
       <div class="num">01</div>
-      <h4>引力粒子</h4>
+      <h4><span data-zh>引力粒子</span><span data-en>Gravity Particles</span></h4>
       <div class="en">Gravity Particles</div>
-      <p>惰性、永恒的吸引媒介。自由态与休眠态两种形式，等待临界条件被唤醒。</p>
+      <p><span data-zh>惰性、永恒的吸引媒介。自由态与休眠态两种形式，等待临界条件被唤醒。</span><span data-en>Inert, eternal medium of attraction. Exists in free and dormant forms, awaiting critical conditions to be awakened.</span></p>
     </div>
     <div class="entity-card">
       <div class="num">02</div>
-      <h4>负一物质</h4>
+      <h4><span data-zh>负一物质</span><span data-en>Negative-One Matter</span></h4>
       <div class="en">Negative-One Matter</div>
-      <p>最基本的物理实体，构成奇点。活性相与稳定相之间的相变，驱动宇宙膨胀。</p>
+      <p><span data-zh>最基本的物理实体，构成奇点。活性相与稳定相之间的相变，驱动宇宙膨胀。</span><span data-en>The most fundamental physical entity, constituting the singularity. Phase transitions between active and stable phases drive cosmic expansion.</span></p>
     </div>
     <div class="entity-card">
       <div class="num">03</div>
-      <h4>零元素 / 混沌</h4>
+      <h4><span data-zh>零元素 / 混沌</span><span data-en>Zero-Element / Chaos</span></h4>
       <div class="en">Zero-Element / Chaos</div>
-      <p>能量的基底基质。暗能量的本质——宇宙膨胀的介质。</p>
+      <p><span data-zh>能量的基底基质。暗能量的本质——宇宙膨胀的介质。</span><span data-en>The substrate matrix of energy. The essence of dark energy — the medium of cosmic expansion.</span></p>
     </div>
     <div class="entity-card">
       <div class="num">04</div>
-      <h4>时间原子</h4>
+      <h4><span data-zh>时间原子</span><span data-en>Time Atoms</span></h4>
       <div class="en">Time Atoms</div>
-      <p>构成时间物理流动的物质粒子，具有内在方向性。时间不是维度，是实体。</p>
+      <p><span data-zh>构成时间物理流动的物质粒子，具有内在方向性。时间不是维度，是实体。</span><span data-en>Material particles constituting the physical flow of time, with intrinsic directionality. Time is not a dimension; it is an entity.</span></p>
     </div>
     <div class="entity-card">
       <div class="num">05</div>
-      <h4>普通物质</h4>
+      <h4><span data-zh>普通物质</span><span data-en>Ordinary Matter</span></h4>
       <div class="en">Ordinary Matter</div>
-      <p>从零元素和时间原子合成的可见宇宙物质。构成星系、恒星、及一切可观测结构。</p>
+      <p><span data-zh>从零元素和时间原子合成的可见宇宙物质。构成星系、恒星、及一切可观测结构。</span><span data-en>Visible cosmic matter synthesized from Zero-Element and Time Atoms. Forms galaxies, stars, and all observable structures.</span></p>
     </div>
   </div>
 
   <!-- Cycle Engine -->
-  <h3 style="text-align:center;color:var(--accent2);margin:3rem 0 1.5rem;font-weight:400;">宇宙循环引擎</h3>
+  <h3 style="text-align:center;color:var(--accent2);margin:3rem 0 1.5rem;font-weight:400;">
+    <span data-zh>宇宙循环引擎</span><span data-en>Cosmic Cycle Engine</span>
+  </h3>
   <div class="cycle-row">
     <div class="cycle-step">
       <div class="phase">Ⅰ</div>
-      <h4>膨胀期</h4>
-      <p>活性相负一物质与零元素相互作用，驱动空间加速膨胀</p>
+      <h4><span data-zh>膨胀期</span><span data-en>Expansion Phase</span></h4>
+      <p><span data-zh>活性相负一物质与零元素相互作用，驱动空间加速膨胀</span><span data-en>Active-phase Negative-One Matter interacts with Zero-Element, driving accelerated spatial expansion</span></p>
     </div>
     <div class="cycle-arrow">→</div>
     <div class="cycle-step">
       <div class="phase">Ⅱ</div>
-      <h4>积累期</h4>
-      <p>归源衰变持续产生稳定相负一物质，普通物质逐渐合成</p>
+      <h4><span data-zh>积累期</span><span data-en>Accumulation Phase</span></h4>
+      <p><span data-zh>归源衰变持续产生稳定相负一物质，普通物质逐渐合成</span><span data-en>Return-to-Source decay continuously produces stable-phase Negative-One Matter; ordinary matter gradually synthesizes</span></p>
     </div>
     <div class="cycle-arrow">→</div>
     <div class="cycle-step">
       <div class="phase">Ⅲ</div>
-      <h4>临界点</h4>
-      <p>稳定相负一物质总量突破阈值，引力粒子被唤醒</p>
+      <h4><span data-zh>临界点</span><span data-en>Critical Threshold</span></h4>
+      <p><span data-zh>稳定相负一物质总量突破阈值，引力粒子被唤醒</span><span data-en>Total stable-phase Negative-One Matter exceeds threshold; Gravity Particles are awakened</span></p>
     </div>
     <div class="cycle-arrow">→</div>
     <div class="cycle-step">
       <div class="phase">Ⅳ</div>
-      <h4>收缩期</h4>
-      <p>引力粒子主导，宇宙减速膨胀并转为收缩，回归奇点</p>
+      <h4><span data-zh>收缩期</span><span data-en>Contraction Phase</span></h4>
+      <p><span data-zh>引力粒子主导，宇宙减速膨胀并转为收缩，回归奇点</span><span data-en>Gravity Particles dominate; cosmic expansion decelerates and reverses into contraction, returning to the singularity</span></p>
     </div>
   </div>
 
   <!-- Significance -->
-  <h3 style="text-align:center;color:var(--accent2);margin:3rem 0 1.5rem;font-weight:400;">研究意义</h3>
+  <h3 style="text-align:center;color:var(--accent2);margin:3rem 0 1.5rem;font-weight:400;">
+    <span data-zh>研究意义</span><span data-en>Research Significance</span>
+  </h3>
   <div class="sig-grid">
     <div class="sig-card">
-      <h4>暗能量本质</h4>
-      <p>将暗能量重新解释为零元素/混沌的基底基质，提供暗能量的物质性来源</p>
+      <h4><span data-zh>暗能量本质</span><span data-en>Nature of Dark Energy</span></h4>
+      <p><span data-zh>将暗能量重新解释为零元素/混沌的基底基质，提供暗能量的物质性来源</span><span data-en>Reinterprets dark energy as the substrate matrix of Zero-Element/Chaos, providing a material origin for dark energy</span></p>
     </div>
     <div class="sig-card">
-      <h4>大爆炸起因</h4>
-      <p>以负一物质相变机制替代奇点爆炸的单一事件，宇宙起源成为循环相变的自然结果</p>
+      <h4><span data-zh>大爆炸起因</span><span data-en>Origin of the Big Bang</span></h4>
+      <p><span data-zh>以负一物质相变机制替代奇点爆炸的单一事件，宇宙起源成为循环相变的自然结果</span><span data-en>Replaces the singular Big Bang event with a Negative-One Matter phase transition mechanism, making cosmic origin a natural consequence of cyclic phase transitions</span></p>
     </div>
     <div class="sig-card">
-      <h4>时间物质性</h4>
-      <p>设想时间由"时间原子"构成，具有内在方向性和物理实体性，为时间箭头提供微观解释</p>
+      <h4><span data-zh>时间物质性</span><span data-en>Materiality of Time</span></h4>
+      <p><span data-zh>设想时间由"时间原子"构成，具有内在方向性和物理实体性，为时间箭头提供微观解释</span><span data-en>Proposes that time is composed of "Time Atoms" with intrinsic directionality and physical substantiality, offering a microscopic explanation for the arrow of time</span></p>
     </div>
     <div class="sig-card">
-      <h4>与 ΛCDM 对比</h4>
-      <p>在保留宇宙膨胀观测一致性的前提下，为暗能量状态方程、星系旋转曲线等提供替代解释路径</p>
+      <h4><span data-zh>与 ΛCDM 对比</span><span data-en>Comparison with ΛCDM</span></h4>
+      <p><span data-zh>在保留宇宙膨胀观测一致性的前提下，为暗能量状态方程、星系旋转曲线等提供替代解释路径</span><span data-en>While preserving consistency with cosmic expansion observations, offers alternative explanatory pathways for the dark energy equation of state, galactic rotation curves, and more</span></p>
     </div>
   </div>
 
   <!-- Disclaimer -->
   <div class="disclaimer">
-    ⚠️ 本模型为探索性假说，尚未经同行评审，不构成已确立的科学理论。核心想法来自作者本人（王铠宁 / 客尘），AI 辅助了文字整理、语言润色与可视化呈现。文中所有机制均为定性猜想，尚无数学形式化与定量预测，欢迎批评与讨论。
+    <span data-zh>⚠️ 本模型为探索性假说，尚未经同行评审，不构成已确立的科学理论。核心想法来自作者本人（王铠宁 / 客尘），AI 辅助了文字整理、语言润色与可视化呈现。文中所有机制均为定性猜想，尚无数学形式化与定量预测，欢迎批评与讨论。</span>
+    <span data-en>⚠️ This model is an exploratory hypothesis, not yet peer-reviewed, and does not constitute an established scientific theory. Core ideas originate from the author (Wang Kaining / Kechen), with AI assistance in text organization, language refinement, and visualization. All mechanisms described are qualitative conjectures without mathematical formalization or quantitative predictions. Criticism and discussion are welcome.</span>
   </div>
 </section>
 
 <!-- Articles -->
 <section id="articles">
-  <h2>文章</h2>
+  <h2><span data-zh>文章</span><span data-en>Articles</span></h2>
   <div class="article-list">
     <div class="article-item">
-      <h4>客尘宇宙模型：从-1号元素到引力元素的完整宇宙图景</h4>
-      <div class="meta-line">客尘（王铠宁） · 2026年4月28日 · 约6700字</div>
-      <div class="desc">以化学元素周期表的逻辑为框架，设想一套完整的"宇宙元素体系"：引力元素、-1号元素、0号元素（暗能量·混沌）、时间原子、以及由它们衍生出的普通物质世界。</div>
-      <span class="read-link" onclick="openArticle('article6')">点击阅读全文 →</span>
+      <h4><span data-zh>客尘宇宙模型：从-1号元素到引力元素的完整宇宙图景</span><span data-en>The Kechen Cosmological Model: A Complete Cosmic Picture from Element -1 to Gravity Elements</span></h4>
+      <div class="meta-line"><span data-zh>客尘（王铠宁） · 2026年4月28日 · 约6700字</span><span data-en>Kechen (Wang Kaining) · April 28, 2026 · ~6,700 words</span></div>
+      <div class="desc"><span data-zh>以化学元素周期表的逻辑为框架，设想一套完整的"宇宙元素体系"：引力元素、-1号元素、0号元素（暗能量·混沌）、时间原子、以及由它们衍生出的普通物质世界。</span><span data-en>Using the logic of the periodic table as a framework, envisions a complete "cosmic element system": Gravity Elements, Element -1, Element 0 (Dark Energy·Chaos), Time Atoms, and the ordinary matter world derived from them.</span></div>
+      <span class="read-link" onclick="openArticle('article6')"><span data-zh>点击阅读全文 →</span><span data-en>Read Full Article →</span></span>
     </div>
     <div class="article-item">
-      <h4>从绝对零度到-1号元素：一个双向循环宇宙模型的深度追问</h4>
-      <div class="meta-line">客尘（王铠宁） · 2026年4月28日 · 约2000字</div>
-      <div class="desc">以"绝对零度能否达到"为起点，探讨暗能量作为宇宙背景能量场的存在，设想暗能量是"0号元素"——元素周期表诞生之前的本源能量，并以中国神话中的"混沌"为其命名。</div>
-      <span class="read-link" onclick="openArticle('article4')">点击阅读全文 →</span>
+      <h4><span data-zh>从绝对零度到-1号元素：一个双向循环宇宙模型的深度追问</span><span data-en>From Absolute Zero to Element -1: A Deeper Inquiry into the Bidirectional Cyclic Universe Model</span></h4>
+      <div class="meta-line"><span data-zh>客尘（王铠宁） · 2026年4月28日 · 约2000字</span><span data-en>Kechen (Wang Kaining) · April 28, 2026 · ~2,000 words</span></div>
+      <div class="desc"><span data-zh>以"绝对零度能否达到"为起点，探讨暗能量作为宇宙背景能量场的存在，设想暗能量是"0号元素"——元素周期表诞生之前的本源能量，并以中国神话中的"混沌"为其命名。</span><span data-en>Starting from "can absolute zero be reached?", explores dark energy as a cosmic background energy field, proposing dark energy as "Element 0" — the primordial energy before the periodic table's birth, named after "Chaos" in Chinese mythology.</span></div>
+      <span class="read-link" onclick="openArticle('article4')"><span data-zh>点击阅读全文 →</span><span data-en>Read Full Article →</span></span>
     </div>
     <div class="article-item">
-      <h4>从归源衰变到引力元素：宇宙模型的深度续论</h4>
-      <div class="meta-line">客尘（王铠宁） · 2026年4月28日 · 约2400字</div>
-      <div class="desc">设想归源衰变假说、趋势不对称原理、宇宙结构失稳假说、奇点相变引爆机制、四维种子假说、相变化石与骨相假说、以及引力元素假说。</div>
-      <span class="read-link" onclick="openArticle('article5')">点击阅读全文 →</span>
+      <h4><span data-zh>从归源衰变到引力元素：宇宙模型的深度续论</span><span data-en>From Return-to-Source Decay to Gravity Elements: An In-Depth Sequel on the Cosmological Model</span></h4>
+      <div class="meta-line"><span data-zh>客尘（王铠宁） · 2026年4月28日 · 约2400字</span><span data-en>Kechen (Wang Kaining) · April 28, 2026 · ~2,400 words</span></div>
+      <div class="desc"><span data-zh>设想归源衰变假说、趋势不对称原理、宇宙结构失稳假说、奇点相变引爆机制、四维种子假说、相变化石与骨相假说、以及引力元素假说。</span><span data-en>Proposes the Return-to-Source Decay hypothesis, Trend Asymmetry Principle, Cosmic Structure Instability hypothesis, Singularity Phase Transition Detonation mechanism, Four-Dimensional Seed hypothesis, Phase Transition Fossil &amp; Bone Structure hypothesis, and the Gravity Element hypothesis.</span></div>
+      <span class="read-link" onclick="openArticle('article5')"><span data-zh>点击阅读全文 →</span><span data-en>Read Full Article →</span></span>
     </div>
     <div class="article-item">
-      <h4>一个宇宙双向循环模型：从黑洞到中子星的物质-能量转化</h4>
-      <div class="meta-line">客尘（王铠宁） · 2026年4月28日 · 约2700字</div>
-      <div class="desc">一个宇宙尺度的物质-能量双向循环模型：黑洞/白洞系统将普通物质转化为暗能量，驱动宇宙加速膨胀；中子星系统则将暗物质/暗能量逆向转化为普通物质与可观测辐射。</div>
-      <span class="read-link" onclick="openArticle('article2')">点击阅读全文 →</span>
+      <h4><span data-zh>一个宇宙双向循环模型：从黑洞到中子星的物质-能量转化</span><span data-en>A Bidirectional Cyclic Universe Model: Matter-Energy Conversion from Black Holes to Neutron Stars</span></h4>
+      <div class="meta-line"><span data-zh>客尘（王铠宁） · 2026年4月28日 · 约2700字</span><span data-en>Kechen (Wang Kaining) · April 28, 2026 · ~2,700 words</span></div>
+      <div class="desc"><span data-zh>一个宇宙尺度的物质-能量双向循环模型：黑洞/白洞系统将普通物质转化为暗能量，驱动宇宙加速膨胀；中子星系统则将暗物质/暗能量逆向转化为普通物质与可观测辐射。</span><span data-en>A cosmic-scale bidirectional matter-energy cycle: the black hole/white hole system converts ordinary matter into dark energy, driving accelerated cosmic expansion; neutron star systems reverse-convert dark matter/dark energy into ordinary matter and observable radiation.</span></div>
+      <span class="read-link" onclick="openArticle('article2')"><span data-zh>点击阅读全文 →</span><span data-en>Read Full Article →</span></span>
     </div>
   </div>
 
   <div style="margin-top:1rem;">
-    <h3 style="color:var(--accent2);font-size:1rem;font-weight:400;">更多系列</h3>
+    <h3 style="color:var(--accent2);font-size:1rem;font-weight:400;"><span data-zh>更多系列</span><span data-en>More Series</span></h3>
     <div class="interest-grid" style="margin-top:0.8rem;">
-      <div class="interest-item"><h4>📐 个人宇宙学猜想系列</h4><p>探索性假说与思想实验</p></div>
-      <div class="interest-item"><h4>📝 思想起源与随笔</h4><p>记录思想发展历程</p></div>
-      <div class="interest-item"><h4>🧘 哲学与人生思考</h4><p>关于人生、命运、意识</p></div>
+      <div class="interest-item"><h4>📐 <span data-zh>个人宇宙学猜想系列</span><span data-en>Personal Cosmological Conjectures</span></h4><p><span data-zh>探索性假说与思想实验</span><span data-en>Exploratory hypotheses and thought experiments</span></p></div>
+      <div class="interest-item"><h4>📝 <span data-zh>思想起源与随笔</span><span data-en>Origins of Thought &amp; Essays</span></h4><p><span data-zh>记录思想发展历程</span><span data-en>Documenting the evolution of ideas</span></p></div>
+      <div class="interest-item"><h4>🧘 <span data-zh>哲学与人生思考</span><span data-en>Philosophy &amp; Life Reflections</span></h4><p><span data-zh>关于人生、命运、意识</span><span data-en>On life, destiny, and consciousness</span></p></div>
     </div>
   </div>
 </section>
 
 <!-- Works -->
 <section id="works">
-  <h2>作品 / 项目</h2>
+  <h2><span data-zh>作品 / 项目</span><span data-en>Works / Projects</span></h2>
   <div class="works-grid">
     <div class="work-card">
-      <span class="status wip">进行中</span>
-      <h4>宇宙呼吸模型</h4>
-      <p>基于暗能量与黑洞演化的宇宙呼吸假说可视化探索</p>
-      <div class="tags">物理 · 科幻 · 可视化</div>
+      <span class="status wip"><span data-zh>进行中</span><span data-en>In Progress</span></span>
+      <h4><span data-zh>宇宙呼吸模型</span><span data-en>Cosmic Breathing Model</span></h4>
+      <p><span data-zh>基于暗能量与黑洞演化的宇宙呼吸假说可视化探索</span><span data-en>Visual exploration of the cosmic breathing hypothesis based on dark energy and black hole evolution</span></p>
+      <div class="tags"><span data-zh>物理 · 科幻 · 可视化</span><span data-en>Physics · Sci-Fi · Visualization</span></div>
     </div>
     <div class="work-card">
-      <span class="status planned">计划中</span>
-      <h4>AI 陪伴平台原型</h4>
-      <p>基于大语言模型的陪伴式 AI 对话平台概念设计</p>
-      <div class="tags">AI · 开发 · 产品</div>
+      <span class="status planned"><span data-zh>计划中</span><span data-en>Planned</span></span>
+      <h4><span data-zh>AI 陪伴平台原型</span><span data-en>AI Companion Platform Prototype</span></h4>
+      <p><span data-zh>基于大语言模型的陪伴式 AI 对话平台概念设计</span><span data-en>Concept design for a companion AI dialogue platform based on large language models</span></p>
+      <div class="tags"><span data-zh>AI · 开发 · 产品</span><span data-en>AI · Development · Product</span></div>
     </div>
     <div class="work-card">
-      <span class="status wip">进行中</span>
-      <h4>超现实视觉作品集</h4>
-      <p>油彩黑底、点彩几何、五维空间扭曲风格的数字艺术作品</p>
-      <div class="tags">艺术 · 创作 · 视觉</div>
+      <span class="status wip"><span data-zh>进行中</span><span data-en>In Progress</span></span>
+      <h4><span data-zh>超现实视觉作品集</span><span data-en>Surreal Visual Portfolio</span></h4>
+      <p><span data-zh>油彩黑底、点彩几何、五维空间扭曲风格的数字艺术作品</span><span data-en>Digital art works in oil-on-black, pointillist geometry, and five-dimensional spatial distortion styles</span></p>
+      <div class="tags"><span data-zh>艺术 · 创作 · 视觉</span><span data-en>Art · Creation · Visual</span></div>
     </div>
     <div class="work-card">
-      <span class="status done">已完成</span>
-      <h4>Minecraft 指令工坊</h4>
-      <p>《我的世界》高级指令系统与红石机械装置合集</p>
-      <div class="tags">游戏 · 开发 · 创作</div>
+      <span class="status done"><span data-zh>已完成</span><span data-en>Completed</span></span>
+      <h4><span data-zh>Minecraft 指令工坊</span><span data-en>Minecraft Command Workshop</span></h4>
+      <p><span data-zh>《我的世界》高级指令系统与红石机械装置合集</span><span data-en>A collection of advanced Minecraft command systems and redstone mechanical devices</span></p>
+      <div class="tags"><span data-zh>游戏 · 开发 · 创作</span><span data-en>Gaming · Development · Creation</span></div>
     </div>
   </div>
-  <p style="text-align:center;color:var(--muted);margin-top:1.5rem;">更多作品即将上线</p>
+  <p style="text-align:center;color:var(--muted);margin-top:1.5rem;"><span data-zh>更多作品即将上线</span><span data-en>More works coming soon</span></p>
 </section>
 
 <!-- Footer -->
 <footer id="contact">
-  <p>© 2026 客尘. All Rights Reserved.</p>
-  <p>浙江绍兴 · 宇宙探索者 · AI 创作者</p>
-  <p>联系我：<a href="mailto:3762066652@qq.com">3762066652@qq.com</a></p>
+  <p><span data-zh>© 2026 客尘. All Rights Reserved.</span><span data-en>© 2026 Kechen. All Rights Reserved.</span></p>
+  <p><span data-zh>浙江绍兴 · 宇宙探索者 · AI 创作者</span><span data-en>Shaoxing, Zhejiang · Cosmos Explorer · AI Creator</span></p>
+  <p><span data-zh>联系我：</span><span data-en>Contact: </span><a href="mailto:3762066652@qq.com">3762066652@qq.com</a></p>
 </footer>
 
 <!-- Modal -->
@@ -460,8 +472,19 @@
 </div>
 
 <script>
+let currentLang = 'zh';
 function toggleLang() {
-  alert('English version coming soon. 英文版即将上线。');
+  currentLang = currentLang === 'zh' ? 'en' : 'zh';
+  document.documentElement.className = 'lang-' + currentLang;
+  document.getElementById('langBtn').textContent = currentLang === 'zh' ? 'EN' : '中';
+  // toggle all data-zh / data-en elements
+  document.querySelectorAll('[data-zh]').forEach(el => { el.style.display = ''; });
+  document.querySelectorAll('[data-en]').forEach(el => { el.style.display = ''; });
+  if (currentLang === 'zh') {
+    document.querySelectorAll('[data-en]').forEach(el => { el.style.display = 'none'; });
+  } else {
+    document.querySelectorAll('[data-zh]').forEach(el => { el.style.display = 'none'; });
+  }
 }
 
 function openArticle(key) {
