@@ -530,18 +530,17 @@ function toggleLang() {
   currentLang = currentLang === 'zh' ? 'en' : 'zh';
   document.documentElement.className = 'lang-' + currentLang;
   document.getElementById('langBtn').textContent = currentLang === 'zh' ? 'EN' : '中';
-  // Also update modal title if open
-  const modalTitle = document.getElementById('modal-title');
-  if (modalTitle && modalTitle.hasAttribute('data-zh')) {
-    modalTitle.textContent = currentLang === 'zh' ? modalTitle.getAttribute('data-zh') : modalTitle.getAttribute('data-en');
-  }
-  // toggle all data-zh / data-en elements
-  document.querySelectorAll('[data-zh]').forEach(el => { el.style.display = ''; });
-  document.querySelectorAll('[data-en]').forEach(el => { el.style.display = ''; });
-  if (currentLang === 'zh') {
-    document.querySelectorAll('[data-en]').forEach(el => { el.style.display = 'none'; });
-  } else {
-    document.querySelectorAll('[data-zh]').forEach(el => { el.style.display = 'none'; });
+  // Also update modal if open
+  const modal = document.getElementById('modal');
+  if (modal && modal.classList.contains('active')) {
+    const mt = document.getElementById('modal-title');
+    const mb = document.getElementById('modal-body');
+    if (mt && mt.hasAttribute('data-zh')) {
+      mt.textContent = mt.getAttribute('data-' + currentLang) || mt.textContent;
+    }
+    if (mb && mb.hasAttribute('data-zh')) {
+      mb.textContent = mb.getAttribute('data-' + currentLang) || mb.textContent;
+    }
   }
 }
 
