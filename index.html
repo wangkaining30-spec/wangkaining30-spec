@@ -1111,17 +1111,19 @@ document.getElementById('modal').addEventListener('click', function(e) {
       .select('*', { count: 'exact', head: true })
       .eq('user_id', currentUser.id)
       .eq('usage_date', today);
-    if (error) return 999;
+    if (error) { console.error('getTodayUsage error:', error); return -1; }
     return count || 0;
   }
 
   async function recordUsage() {
     if (!currentUser) return;
     var today = new Date().toLocaleDateString('zh-CN').replace(/\//g, '-');
-    await supabase.from('usage_logs').insert({
+    var { error } = await supabase.from('usage_logs').insert({
       user_id: currentUser.id,
       usage_date: today
     });
+    if (error) { console.error('recordUsage error:', error); return false; }
+    return true;
   }
 
   // ====== Chat ======
