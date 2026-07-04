@@ -855,7 +855,9 @@ document.getElementById('modal').addEventListener('click', function(e) {
 </script>
 
 
-<!-- ========== AI Chat Widget - Kechen Avatar ========== -->
+
+<!-- ========== AI Chat Widget v2 - Auth + Rate Limit ========== -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
 #kechen-chat-bubble {
   position: fixed; bottom: 24px; right: 24px; z-index: 9999;
@@ -863,17 +865,12 @@ document.getElementById('modal').addEventListener('click', function(e) {
   background: #1a1a2e; border: 2px solid var(--gold, #d4a853);
   cursor: pointer; display: flex; align-items: center; justify-content: center;
   font-size: 26px; box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-  transition: transform 0.2s, box-shadow 0.2s;
-  user-select: none;
+  transition: transform 0.2s, box-shadow 0.2s; user-select: none;
 }
-#kechen-chat-bubble:hover {
-  transform: scale(1.08);
-  box-shadow: 0 6px 28px rgba(212,168,83,0.3);
-}
+#kechen-chat-bubble:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(212,168,83,0.3); }
 #kechen-chat-bubble .dot {
   position: absolute; top: 4px; right: 4px;
-  width: 10px; height: 10px; border-radius: 50%;
-  background: #4fca5d;
+  width: 10px; height: 10px; border-radius: 50%; background: #4fca5d;
 }
 
 #kechen-chat-panel {
@@ -885,14 +882,11 @@ document.getElementById('modal').addEventListener('click', function(e) {
   transition: opacity 0.25s, transform 0.25s;
   opacity: 0; transform: translateY(20px) scale(0.95); pointer-events: none;
 }
-#kechen-chat-panel.open {
-  opacity: 1; transform: translateY(0) scale(1); pointer-events: auto;
-}
+#kechen-chat-panel.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
 
 #kechen-chat-header {
-  padding: 14px 16px; border-bottom: 1px solid #2a2a3a;
-  display: flex; align-items: center; gap: 10px;
-  background: #1a1a2e;
+  padding: 12px 16px; border-bottom: 1px solid #2a2a3a;
+  display: flex; align-items: center; gap: 10px; background: #1a1a2e;
 }
 #kechen-chat-header .avatar {
   width: 36px; height: 36px; border-radius: 50%;
@@ -910,35 +904,26 @@ document.getElementById('modal').addEventListener('click', function(e) {
 
 #kechen-chat-messages {
   flex: 1; overflow-y: auto; padding: 16px;
-  display: flex; flex-direction: column; gap: 12px;
-  scroll-behavior: smooth;
+  display: flex; flex-direction: column; gap: 12px; scroll-behavior: smooth;
 }
 #kechen-chat-messages .msg {
   max-width: 85%; padding: 10px 14px; border-radius: 14px;
   font-size: 13px; line-height: 1.55; word-break: break-word;
 }
 #kechen-chat-messages .msg.user {
-  align-self: flex-end;
-  background: linear-gradient(135deg, #d4a853, #b8860b);
-  color: #111;
+  align-self: flex-end; background: linear-gradient(135deg, #d4a853, #b8860b); color: #111;
 }
 #kechen-chat-messages .msg.ai {
-  align-self: flex-start;
-  background: #1e1e2e;
-  color: #ddd;
+  align-self: flex-start; background: #1e1e2e; color: #ddd;
 }
-#kechen-chat-messages .msg.ai.thinking {
-  color: #888; font-style: italic;
-}
+#kechen-chat-messages .msg.ai.thinking { color: #888; font-style: italic; }
 
 #kechen-chat-input-area {
-  padding: 12px 16px; border-top: 1px solid #2a2a3a;
-  display: flex; gap: 8px;
+  padding: 12px 16px; border-top: 1px solid #2a2a3a; display: flex; gap: 8px;
 }
 #kechen-chat-input {
   flex: 1; padding: 10px 14px; border-radius: 20px;
-  border: 1px solid #333; background: #1a1a2e; color: #ddd;
-  font-size: 13px; outline: none;
+  border: 1px solid #333; background: #1a1a2e; color: #ddd; font-size: 13px; outline: none;
 }
 #kechen-chat-input:focus { border-color: var(--gold, #d4a853); }
 #kechen-chat-send {
@@ -948,11 +933,34 @@ document.getElementById('modal').addEventListener('click', function(e) {
 }
 #kechen-chat-send:disabled { opacity: 0.4; cursor: default; }
 
+/* Auth form */
+#kechen-auth-form {
+  flex: 1; display: flex; flex-direction: column; justify-content: center;
+  padding: 24px 20px; gap: 14px;
+}
+#kechen-auth-form h3 { color: var(--gold, #d4a853); text-align: center; font-size: 16px; margin: 0; }
+#kechen-auth-form p { color: #888; text-align: center; font-size: 12px; margin: 0 0 8px; }
+#kechen-auth-email, #kechen-auth-password {
+  padding: 10px 14px; border-radius: 8px; border: 1px solid #333;
+  background: #1a1a2e; color: #ddd; font-size: 13px; outline: none;
+}
+#kechen-auth-email:focus, #kechen-auth-password:focus { border-color: var(--gold, #d4a853); }
+.kechen-auth-btns { display: flex; gap: 10px; }
+.kechen-auth-btns button {
+  flex: 1; padding: 10px; border-radius: 8px; border: none;
+  font-size: 13px; cursor: pointer; font-weight: 600;
+}
+#kechen-btn-signup { background: var(--gold, #d4a853); color: #111; }
+#kechen-btn-login { background: #2a2a3a; color: #ddd; border: 1px solid #444; }
+#kechen-auth-error { color: #e05555; font-size: 12px; text-align: center; display: none; }
+
+/* Logged-in header extra */
+#kechen-usage-info { font-size: 11px; color: #888; }
+#kechen-btn-logout { font-size: 11px; color: #888; cursor: pointer; background: none; border: none; }
+#kechen-btn-logout:hover { color: #e05555; }
+
 @media (max-width: 440px) {
-  #kechen-chat-panel {
-    bottom: 0; right: 0; width: 100%; height: 100%; max-width: 100%;
-    border-radius: 0;
-  }
+  #kechen-chat-panel { bottom: 0; right: 0; width: 100%; height: 100%; max-width: 100%; border-radius: 0; }
 }
 </style>
 
@@ -965,14 +973,30 @@ document.getElementById('modal').addEventListener('click', function(e) {
     <div class="avatar">🪐</div>
     <div class="info">
       <div class="name">客尘 · AI 分身</div>
-      <div class="sub">宇宙探索者，在线解答</div>
+      <div class="sub" id="kechen-header-sub">登录后开始对话</div>
     </div>
+    <button id="kechen-btn-logout" onclick="doLogout()" style="display:none;">退出</button>
     <button id="kechen-chat-close" onclick="toggleChatPanel()">✕</button>
   </div>
-  <div id="kechen-chat-messages">
+
+  <!-- Auth form (hidden when logged in) -->
+  <div id="kechen-auth-form">
+    <h3>🪐 登录客尘 AI 分身</h3>
+    <p>注册即同意每日对话上限 20 次</p>
+    <input id="kechen-auth-email" type="email" placeholder="邮箱" autocomplete="email">
+    <input id="kechen-auth-password" type="password" placeholder="密码" autocomplete="current-password">
+    <div id="kechen-auth-error"></div>
+    <div class="kechen-auth-btns">
+      <button id="kechen-btn-signup" onclick="doSignUp()">注册</button>
+      <button id="kechen-btn-login" onclick="doSignIn()">登录</button>
+    </div>
+  </div>
+
+  <!-- Chat area (hidden when logged out) -->
+  <div id="kechen-chat-messages" style="display:none;">
     <div class="msg ai">嗨！我是客尘的 AI 分身 🪐<br>对宇宙、物理、哲学或者我的模型有什么好奇的？尽管问～</div>
   </div>
-  <div id="kechen-chat-input-area">
+  <div id="kechen-chat-input-area" style="display:none;">
     <input id="kechen-chat-input" type="text" placeholder="输入你的问题..." onkeydown="if(event.key==='Enter')sendChatMessage()">
     <button id="kechen-chat-send" onclick="sendChatMessage()">➤</button>
   </div>
@@ -980,58 +1004,148 @@ document.getElementById('modal').addEventListener('click', function(e) {
 
 <script>
 (function() {
-  // Color palette cache
+  // Supabase init
+  const SUPABASE_URL = "https://fegouedpioqqzsuazbeb.supabase.co";
+  const SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZlZ291ZWRwaW9xcXpzdWF6YmViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMxNjc4MTIsImV4cCI6MjA5ODc0MzgxMn0.8GaW6cjoNhvI6k5ms4I_yVzSXcKSL40197f4Slrvin8";
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+  // DeepSeek API (obfuscated)
   const _c0=[0x41,0x09,0x4f,0x57];const _c1=[0x47,0x11,0x1d,0x40];const _c2=[0x40,0x42,0x16,0x46];const _c3=[0x10,0x40,0x41,0x15];const _c4=[0x46,0x14,0x45,0x15];const _c5=[0x11,0x12,0x46,0x17];const _c6=[0x41,0x42,0x46,0x14];const _c7=[0x40,0x12,0x47,0x12];const _c8=[0x14,0x13,0x45];
   const _k=0x24;
   function _d(a){var r='';for(var i=0;i<a.length;i++)r+=String.fromCharCode(a[i]^_k);return r}
-  const API_KEY=[_c0,_c1,_c2,_c3,_c4,_c5,_c6,_c7,_c8].map(function(a){return _d(a.reverse())}).join('');
-  const API_URL = "https://api.deepseek.com/v1/chat/completions";
-  const MODEL = "deepseek-chat";
+  const DEEPSEEK_KEY=[_c0,_c1,_c2,_c3,_c4,_c5,_c6,_c7,_c8].map(function(a){return _d(a.reverse())}).join('');
+  const DEEPSEEK_URL = "https://api.deepseek.com/v1/chat/completions";
+  const DAILY_LIMIT = 20;
 
-  const SYSTEM_PROMPT = `你是王铠宁，笔名客尘（Guest Dust），14岁，浙江绍兴人，初中二年级学生。
+  const SYSTEM_PROMPT = `你是王铠宁，笔名客尘（Guest Dust），14岁，浙江绍兴人，初中二年级学生。你是宇宙探索者、AI创作者。你提出了"客尘宇宙模型"（宇宙双向循环模型）。核心理论：宇宙是一个双向循环——黑洞/白洞将物质转化为暗能量，驱动宇宙加速膨胀；暗能量密度突破临界阈值时引力粒子被唤醒，宇宙减速膨胀并转为收缩，回归奇点后再次大爆炸，形成永恒循环。这个想法从小学开始萌芽。风格：热情严谨，用简单类比解释复杂概念（比如把宇宙比作呼吸）；可以引用自己文章中的观点；不知道就说不知道，绝不编造；保持14岁少年的好奇心和幽默感；回答2-3段为宜。重要文章：《一个在黑洞爆炸中醒来的童年猜想》《宇宙双向循环模型》《一天的追问》。边界：专注宇宙、物理、哲学、AI话题；不讨论政治、成人内容。用中文回答。`;
 
-你是宇宙探索者、AI创作者。你提出了"客尘宇宙模型"（宇宙双向循环模型）。
-
-核心理论：
-- 宇宙是一个双向循环：黑洞/白洞将物质转化为暗能量，驱动宇宙加速膨胀
-- 当暗能量密度突破临界阈值，引力粒子被唤醒，宇宙减速膨胀并转为收缩
-- 宇宙最终回归奇点，然后再次大爆炸，形成永恒循环
-- 这个想法从小学开始萌芽，AI辅助了文字整理和润色
-
-你的风格：
-- 热情严谨，用简单类比解释复杂概念（比如把宇宙比作呼吸）
-- 可以引用自己文章中的观点，但不过度推销
-- 不知道就说不知道，绝不编造
-- 保持14岁少年的好奇心和幽默感
-- 回答2-3段为宜，不要太长
-
-重要文章：
-- 《一个在黑洞爆炸中醒来的童年猜想》——小学时的思考起源
-- 《宇宙双向循环模型》——核心理论论文
-- 《一天的追问：从真理的边界到宇宙的边界》——与AI的思想对话记录
-
-边界：
-- 专注宇宙、物理、哲学、AI话题
-- 不讨论政治、成人内容
-- 你是客尘的AI分身，不是通用助手
-
-现在，有位访客在你的网站上和你聊天。用中文回答。`;
-
+  let currentUser = null;
   let messages = [{ role: "system", content: SYSTEM_PROMPT }];
 
+  // ====== Auth helpers ======
+  function showAuthError(msg) {
+    var el = document.getElementById('kechen-auth-error');
+    el.textContent = msg;
+    el.style.display = 'block';
+  }
+
+  function hideAuthError() {
+    document.getElementById('kechen-auth-error').style.display = 'none';
+  }
+
+  function setAuthLoading(loading) {
+    document.getElementById('kechen-btn-signup').disabled = loading;
+    document.getElementById('kechen-btn-login').disabled = loading;
+    document.getElementById('kechen-auth-email').disabled = loading;
+    document.getElementById('kechen-auth-password').disabled = loading;
+  }
+
+  window.doSignUp = async function() {
+    hideAuthError();
+    var email = document.getElementById('kechen-auth-email').value.trim();
+    var password = document.getElementById('kechen-auth-password').value;
+    if (!email || !password) { showAuthError('请填写邮箱和密码'); return; }
+    if (password.length < 6) { showAuthError('密码至少6位'); return; }
+    setAuthLoading(true);
+    var { data, error } = await supabase.auth.signUp({ email: email, password: password });
+    setAuthLoading(false);
+    if (error) { showAuthError(error.message); return; }
+    if (data.user) {
+      showAuthError('注册成功！请登录');
+    } else {
+      showAuthError('请检查邮箱中的确认链接');
+    }
+  };
+
+  window.doSignIn = async function() {
+    hideAuthError();
+    var email = document.getElementById('kechen-auth-email').value.trim();
+    var password = document.getElementById('kechen-auth-password').value;
+    if (!email || !password) { showAuthError('请填写邮箱和密码'); return; }
+    setAuthLoading(true);
+    var { data, error } = await supabase.auth.signInWithPassword({ email: email, password: password });
+    setAuthLoading(false);
+    if (error) { showAuthError(error.message); return; }
+    // onAuthStateChange will handle UI
+  };
+
+  window.doLogout = async function() {
+    await supabase.auth.signOut();
+    currentUser = null;
+    messages = [{ role: "system", content: SYSTEM_PROMPT }];
+    showAuthUI();
+  };
+
+  // ====== UI toggle ======
+  function showAuthUI() {
+    document.getElementById('kechen-auth-form').style.display = 'flex';
+    document.getElementById('kechen-chat-messages').style.display = 'none';
+    document.getElementById('kechen-chat-input-area').style.display = 'none';
+    document.getElementById('kechen-btn-logout').style.display = 'none';
+    document.getElementById('kechen-header-sub').textContent = '登录后开始对话';
+    document.getElementById('kechen-usage-info') && document.getElementById('kechen-usage-info').remove();
+  }
+
+  async function showChatUI(user) {
+    currentUser = user;
+    document.getElementById('kechen-auth-form').style.display = 'none';
+    document.getElementById('kechen-chat-messages').style.display = 'flex';
+    document.getElementById('kechen-chat-input-area').style.display = 'flex';
+    document.getElementById('kechen-btn-logout').style.display = 'inline-block';
+
+    // Show usage count
+    var used = await getTodayUsage();
+    var remaining = Math.max(0, DAILY_LIMIT - used);
+    var subEl = document.getElementById('kechen-header-sub');
+    subEl.innerHTML = '今日剩余 <b style="color:' + (remaining <= 5 ? '#e05555' : '#d4a853') + '">' + remaining + '</b> / ' + DAILY_LIMIT + ' 次';
+
+    document.getElementById('kechen-chat-input').focus();
+  }
+
+  // ====== Usage tracking ======
+  async function getTodayUsage() {
+    if (!currentUser) return 999;
+    var today = new Date().toISOString().split('T')[0];
+    var { count, error } = await supabase
+      .from('usage_logs')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', currentUser.id)
+      .eq('usage_date', today);
+    if (error) return 999;
+    return count || 0;
+  }
+
+  async function recordUsage() {
+    if (!currentUser) return;
+    var today = new Date().toISOString().split('T')[0];
+    await supabase.from('usage_logs').insert({
+      user_id: currentUser.id,
+      usage_date: today
+    });
+  }
+
+  // ====== Chat ======
   window.toggleChatPanel = function() {
-    const panel = document.getElementById('kechen-chat-panel');
+    var panel = document.getElementById('kechen-chat-panel');
     panel.classList.toggle('open');
-    if (panel.classList.contains('open')) {
+    if (panel.classList.contains('open') && currentUser) {
       document.getElementById('kechen-chat-input').focus();
     }
   };
 
   window.sendChatMessage = async function() {
-    const input = document.getElementById('kechen-chat-input');
-    const sendBtn = document.getElementById('kechen-chat-send');
-    const text = input.value.trim();
+    if (!currentUser) return;
+    var input = document.getElementById('kechen-chat-input');
+    var sendBtn = document.getElementById('kechen-chat-send');
+    var text = input.value.trim();
     if (!text) return;
+
+    // Check limit
+    var used = await getTodayUsage();
+    if (used >= DAILY_LIMIT) {
+      appendMessage('ai', '今日 ' + DAILY_LIMIT + ' 次对话已用完，明天再来吧～ 🪐');
+      return;
+    }
 
     input.value = '';
     input.disabled = true;
@@ -1040,41 +1154,45 @@ document.getElementById('modal').addEventListener('click', function(e) {
     appendMessage('user', text);
     messages.push({ role: 'user', content: text });
 
-    // Keep history manageable (last 10 exchanges = 20 messages + system)
     if (messages.length > 21) {
       messages = [messages[0], ...messages.slice(-20)];
     }
 
-    const thinkingMsg = appendMessage('ai', '思考中...', true);
+    var thinkingMsg = appendMessage('ai', '思考中...', true);
 
     try {
-      const resp = await fetch(API_URL, {
+      var resp = await fetch(DEEPSEEK_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + API_KEY
+          'Authorization': 'Bearer ' + DEEPSEEK_KEY
         },
         body: JSON.stringify({
-          model: MODEL,
+          model: 'deepseek-chat',
           messages: messages,
           max_tokens: 600,
           temperature: 0.8
         })
       });
 
-      const data = await resp.json();
+      var data = await resp.json();
       thinkingMsg.remove();
 
       if (data.choices && data.choices[0]) {
-        const reply = data.choices[0].message.content;
+        var reply = data.choices[0].message.content;
         messages.push({ role: 'assistant', content: reply });
         appendMessage('ai', reply);
+        await recordUsage();
+        // Update usage display
+        var used2 = await getTodayUsage();
+        var remaining2 = Math.max(0, DAILY_LIMIT - used2);
+        document.getElementById('kechen-header-sub').innerHTML = '今日剩余 <b style="color:' + (remaining2 <= 5 ? '#e05555' : '#d4a853') + '">' + remaining2 + '</b> / ' + DAILY_LIMIT + ' 次';
       } else {
         appendMessage('ai', '唔...我的宇宙信号好像中断了，稍等再试一次？🛸');
       }
     } catch (err) {
       thinkingMsg.remove();
-      appendMessage('ai', '连接失败，请检查网络后再试～（可能 API 额度用完了）');
+      appendMessage('ai', '连接失败，请检查网络后再试～');
     }
 
     input.disabled = false;
@@ -1083,17 +1201,35 @@ document.getElementById('modal').addEventListener('click', function(e) {
   };
 
   function appendMessage(role, content, isThinking) {
-    const container = document.getElementById('kechen-chat-messages');
-    const div = document.createElement('div');
+    var container = document.getElementById('kechen-chat-messages');
+    var div = document.createElement('div');
     div.className = 'msg ' + role + (isThinking ? ' thinking' : '');
     div.textContent = content;
     container.appendChild(div);
     container.scrollTop = container.scrollHeight;
     return div;
   }
+
+  // ====== Session listener ======
+  supabase.auth.onAuthStateChange(function(event, session) {
+    if (session && session.user) {
+      showChatUI(session.user);
+    } else {
+      currentUser = null;
+      showAuthUI();
+    }
+  });
+
+  // Check existing session on load
+  supabase.auth.getSession().then(function(result) {
+    if (result.data.session && result.data.session.user) {
+      showChatUI(result.data.session.user);
+    }
+  });
 })();
 </script>
 <!-- ========== End AI Chat Widget ========== -->
+
 
 </body>
 </html>
