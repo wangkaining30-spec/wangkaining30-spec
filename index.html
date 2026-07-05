@@ -894,7 +894,7 @@ document.getElementById('modal').addEventListener('click', function(e) {
   display: flex; align-items: center; justify-content: center; font-size: 18px;
 }
 #kechen-chat-header .info { flex: 1; }
-#kechen-chat-header .name { color: var(--gold, #d4a853); font-weight: 600; font-size: 14px; }
+#kechen-chat-header .name { color: var(--gold, #d4a853); font-weight: 600; font-size: 13px; }
 #kechen-chat-header .sub { color: #888; font-size: 11px; }
 #kechen-chat-close {
   color: #888; cursor: pointer; font-size: 20px; background: none; border: none;
@@ -963,6 +963,11 @@ document.getElementById('modal').addEventListener('click', function(e) {
 #kechen-btn-logout:hover { color: #e05555; }
 
 @media (max-width: 440px) {
+  #kechen-chat-header { padding: 8px 10px; gap: 4px; }
+  #kechen-chat-header .name { font-size: 11px; }
+  #kechen-chat-header .sub { font-size: 9px; }
+  #kechen-chat-header .avatar { width: 28px; height: 28px; font-size: 14px; }
+  .kechen-hdr-btn, #kechen-admin-btn, #kechen-btn-nickname, #kechen-btn-password { font-size: 10px; padding: 2px 5px; }
   #kechen-chat-panel { bottom: 0; right: 0; width: 100%; height: 100%; max-width: 100%; border-radius: 0; }
 }
     <div style="padding:8px;"><button onclick="window.banUser()" style="background:#e05555;color:#fff;border:none;border-radius:4px;padding:6px 14px;font-size:12px;cursor:pointer;">+ 封禁用户</button></div>
@@ -985,12 +990,12 @@ document.getElementById('modal').addEventListener('click', function(e) {
       <div class="name">客尘 · AI <span id="kechen-header-user">分身</span></div>
       <div class="sub" id="kechen-header-sub">登录后开始对话</div>
     </div>
-    <button id="kechen-btn-theme" onclick="toggleTheme()" style="background:none;border:none;color:#d4a853;font-size:16px;cursor:pointer;padding:012px;">🌙</button>
+    <button id="kechen-btn-theme" onclick="toggleTheme()" class="kechen-hdr-btn">🌙</button>
     <button id="kechen-admin-btn" onclick="openAdminPanel()">🛡️ 管理</button>
     <button id="kechen-btn-nickname" onclick="changeNickname()" style="color:#d4a853;border-color:#d4a853;">✏️ 改名</button>
       <button id="kechen-btn-password" onclick="changePassword()" style="display:none;">🔑 改密</button>
       <button id="kechen-btn-delete" onclick="deleteAccount()" style="display:none;color:#e05555;border-color:#e05555;">注销</button>
-      <button id="kechen-btn-logout" onclick="doLogout()" style="display:none;">退出</button>
+      <button class="kechen-hdr-btn" id="kechen-btn-logout" onclick="doLogout()" style="display:none;">退出</button>
     <button id="kechen-chat-close" onclick="toggleChatPanel()">✕</button>
   </div>
 
