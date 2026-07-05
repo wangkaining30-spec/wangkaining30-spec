@@ -1100,7 +1100,7 @@ document.getElementById('modal').addEventListener('click', function(e) {
   };
 
   // ====== Admin panel ======
-  function openAdminPanel() {
+  window.openAdminPanel = function() {
     document.getElementById('kechen-auth-form').style.display = 'none';
     document.getElementById('kechen-chat-messages').style.display = 'none';
     document.getElementById('kechen-chat-input-area').style.display = 'none';
@@ -1108,13 +1108,13 @@ document.getElementById('modal').addEventListener('click', function(e) {
     loadAdminData();
   }
 
-  function closeAdminPanel() {
+  window.closeAdminPanel = function() {
     document.getElementById('kechen-admin-panel').style.display = 'none';
     document.getElementById('kechen-chat-messages').style.display = 'flex';
     document.getElementById('kechen-chat-input-area').style.display = 'flex';
   }
 
-  async function loadAdminData() {
+  window.loadAdminData = async function() {
     var listEl = document.getElementById('kechen-admin-list');
     var loadingEl = document.getElementById('kechen-admin-loading');
     listEl.innerHTML = '';
@@ -1157,7 +1157,7 @@ document.getElementById('modal').addEventListener('click', function(e) {
     }
   }
 
-  async function banUser(userId) {
+  window.banUser = async function(userId) {
     if (!confirm('确定封禁此用户？')) return;
     var { error } = await supabase.from('banned_users').insert({ user_id: userId });
     if (error) { alert('失败: ' + error.message); return; }
