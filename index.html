@@ -1660,17 +1660,20 @@ window.loadAdminData = async function() {
 
     var thinkingMsg = appendMessage('ai', '思考中...', true);
 
-    // Detect user language and adapt response language
+    // Detect user language and swap entire system prompt
     var userText = text.toLowerCase();
     var cjkCount = (text.match(/[\u4e00-\u9fff\u3040-\u309f\u30a0-\u30ff\uac00-\ud7af]/g) || []).length;
     var latinCount = (text.match(/[a-zA-Z]/g) || []).length;
+    var prompt;
     if (cjkCount > latinCount) {
-      messages[0].content = SYSTEM_PROMPT + '\n【请用中文回复】';
+      prompt = SYSTEM_PROMPT;
     } else if (latinCount > cjkCount && latinCount > 3) {
-      messages[0].content = SYSTEM_PROMPT_EN;
+      prompt = SYSTEM_PROMPT_EN;
     } else {
-      messages[0].content = SYSTEM_PROMPT;
+      prompt = SYSTEM_PROMPT;
     }
+    // Rebuild messages array with the correct system prompt
+    messages = [{ role: "system", content: prompt }].concat(messages.slice(1));
 
     try {
       var resp = await fetch(DEEPSEEK_URL, {
