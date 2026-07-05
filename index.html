@@ -1216,7 +1216,30 @@ window.loadAdminData = async function() {
     document.getElementById('kechen-btn-logout').style.display = 'inline-block';
 
     // Show usage count
-window.banUser = async function(userId) {
+    if (user.email === ADMIN_EMAIL) {
+      document.getElementById('kechen-header-sub').innerHTML = '管理员 · <b style="color:#ffd700;">∞ 次</b>';
+    } else {
+      getTodayUsage().then(function(used) {
+        var remaining = Math.max(0, DAILY_LIMIT - used);
+        document.getElementById('kechen-header-sub').innerHTML = '今日剩余 <b style="color:' + (remaining <= 5 ? '#e05555' : '#d4a853') + '">' + remaining + '/' + DAILY_LIMIT + '</b> 次';
+      }).catch(function() {
+        document.getElementById('kechen-header-sub').textContent = '已登录';
+      });
+    }
+
+    // Load chat history
+    var hist = loadChatHistory();
+    if (hist.length > 0) {
+      messages = [{ role: "system", content: SYSTEM_PROMPT }].concat(hist);
+      var msgContainer = document.getElementById('kechen-chat-messages');
+      msgContainer.innerHTML = '';
+      for (var hi = 0; hi < hist.length; hi++) {
+        appendMessage(hist[hi].role, hist[hi].content);
+      }
+    }
+
+    document.getElementById('kechen-chat-input').focus();
+  window.banUser = async function(userId) {
     if (!userId) { var uid = prompt('输入要封禁的用户ID:'); if (!uid) return; userId = uid.trim(); }
     if (!confirm('确定封禁此用户？')) return;
     try {
@@ -1243,18 +1266,6 @@ window.banUser = async function(userId) {
     window.loadAdminData();
   }
 
-    // Load chat history
-    var hist = loadChatHistory();
-    if (hist.length > 0) {
-      messages = [{ role: "system", content: SYSTEM_PROMPT }].concat(hist);
-      var msgContainer = document.getElementById('kechen-chat-messages');
-      msgContainer.innerHTML = '';
-      for (var hi = 0; hi < hist.length; hi++) {
-        appendMessage(hist[hi].role, hist[hi].content);
-      }
-    }
-
-    document.getElementById('kechen-chat-input').focus();
   }
 
   function saveChatHistory() {
