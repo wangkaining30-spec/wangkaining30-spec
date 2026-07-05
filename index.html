@@ -1446,31 +1446,6 @@ window.loadAdminData = async function() {
       }
     }
 
-    // Welcome message for new users — uses localStorage timestamp (10s cooldown)
-    if (hist.length === 0 && !document.querySelector('.kechen-welcome-msg')) {
-      var lastWelcome = parseInt(localStorage.getItem('kechen_welcomed_ts') || '0');
-      if (Date.now() - lastWelcome > 10000) {
-      var lang = (navigator.language || 'zh').split('-')[0];
-      var greetings = {
-        'zh': '嘿，我是客尘。宇宙很大，你想聊点什么？🪐',
-        'en': "Hey, I'm Guest Dust. The universe is vast — what would you like to explore? 🪐",
-        'ja': 'こんにちは、ゲストダストです。広大な宇宙、何を話しましょうか？🪐',
-        'ko': '안녕, 게스트 더스트입니다. 광활한 우주, 무엇을 이야기할까요? 🪐',
-        'fr': "Salut, je suis Guest Dust. L'univers est vaste, de quoi veux-tu parler ? 🪐",
-        'de': 'Hey, ich bin Guest Dust. Das Universum ist riesig — worüber möchtest du sprechen? 🪐',
-        'es': '¡Hola! Soy Guest Dust. El universo es enorme, ¿de qué quieres hablar? 🪐'
-      };
-      var welcome = greetings[lang] || greetings['en'];
-      messages.push({ role: 'assistant', content: welcome });
-      appendMessage('ai', welcome);
-      var msgContainer2 = document.getElementById('kechen-chat-messages');
-      if (msgContainer2 && msgContainer2.lastChild) {
-        msgContainer2.lastChild.classList.add('kechen-welcome-msg');
-      }
-      localStorage.setItem('kechen_welcomed_ts', Date.now());
-      }
-    }
-
     document.getElementById('kechen-chat-input').focus();
     await checkUserStatus();
     startMonitor();
@@ -1682,6 +1657,22 @@ window.loadAdminData = async function() {
     }
 
     var thinkingMsg = appendMessage('ai', '思考中...', true);
+
+    // Detect user language and adapt response language
+    var userText = text.toLowerCase();
+    var langHint = '';
+    var cjkCount = (text.match(/[\u4e00-\u9fff\u3040-\u309f\u30a0-\u30ff\uac00-\ud7af]/g) || []).length;
+    var latinCount = (text.match(/[a-zA-Z]/g) || []).length;
+    if (cjkCount > latinCount) {
+      langHint = '\n【重要：请用中文回复】';
+    } else if (latinCount > cjkCount && latinCount > 3) {
+      langHint = '\n【Important: Please reply in English】';
+    }
+    if (langHint) {
+      messages[0].content = SYSTEM_PROMPT + langHint;
+    } else {
+      messages[0].content = SYSTEM_PROMPT;
+    }
 
     try {
       var resp = await fetch(DEEPSEEK_URL, {
