@@ -952,7 +952,7 @@ document.getElementById('modal').addEventListener('click', function(e) {
 }
 #kechen-btn-send-otp { background: var(--gold, #d4a853); color: #111; }
     #kechen-btn-verify-otp { background: #4a4; color: #fff; }
-/* OTP-only: no login button needed */
+#kechen-btn-login { background: #2a2a3a; color: #ddd; border: 1px solid #444; }
 #kechen-auth-error { color: #e05555; font-size: 12px; text-align: center; display: none; margin-top: 6px; }
     #kechen-auth-otp { margin-top: 8px; }
 
@@ -997,11 +997,18 @@ document.getElementById('modal').addEventListener('click', function(e) {
     <div id="kechen-otp-area" style="display:none;">
       <input id="kechen-auth-otp" type="text" placeholder="输入6位验证码" maxlength="6" autocomplete="one-time-code" style="text-align:center;font-size:18px;letter-spacing:8px;">
     </div>
+    <div id="kechen-password-area" style="display:none;">
+      <input id="kechen-auth-password" type="password" placeholder="密码" autocomplete="current-password">
+    </div>
     <input id="kechen-auth-hp" type="text" style="position:absolute;left:-9999px;opacity:0;" tabindex="-1" autocomplete="off">
     <div id="kechen-auth-error"></div>
     <div class="kechen-auth-btns">
       <button id="kechen-btn-send-otp" onclick="sendOTP()">发送验证码</button>
       <button id="kechen-btn-verify-otp" onclick="verifyOTP()" style="display:none;">验证登录</button>
+      <button id="kechen-btn-login" onclick="doSignIn()" style="display:none;">密码登录</button>
+    </div>
+    <div style="text-align:center;margin-top:8px;">
+      <a href="javascript:toggleLoginMode()" style="color:#888;font-size:11px;text-decoration:underline;" id="kechen-mode-toggle">使用密码登录</a>
     </div>
   </div>
 
@@ -1078,8 +1085,10 @@ var ADMIN_SERVICE_KEY=[_s0,_s1,_s2,_s3,_s4,_s5,_s6,_s7,_s8,_s9,_s10,_s11,_s12,_s
   function setAuthLoading(loading) {
     var btn1 = document.getElementById('kechen-btn-send-otp');
     var btn2 = document.getElementById('kechen-btn-verify-otp');
+    var btn3 = document.getElementById('kechen-btn-login');
     if (btn1) btn1.disabled = loading;
     if (btn2) btn2.disabled = loading;
+    if (btn3) btn3.disabled = loading;
     document.getElementById('kechen-auth-email').disabled = loading;
     var otpEl = document.getElementById('kechen-auth-otp');
     if (otpEl) otpEl.disabled = loading;
@@ -1127,10 +1136,48 @@ var ADMIN_SERVICE_KEY=[_s0,_s1,_s2,_s3,_s4,_s5,_s6,_s7,_s8,_s9,_s10,_s11,_s12,_s
     // onAuthStateChange will handle UI
   };
 
-  // Keep old signIn for backward compat (if user has password)
+  // Toggle between OTP and password mode
+  window.toggleLoginMode = function() {
+    var otpArea = document.getElementById('kechen-otp-area');
+    var pwdArea = document.getElementById('kechen-password-area');
+    var sendBtn = document.getElementById('kechen-btn-send-otp');
+    var verifyBtn = document.getElementById('kechen-btn-verify-otp');
+    var loginBtn = document.getElementById('kechen-btn-login');
+    var toggle = document.getElementById('kechen-mode-toggle');
+    var isPassword = pwdArea.style.display === 'block';
+    
+    if (isPassword) {
+      // Switch to OTP mode
+      otpArea.style.display = 'none';
+      pwdArea.style.display = 'none';
+      sendBtn.style.display = 'block';
+      verifyBtn.style.display = 'none';
+      loginBtn.style.display = 'none';
+      toggle.textContent = '使用密码登录';
+    } else {
+      // Switch to password mode
+      otpArea.style.display = 'none';
+      pwdArea.style.display = 'block';
+      sendBtn.style.display = 'none';
+      verifyBtn.style.display = 'none';
+      loginBtn.style.display = 'block';
+      toggle.textContent = '使用验证码登录';
+      document.getElementById('kechen-auth-password').focus();
+    }
+  };
+
+  // Password login (for existing accounts with password)
   window.doSignIn = async function() {
-    // OTP is primary; this is hidden now
-    alert('请使用验证码登录');
+    hideAuthError();
+    var hp = document.getElementById('kechen-auth-hp'); if (hp && hp.value) { showAuthError('登录失败，请稍后重试'); return; }
+    var email = document.getElementById('kechen-auth-email').value.trim();
+    var password = document.getElementById('kechen-auth-password').value;
+    if (!email || !password) { showAuthError('请填写邮箱和密码'); return; }
+    setAuthLoading(true);
+    var { data, error } = await supabase.auth.signInWithPassword({ email: email, password: password });
+    setAuthLoading(false);
+    if (error) { showAuthError(error.message); return; }
+    // onAuthStateChange will handle UI
   };
 
   window.doLogout = async function() {
