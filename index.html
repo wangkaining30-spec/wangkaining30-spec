@@ -1319,6 +1319,18 @@ window.loadAdminData = async function() {
         if (!isMe) {
           buttons += '<button class="ban-btn" style="background:#d4a853;" onclick="window.toggleVip(\'' + u.id + '\',' + (isVipUser ? 'false' : 'true') + ')">' + (isVipUser ? '取消VIP' : '设为VIP') + '</button>';
         }
+        // Delete button (owner only, not self, not owner user)
+        var isDeleted = u.app_metadata && u.app_metadata.deleted;
+        if (isOwner && !isMe && !isOwnerUser) {
+          var delHours = isDeleted && u.app_metadata.deleted_at ? Math.floor((Date.now() - new Date(u.app_metadata.deleted_at).getTime()) / 3600000) : -1;
+          if (isDeleted && delHours < 24) {
+            buttons += '<button class="ban-btn" style="background:#f0a040;" onclick="window.restoreUser(\'' + u.id + '\')">🔄 恢复</button>';
+          } else if (isDeleted && delHours >= 24) {
+            buttons += '<button class="ban-btn" style="background:#e05555;" onclick="window.confirmDeleteUser(\'' + u.id + '\')">🗑️ 确认删除</button>';
+          } else {
+            buttons += '<button class="ban-btn" style="background:#e05555;" onclick="window.ownerDeleteUser(\'' + u.id + '\')">注销</button>';
+          }
+        }
         // Ban button
         if (!isMe) {
           buttons += '<button class="ban-btn" style="background:' + (isBanned ? '#4a4' : '#e05555') + ';" onclick="window.' + (isBanned ? 'unbanUser' : 'banUser') + '(\'' + u.id + '\')">' + (isBanned ? '解封' : '封禁') + '</button>';
@@ -1384,6 +1396,50 @@ window.loadAdminData = async function() {
   function showAuthUI() {
     if (_monitorTimer) { clearInterval(_monitorTimer); _monitorTimer = null; }
     _userStatus = { isBanned: false, isVip: false, isAdmin: false, lastCheck: 0 };
+
+  // ===== Owner delete user functions =====
+  window.ownerDeleteUser = async function(userId) {
+    if (!confirm('确定要注销该用户吗？\n\n注销后该用户将被封禁，24小时内可恢复。3天内无法重新注册。')) return;
+    try {
+      var { data, error } = await supabase.auth.admin.updateUserById(userId, {
+        app_metadata: { deleted: true, deleted_at: new Date().toISOString(), banned_until: '2099-12-31T23:59:59.999Z', vip: false, admin: false }
+      });
+      if (error) { alert('操作失败: ' + error.message); return; }
+      alert('✅ 已注销该用户。24小时内可在列表中点击「恢复」撤销。');
+      loadAdminData();
+    } catch(e) { alert('错误: ' + e.message); }
+  };
+
+  window.restoreUser = async function(userId) {
+    if (!confirm('确定要恢复该用户吗？将清除注销标记和封禁状态。')) return;
+    try {
+      var { data, error } = await supabase.auth.admin.updateUserById(userId, {
+        app_metadata: { deleted: false, deleted_at: null, banned_until: null }
+      });
+      if (error) { alert('操作失败: ' + error.message); return; }
+      alert('✅ 已恢复该用户。');
+      loadAdminData();
+    } catch(e) { alert('错误: ' + e.message); }
+  };
+
+  window.confirmDeleteUser = async function(userId) {
+    if (!confirm('⚠️ 永久删除确认：该操作不可撤销！\n\n确定要从数据库中彻底删除该用户吗？')) return;
+    if (!confirm('再次确认：删除后该邮箱3天内无法重新注册。')) return;
+    try {
+      // Record for cooldown before deleting
+      var { data: userData } = await supabase.auth.admin.getUserById(userId);
+      var email = userData.user ? userData.user.email : '';
+      if (email) {
+        var deletedList = JSON.parse(localStorage.getItem('kechen_owner_deleted') || '{}');
+        deletedList[email] = Date.now();
+        localStorage.setItem('kechen_owner_deleted', JSON.stringify(deletedList));
+      }
+      var { error } = await supabase.auth.admin.deleteUser(userId);
+      if (error) { alert('删除失败: ' + error.message); return; }
+      alert('✅ 已永久删除该用户。');
+      loadAdminData();
+    } catch(e) { alert('错误: ' + e.message); }
+  };
     // Clear message DOM to prevent overlap
     var msgEl = document.getElementById('kechen-chat-messages');
     if (msgEl) { msgEl.innerHTML = ''; msgEl.style.display = 'none'; }
