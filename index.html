@@ -264,6 +264,7 @@
     </div>
     
     <button class="lang-switch auto-trans-btn" onclick="autoTranslatePage()" id="autoTransBtn" title="自动翻译页面 / Auto-translate page">🌐</button>
+    <button class="lang-switch" onclick="toggleTheme()" id="themeBtn" title="切换深色/浅色模式">🌙</button>
   </div>
 </nav>
 
@@ -1093,7 +1094,6 @@ body.light-theme .footer {
       <div class="name">客尘 · AI <span id="kechen-header-user">分身</span></div>
       <div class="sub" id="kechen-header-sub">登录后开始对话</div>
     </div>
-    <button id="kechen-btn-theme" onclick="toggleTheme()" class="kechen-hdr-btn">🌙</button>
     <button id="kechen-admin-btn" onclick="openAdminPanel()">🛡️ 管理</button>
     <button id="kechen-btn-nickname" onclick="changeNickname()" style="color:#d4a853;border-color:#d4a853;">✏️ 改名</button>
       <button id="kechen-btn-password" onclick="changePassword()" style="display:none;">🔑 改密</button>
@@ -2095,7 +2095,9 @@ function showAuthUI() {
   (function(){
     var theme = localStorage.getItem('kechen_theme') || 'dark';
     if (theme === 'light') document.body.classList.add('light-theme');
-    updateThemeIcon();
+    var icon = theme === 'light' ? '☀️' : '🌙';
+    var navBtn = document.getElementById('themeBtn');
+    if (navBtn) navBtn.textContent = icon;
   })();
   
   function updateThemeIcon() {
@@ -2107,7 +2109,12 @@ function showAuthUI() {
     document.body.classList.toggle('light-theme');
     var isLight = document.body.classList.contains('light-theme');
     localStorage.setItem('kechen_theme', isLight ? 'light' : 'dark');
-    updateThemeIcon();
+    // Update both buttons
+    var icon = isLight ? '☀️' : '🌙';
+    var navBtn = document.getElementById('themeBtn');
+    if (navBtn) navBtn.textContent = icon;
+    var chatBtn = document.getElementById('kechen-btn-theme');
+    if (chatBtn) chatBtn.textContent = icon;
   };})();
 </script>
 <!-- ========== End AI Chat Widget ========== -->
