@@ -1121,6 +1121,24 @@ var ADMIN_SERVICE_KEY=[_s0,_s1,_s2,_s3,_s4,_s5,_s6,_s7,_s8,_s9,_s10,_s11,_s12,_s
     var password = document.getElementById('kechen-auth-password').value;
     if (!email || !password) { showAuthError('请填写邮箱和密码'); return; }
     if (password.length < 6) { showAuthError('密码至少6位'); return; }
+    
+    // Check 3-day cooldown after account deletion
+    var deletions = JSON.parse(localStorage.getItem('kechen_deleted') || '{}');
+    if (deletions[email]) {
+      var deletedAt = deletions[email];
+      var threeDays = 3 * 24 * 60 * 60 * 1000;
+      var remaining = threeDays - (Date.now() - deletedAt);
+      if (remaining > 0) {
+        var hours = Math.ceil(remaining / (60 * 60 * 1000));
+        showAuthError('该邮箱已注销，请' + hours + '小时后再注册');
+        return;
+      } else {
+        // Cooldown expired, clean up
+        delete deletions[email];
+        localStorage.setItem('kechen_deleted', JSON.stringify(deletions));
+      }
+    }
+    
     setAuthLoading(true);
     var { data, error } = await supabase.auth.signUp({ email: email, password: password });
     setAuthLoading(false);
@@ -1327,6 +1345,7 @@ window.loadAdminData = async function() {
     if (adminEl) { adminEl.style.display = 'none'; }
     document.getElementById('kechen-auth-form').style.display = 'flex';
     document.getElementById('kechen-btn-password').style.display = 'none';
+    document.getElementById('kechen-btn-delete').style.display = 'none';
     document.getElementById('kechen-btn-logout').style.display = 'none';
     document.getElementById('kechen-admin-btn').style.display = 'none';
     document.getElementById('kechen-header-sub').textContent = '登录后开始对话';
@@ -1361,6 +1380,7 @@ window.loadAdminData = async function() {
     document.getElementById('kechen-chat-messages').style.display = 'flex';
     document.getElementById('kechen-chat-input-area').style.display = 'flex';
     document.getElementById('kechen-btn-password').style.display = 'inline-block';
+    document.getElementById('kechen-btn-delete').style.display = 'inline-block';
     document.getElementById('kechen-btn-logout').style.display = 'inline-block';
     if (user.email === OWNER_EMAIL) {
       document.getElementById('kechen-admin-btn').style.display = 'inline-block';
