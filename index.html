@@ -1179,6 +1179,20 @@ window.loadAdminData = async function() {
 
 
 
+  window.toggleVip = async function(userId, makeVip) {
+    if (!confirm('确定' + (makeVip ? '设为VIP（无限次数）' : '取消VIP') + '？\n\n用户需重新登录后生效。')) return;
+    try {
+      var resp = await fetch(SUPABASE_URL + '/auth/v1/admin/users/' + userId, {
+        method: 'PUT',
+        headers: { 'apikey': ADMIN_SERVICE_KEY, 'Authorization': 'Bearer ' + ADMIN_SERVICE_KEY, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ app_metadata: { vip: makeVip } })
+      });
+      if (resp.ok) { alert(makeVip ? '已设为VIP' : '已取消VIP'); }
+      else { var d = await resp.json(); alert('失败: ' + (d.message || d.error_description)); }
+    } catch(e) { alert('错误: ' + e.message); }
+    window.loadAdminData();
+  }
+
   // ====== UI toggle ======
   function showAuthUI() {
     document.getElementById('kechen-auth-form').style.display = 'flex';
