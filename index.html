@@ -1180,7 +1180,8 @@ window.loadAdminData = async function() {
 
 
   window.toggleVip = async function(userId, makeVip) {
-    if (!confirm('确定' + (makeVip ? '设为VIP（无限次数）' : '取消VIP') + '？\n\n用户需重新登录后生效。')) return;
+    var action = makeVip ? '设为VIP（无限次数）' : '取消VIP';
+    if (!confirm('确定' + action + '？用户需重新登录后生效。')) return;
     try {
       var resp = await fetch(SUPABASE_URL + '/auth/v1/admin/users/' + userId, {
         method: 'PUT',
@@ -1256,14 +1257,21 @@ window.loadAdminData = async function() {
     document.getElementById('kechen-chat-input').focus();
   window.banUser = async function(userId) {
     if (!userId) { var uid = prompt('输入要封禁的用户ID:'); if (!uid) return; userId = uid.trim(); }
-    if (!confirm('确定封禁此用户？')) return;
+    if (!confirm('确定封禁此用户？\n封禁后将立即强制下线。')) return;
     try {
       var resp = await fetch(SUPABASE_URL + '/auth/v1/admin/users/' + userId, {
         method: 'PUT',
         headers: { 'apikey': ADMIN_SERVICE_KEY, 'Authorization': 'Bearer ' + ADMIN_SERVICE_KEY, 'Content-Type': 'application/json' },
         body: JSON.stringify({ ban_duration: '876600h' })
       });
-      if (resp.ok) { alert('已封禁'); } else { var d = await resp.json(); alert('失败: ' + (d.message || d.error_description)); }
+      if (resp.ok) {
+        // Force logout the banned user
+        await fetch(SUPABASE_URL + '/auth/v1/admin/users/' + userId + '/logout', {
+          method: 'POST',
+          headers: { 'apikey': ADMIN_SERVICE_KEY, 'Authorization': 'Bearer ' + ADMIN_SERVICE_KEY }
+        });
+        alert('已封禁并强制下线');
+      } else { var d = await resp.json(); alert('失败: ' + (d.message || d.error_description)); }
     } catch(e) { alert('错误: ' + e.message); }
     window.loadAdminData();
   }
@@ -1349,6 +1357,23 @@ window.loadAdminData = async function() {
         return;
       }
     }
+
+    // Quick ban re-check (catches mid-session bans)
+    try {
+      var reBan = await fetch(SUPABASE_URL + '/auth/v1/admin/users/' + currentUser.id, {
+        headers: { 'apikey': ADMIN_SERVICE_KEY, 'Authorization': 'Bearer ' + ADMIN_SERVICE_KEY }
+      });
+      if (reBan.ok) {
+        var reBanData = await reBan.json();
+        if (reBanData.banned_until && reBanData.banned_until !== 'none') {
+          appendMessage('ai', '您的账号已被管理员封禁。');
+          await supabase.auth.signOut();
+          currentUser = null;
+          showAuthUI();
+          return;
+        }
+      }
+    } catch(e) { /* proceed */ }
 
     input.value = '';
     input.disabled = true;
