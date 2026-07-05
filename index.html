@@ -1412,21 +1412,23 @@ window.loadAdminData = async function() {
 
   // ===== Owner delete user functions =====
   window.ownerDeleteUser = async function(userId) {
-    if (!confirm('确定要注销该用户吗？\n\n注销后该用户将被封禁，24小时内可恢复。3天内无法重新注册。')) return;
+    alert('DEBUG: ownerDeleteUser called, userId=' + userId);
+    if (!confirm('确定要注销该用户吗？\n\n注销后该账号将无法使用，24小时内可恢复。')) return;
     try {
       var resp = await fetch(SUPABASE_URL + '/auth/v1/admin/users/' + userId, {
         method: 'PUT',
         headers: { 'apikey': ADMIN_SERVICE_KEY, 'Authorization': 'Bearer ' + ADMIN_SERVICE_KEY, 'Content-Type': 'application/json' },
         body: JSON.stringify({ app_metadata: { deleted: true, deleted_at: new Date().toISOString(), admin: false, vip: false }, ban_duration: '876600h' })
       });
-      if (resp.ok) { alert('✅ 已注销该用户。24小时内可在列表中点击「恢复」撤销。'); }
+      if (resp.ok) { alert('✅ 已注销该用户。24小时内可恢复。'); }
       else { var d = await resp.json(); alert('操作失败: ' + (d.message || d.error_description)); }
       loadAdminData();
     } catch(e) { alert('错误: ' + e.message); }
   };
 
   window.restoreUser = async function(userId) {
-    if (!confirm('确定要恢复该用户吗？将清除注销标记和封禁状态。')) return;
+    alert('DEBUG: restoreUser called, userId=' + userId);
+    if (!confirm('确定要恢复该用户吗？')) return;
     try {
       var resp = await fetch(SUPABASE_URL + '/auth/v1/admin/users/' + userId, {
         method: 'PUT',
@@ -1440,10 +1442,10 @@ window.loadAdminData = async function() {
   };
 
   window.confirmDeleteUser = async function(userId) {
-    if (!confirm('⚠️ 永久删除确认：该操作不可撤销！\n\n确定要从数据库中彻底删除该用户吗？')) return;
+    alert('DEBUG: confirmDeleteUser called, userId=' + userId);
+    if (!confirm('⚠️ 永久删除确认：此操作不可撤销！\n\n确定彻底删除该用户吗？')) return;
     if (!confirm('再次确认：删除后该邮箱3天内无法重新注册。')) return;
     try {
-      // Get user email before deleting
       var getUserResp = await fetch(SUPABASE_URL + '/auth/v1/admin/users/' + userId, {
         headers: { 'apikey': ADMIN_SERVICE_KEY, 'Authorization': 'Bearer ' + ADMIN_SERVICE_KEY }
       });
@@ -1465,7 +1467,8 @@ window.loadAdminData = async function() {
       loadAdminData();
     } catch(e) { alert('错误: ' + e.message); }
   };
-    // Clear message DOM to prevent overlap
+
+  // Clear message DOM to prevent overlap
     var msgEl = document.getElementById('kechen-chat-messages');
     if (msgEl) { msgEl.innerHTML = ''; msgEl.style.display = 'none'; }
     var inputEl = document.getElementById('kechen-chat-input-area');
