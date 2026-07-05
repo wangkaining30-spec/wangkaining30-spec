@@ -264,6 +264,7 @@
     </div>
     
     <button class="lang-switch auto-trans-btn" onclick="autoTranslatePage()" id="autoTransBtn" title="自动翻译页面 / Auto-translate page">🌐</button>
+     <button class="lang-switch auto-trans-btn" onclick="toggleTheme()" id="nav-theme-btn" title="切换深色/浅色模式 / Dark/Light mode">🌙</button>
     <button class="lang-switch" onclick="toggleTheme()" id="themeBtn" title="切换深色/浅色模式">🌙</button>
   </div>
 </nav>
@@ -2101,7 +2102,7 @@ function showAuthUI() {
   })();
   
   function updateThemeIcon() {
-    var btn = document.getElementById('kechen-btn-theme');
+    var btn = document.getElementById('nav-theme-btn');
     if (btn) btn.textContent = document.body.classList.contains('light-theme') ? '☀️' : '🌙';
   }
   
