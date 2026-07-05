@@ -1445,7 +1445,7 @@ window.loadAdminData = async function() {
     }
 
     // Welcome message for new users (detect browser language) — only once per session
-    if (hist.length === 0 && !sessionStorage.getItem('kechen_welcomed')) {
+    if (hist.length === 0 && !sessionStorage.getItem('kechen_welcomed') && !document.querySelector('.kechen-welcome-msg')) {
       var lang = (navigator.language || 'zh').split('-')[0];
       var greetings = {
         'zh': '嘿，我是客尘。宇宙很大，你想聊点什么？🪐',
@@ -1459,6 +1459,11 @@ window.loadAdminData = async function() {
       var welcome = greetings[lang] || greetings['en'];
       messages.push({ role: 'assistant', content: welcome });
       appendMessage('ai', welcome);
+      // Mark DOM element to prevent duplicate from second showChatUI call
+      var msgContainer = document.getElementById('kechen-chat-messages');
+      if (msgContainer && msgContainer.lastChild) {
+        msgContainer.lastChild.classList.add('kechen-welcome-msg');
+      }
       sessionStorage.setItem('kechen_welcomed', '1');
     }
 
