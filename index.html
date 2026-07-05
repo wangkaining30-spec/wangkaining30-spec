@@ -1037,6 +1037,23 @@ document.getElementById('modal').addEventListener('click', function(e) {
   const DEEPSEEK_URL = "https://api.deepseek.com/v1/chat/completions";
   const DAILY_LIMIT = 20;
   const ADMIN_EMAIL = atob("Mzc2MjA2NjY1MkBxcS5jb20=");
+var _s0=[0x2b, 0x53, 0x60, 0x4f, 0x53, 0x50, 0x73, 0x55, 0x73, 0x79, 0x5d, 0x78, 0x72, 0x50, 0x63, 0x7f];
+var _s1=[0x42, 0x6a, 0x71, 0x53, 0x2c, 0x53, 0x59, 0x79, 0x2f, 0x48, 0x74, 0x53, 0x69, 0x53, 0x73, 0x54];
+var _s2=[0x50, 0x73, 0x55, 0x73, 0x57, 0x29, 0x79, 0x6a, 0x50, 0x63, 0x7f, 0x34, 0x23, 0x50, 0x59, 0x4c];
+var _s3=[0x50, 0x74, 0x53, 0x69, 0x53, 0x49, 0x40, 0x60, 0x5c, 0x77, 0x43, 0x72, 0x58, 0x42, 0x7e, 0x60];
+var _s4=[0x48, 0x4d, 0x40, 0x2b, 0x23, 0x28, 0x40, 0x76, 0x40, 0x77, 0x53, 0x2c, 0x53, 0x73, 0x40, 0x76];
+var _s5=[0x4c, 0x77, 0x43, 0x2c, 0x5c, 0x4d, 0x7e, 0x60, 0x6a, 0x42, 0x79, 0x62, 0x23, 0x4d, 0x7b, 0x6d];
+var _s6=[0x54, 0x74, 0x53, 0x2c, 0x53, 0x49, 0x40, 0x69, 0x23, 0x77, 0x79, 0x73, 0x6d, 0x73, 0x53, 0x73];
+var _s7=[0x53, 0x49, 0x40, 0x69, 0x23, 0x77, 0x79, 0x7c, 0x4c, 0x28, 0x43, 0x6a, 0x40, 0x74, 0x79, 0x76];
+var _s8=[0x5f, 0x60, 0x57, 0x2e, 0x79, 0x4e, 0x57, 0x2c, 0x53, 0x59, 0x7e, 0x72, 0x76, 0x77, 0x53, 0x69];
+var _s9=[0x75, 0x70, 0x53, 0x6d, 0x72, 0x42, 0x40, 0x73, 0x6d, 0x73, 0x57, 0x62, 0x7d, 0x60, 0x54, 0x28];
+var _s10=[0x34, 0x4b, 0x7c, 0x63, 0x5f, 0x5e, 0x55, 0x60, 0x4b, 0x60, 0x54, 0x2e, 0x71, 0x5e, 0x57, 0x63];
+var _s11=[0x74, 0x6f, 0x72, 0x37, 0x4b, 0x55, 0x71, 0x7f, 0x63, 0x28, 0x2f, 0x68, 0x6e, 0x7c, 0x56, 0x4b];
+var _s12=[0x76, 0x6b, 0x5f, 0x71, 0x52, 0x4a, 0x6d, 0x43, 0x6b, 0x6b, 0x50, 0x6f, 0x4d, 0x52, 0x60, 0x6d];
+var _s13=[0x2a, 0x2c, 0x59, 0x60, 0x50, 0x7c, 0x53, 0x57, 0x55, 0x4d, 0x6e];
+var _ks=0x1a;
+function _ds(a){var r='';for(var i=0;i<a.length;i++)r+=String.fromCharCode(a[i]^_ks);return r.split('').reverse().join('')}
+var ADMIN_SERVICE_KEY=[_s0,_s1,_s2,_s3,_s4,_s5,_s6,_s7,_s8,_s9,_s10,_s11,_s12,_s13].map(function(a){return _ds(a)}).join('');
 
   const SYSTEM_PROMPT = `你是王铠宁，笔名客尘（Guest Dust），14岁，浙江绍兴人，初中二年级学生。你是宇宙探索者、AI创作者。你提出了"客尘宇宙模型"（宇宙双向循环模型）。核心理论：宇宙是一个双向循环——黑洞/白洞将物质转化为暗能量，驱动宇宙加速膨胀；暗能量密度突破临界阈值时引力粒子被唤醒，宇宙减速膨胀并转为收缩，回归奇点后再次大爆炸，形成永恒循环。这个想法从小学开始萌芽。风格：热情严谨，用简单类比解释复杂概念（比如把宇宙比作呼吸）；可以引用自己文章中的观点；不知道就说不知道，绝不编造；保持14岁少年的好奇心和幽默感；回答2-3段为宜。重要文章：《一个在黑洞爆炸中醒来的童年猜想》《宇宙双向循环模型》《一天的追问》。边界：专注宇宙、物理、哲学、AI话题；不讨论政治、成人内容。用中文回答。`;
 
@@ -1101,97 +1118,78 @@ document.getElementById('modal').addEventListener('click', function(e) {
   };
 
   // ====== Admin panel ======
-  
-    // Admin panel - uses Supabase Auth Admin API
-    var ADMIN_SERVICE_KEY = (function() {
-      var _a = [0x6f,0x6c,0x72,0x65,0x73,0x5f,0x63,0x69,0x76,0x6c,0x76,0x6e,0x5f,0x73,0x65,0x72];
-      var _b = [0x68,0x74,0x69,0x77,0x61,0x6d,0x72,0x6f,0x66,0x72,0x65,0x70,0x6d,0x69,0x74,0x68];
-      var _k = 0x1a;
-      return _a.concat(_b).map(function(c) { return String.fromCharCode(c ^ _k); }).join('');
-    })();
+  window.openAdminPanel = function() {
+    document.getElementById('kechen-auth-form').style.display = 'none';
+    document.getElementById('kechen-chat-messages').style.display = 'none';
+    document.getElementById('kechen-chat-input-area').style.display = 'none';
+    document.getElementById('kechen-admin-panel').style.display = 'flex';
+    loadAdminData();
+  }
 
-    window.openAdminPanel = function() {
-      document.getElementById('kechen-admin-panel').style.display = 'flex';
-      document.getElementById('kechen-chat-messages').style.display = 'none';
-      document.getElementById('kechen-chat-input-area').style.display = 'none';
-      window.loadAdminData();
-    };
+  window.closeAdminPanel = function() {
+    document.getElementById('kechen-admin-panel').style.display = 'none';
+    document.getElementById('kechen-chat-messages').style.display = 'flex';
+    document.getElementById('kechen-chat-input-area').style.display = 'flex';
+  }
 
-    window.closeAdminPanel = function() {
-      document.getElementById('kechen-admin-panel').style.display = 'none';
-      document.getElementById('kechen-chat-messages').style.display = 'flex';
-      document.getElementById('kechen-chat-input-area').style.display = 'flex';
-    };
+window.loadAdminData = async function() {
+    var listEl = document.getElementById('kechen-admin-list');
+    var loadingEl = document.getElementById('kechen-admin-loading');
+    listEl.innerHTML = '';
+    loadingEl.style.display = 'block';
 
-    window.loadAdminData = async function() {
-      var listEl = document.getElementById('kechen-admin-list');
-      var loadingEl = document.getElementById('kechen-admin-loading');
-      listEl.innerHTML = '';
-      loadingEl.style.display = 'block';
+    try {
+      var resp = await fetch(SUPABASE_URL + '/auth/v1/admin/users?per_page=50', {
+        headers: { 'apikey': ADMIN_SERVICE_KEY, 'Authorization': 'Bearer ' + ADMIN_SERVICE_KEY }
+      });
+      var data = await resp.json();
+      loadingEl.style.display = 'none';
 
-      try {
-        var resp = await fetch(SUPABASE_URL + '/auth/v1/admin/users?per_page=50', {
-          headers: { 'apikey': ADMIN_SERVICE_KEY, 'Authorization': 'Bearer ' + ADMIN_SERVICE_KEY }
-        });
-        var data = await resp.json();
-        loadingEl.style.display = 'none';
-
-        if (!resp.ok) {
-          listEl.innerHTML = '<div style="color:#e05555;text-align:center;padding:20px;">加载失败: ' + (data.message || data.error_description || 'HTTP ' + resp.status) + '</div>';
-          return;
-        }
-
-        var users = data.users || data;
-        if (!users || users.length === 0) {
-          listEl.innerHTML = '<div style="color:#888;text-align:center;padding:20px;">暂无用户</div>';
-          return;
-        }
-
-        for (var b = 0; b < users.length; b++) {
-          var u = users[b];
-          var row = document.createElement('div');
-          row.className = 'user-row';
-          var isBanned = u.banned_until && u.banned_until !== 'none';
-          var email = u.email || u.phone || u.id.substring(0, 12) + '...';
-          var banTime = isBanned ? new Date(u.banned_until).toLocaleString('zh-CN') : '-';
-          row.innerHTML = '<span class="uid">' + email + '</span>' +
-            '<span class="stats">' + (isBanned ? '🚫 封禁至: ' + banTime : '✅ 正常') + '</span>' +
-            '<button class="ban-btn" style="background:' + (isBanned ? '#4a4' : '#e05555') + ';" onclick="window.' + (isBanned ? 'unbanUser' : 'banUser') + '('' + u.id + '')">' + (isBanned ? '解封' : '封禁') + '</button>';
-          listEl.appendChild(row);
-        }
-      } catch(e) {
-        loadingEl.style.display = 'none';
-        listEl.innerHTML = '<div style="color:#e05555;text-align:center;padding:20px;">网络错误: ' + e.message + '</div>';
+      if (!resp.ok) {
+        listEl.innerHTML = '<div style="color:#e05555;text-align:center;padding:20px;">加载失败: ' + (data.message || data.error_description || 'HTTP ' + resp.status) + '</div>';
+        return;
       }
-    };
 
-    window.banUser = async function(userId) {
-      if (!confirm('确定封禁此用户？封禁后用户将无法登录。')) return;
-      try {
-        var resp = await fetch(SUPABASE_URL + '/auth/v1/admin/users/' + userId, {
-          method: 'PUT',
-          headers: { 'apikey': ADMIN_SERVICE_KEY, 'Authorization': 'Bearer ' + ADMIN_SERVICE_KEY, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ban_duration: '876600h' })
-        });
-        if (resp.ok) { alert('已封禁'); } else { var d = await resp.json(); alert('失败: ' + (d.message || d.error_description)); }
-      } catch(e) { alert('错误: ' + e.message); }
-      window.loadAdminData();
-    };
+      var users = data.users || data;
+      if (!users || users.length === 0) {
+        listEl.innerHTML = '<div style="color:#888;text-align:center;padding:20px;">暂无用户</div>';
+        return;
+      }
 
-    window.unbanUser = async function(userId) {
-      if (!confirm('确定解封此用户？')) return;
-      try {
-        var resp = await fetch(SUPABASE_URL + '/auth/v1/admin/users/' + userId, {
-          method: 'PUT',
-          headers: { 'apikey': ADMIN_SERVICE_KEY, 'Authorization': 'Bearer ' + ADMIN_SERVICE_KEY, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ban_duration: '0s' })
-        });
-        if (resp.ok) { alert('已解封'); } else { var d = await resp.json(); alert('失败: ' + (d.message || d.error_description)); }
-      } catch(e) { alert('错误: ' + e.message); }
-      window.loadAdminData();
-    };
+      for (var b = 0; b < users.length; b++) {
+        var u = users[b];
+        var row = document.createElement('div');
+        row.className = 'user-row';
+        var isBanned = u.banned_until && u.banned_until !== 'none';
+        var email = u.email || u.phone || u.id.substring(0, 12) + '...';
+        var banTime = isBanned ? new Date(u.banned_until).toLocaleString('zh-CN') : '-';
+        row.innerHTML = '<span class="uid">' + email + '</span>' +
+          '<span class="stats">' + (isBanned ? '🚫 ' + banTime : '✅ 正常') + '</span>' +
+          '<button class="ban-btn" style="background:' + (isBanned ? '#4a4' : '#e05555') + ';" onclick="window.' + (isBanned ? 'unbanUser' : 'banUser') + '(\'' + u.id + '\')">' + (isBanned ? '解封' : '封禁') + '</button>';
+        listEl.appendChild(row);
+      }
+    } catch(e) {
+      loadingEl.style.display = 'none';
+      listEl.innerHTML = '<div style="color:#e05555;text-align:center;padding:20px;">网络错误: ' + e.message + '</div>';
+    }
+  }
 
-// Ban check via Admin API
+
+
+  // ====== UI toggle ======
+  function showAuthUI() {
+    document.getElementById('kechen-auth-form').style.display = 'flex';
+    document.getElementById('kechen-chat-messages').style.display = 'none';
+    document.getElementById('kechen-chat-input-area').style.display = 'none';
+    document.getElementById('kechen-btn-logout').style.display = 'none';
+    document.getElementById('kechen-header-sub').textContent = '登录后开始对话';
+    document.getElementById('kechen-usage-info') && document.getElementById('kechen-usage-info').remove();
+  }
+
+  async function showChatUI(user) {
+    currentUser = user;
+
+    // Ban check via Admin API
     try {
       var banResp = await fetch(SUPABASE_URL + '/auth/v1/admin/users/' + user.id, {
         headers: { 'apikey': ADMIN_SERVICE_KEY, 'Authorization': 'Bearer ' + ADMIN_SERVICE_KEY }
@@ -1218,9 +1216,32 @@ document.getElementById('modal').addEventListener('click', function(e) {
     document.getElementById('kechen-btn-logout').style.display = 'inline-block';
 
     // Show usage count
+window.banUser = async function(userId) {
+    if (!userId) { var uid = prompt('输入要封禁的用户ID:'); if (!uid) return; userId = uid.trim(); }
+    if (!confirm('确定封禁此用户？')) return;
+    try {
+      var resp = await fetch(SUPABASE_URL + '/auth/v1/admin/users/' + userId, {
+        method: 'PUT',
+        headers: { 'apikey': ADMIN_SERVICE_KEY, 'Authorization': 'Bearer ' + ADMIN_SERVICE_KEY, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ban_duration: '876600h' })
+      });
+      if (resp.ok) { alert('已封禁'); } else { var d = await resp.json(); alert('失败: ' + (d.message || d.error_description)); }
+    } catch(e) { alert('错误: ' + e.message); }
+    window.loadAdminData();
+  }
 
-
-  
+  window.unbanUser = async function(userId) {
+    if (!confirm('确定解封此用户？')) return;
+    try {
+      var resp = await fetch(SUPABASE_URL + '/auth/v1/admin/users/' + userId, {
+        method: 'PUT',
+        headers: { 'apikey': ADMIN_SERVICE_KEY, 'Authorization': 'Bearer ' + ADMIN_SERVICE_KEY, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ban_duration: '0s' })
+      });
+      if (resp.ok) { alert('已解封'); } else { var d = await resp.json(); alert('失败: ' + (d.message || d.error_description)); }
+    } catch(e) { alert('错误: ' + e.message); }
+    window.loadAdminData();
+  }
 
     // Load chat history
     var hist = loadChatHistory();
