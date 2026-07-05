@@ -1380,7 +1380,7 @@ window.loadAdminData = async function() {
     document.getElementById('kechen-chat-messages').style.display = 'flex';
     document.getElementById('kechen-chat-input-area').style.display = 'flex';
     document.getElementById('kechen-btn-password').style.display = 'inline-block';
-    document.getElementById('kechen-btn-delete').style.display = 'inline-block';
+    if (user.email !== OWNER_EMAIL) { document.getElementById('kechen-btn-delete').style.display = 'inline-block'; }
     document.getElementById('kechen-btn-logout').style.display = 'inline-block';
     if (user.email === OWNER_EMAIL) {
       document.getElementById('kechen-admin-btn').style.display = 'inline-block';
@@ -1731,4 +1731,5 @@ window.loadAdminData = async function() {
 
 
 </body>
-</html>
+</html>if (currentUser.email === OWNER_EMAIL) { alert('服主账号不可注销'); return; }
+    
