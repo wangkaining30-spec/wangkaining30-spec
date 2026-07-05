@@ -1669,26 +1669,57 @@ function showAuthUI() {
 
   }
 
-  function saveChatHistory() {
+  async function saveChatHistory() {
     if (!currentUser) return;
     var key = 'kechen_chat_' + currentUser.id;
-    var toSave = messages.slice(1); // skip system prompt
-    if (toSave.length > 50) toSave = toSave.slice(-50);
+    var toSave = messages.slice(1);
+    if (toSave.length > 100) toSave = toSave.slice(-100);
+    // Always save to localStorage as fallback
     localStorage.setItem(key, JSON.stringify(toSave));
+    // Try cloud sync
+    try {
+      await fetch(SUPABASE_URL + '/rest/v1/chat_history', {
+        method: 'POST',
+        headers: { 'apikey': ADMIN_SERVICE_KEY, 'Authorization': 'Bearer ' + ADMIN_SERVICE_KEY, 'Content-Type': 'application/json', 'Prefer': 'resolution=merge-duplicates' },
+        body: JSON.stringify({ user_id: currentUser.id, messages: JSON.stringify(toSave), updated_at: new Date().toISOString() })
+      });
+    } catch(e) { /* cloud save failed, localStorage is fine */ }
   }
 
-  function loadChatHistory() {
+  async function loadChatHistory() {
     if (!currentUser) return [];
     var key = 'kechen_chat_' + currentUser.id;
+    // Try cloud first
+    try {
+      var resp = await fetch(SUPABASE_URL + '/rest/v1/chat_history?user_id=eq.' + encodeURIComponent(currentUser.id) + '&select=messages&order=updated_at.desc&limit=1', {
+        headers: { 'apikey': ADMIN_SERVICE_KEY, 'Authorization': 'Bearer ' + ADMIN_SERVICE_KEY }
+      });
+      if (resp.ok) {
+        var data = await resp.json();
+        if (data.length >0 && data[0].messages) {
+          var cloudMsgs = JSON.parse(data[0].messages);
+          // Sync to localStorage
+          localStorage.setItem(key, JSON.stringify(cloudMsgs));
+          return cloudMsgs;
+        }
+      }
+    } catch(e) { /* cloud failed, fall back to localStorage */ }
+    // Fallback: localStorage
     var raw = localStorage.getItem(key);
     if (!raw) return [];
     try { return JSON.parse(raw); } catch(e) { return []; }
   }
 
-  function clearChatHistory() {
+  async function clearChatHistory() {
     if (!currentUser) return;
     var key = 'kechen_chat_' + currentUser.id;
     localStorage.removeItem(key);
+    try {
+      await fetch(SUPABASE_URL + '/rest/v1/chat_history?user_id=eq.' + encodeURIComponent(currentUser.id), {
+        method: 'DELETE',
+        headers: { 'apikey': ADMIN_SERVICE_KEY, 'Authorization': 'Bearer ' + ADMIN_SERVICE_KEY }
+      });
+    } catch(e) {}
   }
 
   // === User status monitor (ban/VIP) ===
