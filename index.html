@@ -1296,14 +1296,18 @@ window.loadAdminData = async function() {
         return;
       }
 
-      // Auto-delete users whose deletion has exceeded 24h
+      // Auto-delete users: midnight-based (24h elapsed + crossed midnight)
       var now = Date.now();
+      var todayStart = new Date(); todayStart.setHours(0,0,0,0);
       for (var i = 0; i < users.length; i++) {
         var uCheck = users[i];
         if (uCheck.app_metadata && uCheck.app_metadata.deleted && uCheck.app_metadata.deleted_at) {
-          var delAge = now - new Date(uCheck.app_metadata.deleted_at).getTime();
-          if (delAge > 24 * 60 * 60 * 1000) {
-            // Auto-delete: record cooldown and delete
+          var delTime = new Date(uCheck.app_metadata.deleted_at).getTime();
+          var delAge = now - delTime;
+          var delDayStart = new Date(uCheck.app_metadata.deleted_at); delDayStart.setHours(0,0,0,0);
+          var daysSinceDelete = Math.floor((todayStart - delDayStart) / (24 * 60 * 60 * 1000));
+          // Delete if: crossed at least 1 midnight AND at least 24h passed
+          if (daysSinceDelete >= 1 && delAge > 24 * 60 * 60 * 1000) {
             var email2 = uCheck.email || '';
             if (email2) {
               var delList = JSON.parse(localStorage.getItem('kechen_owner_deleted') || '{}');
@@ -1324,8 +1328,11 @@ window.loadAdminData = async function() {
         var u = users[b];
         // Skip already-processed auto-deleted users (they're still in users array)
         if (u.app_metadata && u.app_metadata.deleted && u.app_metadata.deleted_at) {
-          var delAge2 = now - new Date(u.app_metadata.deleted_at).getTime();
-          if (delAge2 > 24 * 60 * 60 * 1000) continue; // skip, already deleted above
+          var delTime2 = new Date(u.app_metadata.deleted_at).getTime();
+          var delAge2 = now - delTime2;
+          var delDayStart2 = new Date(u.app_metadata.deleted_at); delDayStart2.setHours(0,0,0,0);
+          var daysSinceDelete2 = Math.floor((todayStart - delDayStart2) / (24 * 60 * 60 * 1000));
+          if (daysSinceDelete2 >= 1 && delAge2 > 24 * 60 * 60 * 1000) continue; // skip, already deleted above
         }
         var row = document.createElement('div');
         row.className = 'user-row';
