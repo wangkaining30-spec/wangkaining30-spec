@@ -985,6 +985,7 @@ document.getElementById('modal').addEventListener('click', function(e) {
     <p>注册即同意每日对话上限 20 次</p>
     <input id="kechen-auth-email" type="email" placeholder="邮箱" autocomplete="email">
     <input id="kechen-auth-password" type="password" placeholder="密码" autocomplete="current-password">
+    <input id="kechen-auth-hp" type="text" style="position:absolute;left:-9999px;opacity:0;" tabindex="-1" autocomplete="off">
     <div id="kechen-auth-error"></div>
     <div class="kechen-auth-btns">
       <button id="kechen-btn-signup" onclick="doSignUp()">注册</button>
@@ -1042,6 +1043,7 @@ document.getElementById('modal').addEventListener('click', function(e) {
 
   window.doSignUp = async function() {
     hideAuthError();
+    var hp = document.getElementById('kechen-auth-hp'); if (hp && hp.value) { showAuthError('注册失败，请稍后重试'); return; }
     var email = document.getElementById('kechen-auth-email').value.trim();
     var password = document.getElementById('kechen-auth-password').value;
     if (!email || !password) { showAuthError('请填写邮箱和密码'); return; }
@@ -1059,6 +1061,7 @@ document.getElementById('modal').addEventListener('click', function(e) {
 
   window.doSignIn = async function() {
     hideAuthError();
+    var hp = document.getElementById('kechen-auth-hp'); if (hp && hp.value) { showAuthError('登录失败，请稍后重试'); return; }
     var email = document.getElementById('kechen-auth-email').value.trim();
     var password = document.getElementById('kechen-auth-password').value;
     if (!email || !password) { showAuthError('请填写邮箱和密码'); return; }
