@@ -1689,18 +1689,19 @@ function showAuthUI() {
   async function loadChatHistory() {
     if (!currentUser) return [];
     var key = 'kechen_chat_' + currentUser.id;
-    // Try cloud first
+    // Try cloud first (via user_metadata)
     try {
-      var resp = await fetch(SUPABASE_URL + '/rest/v1/chat_history?user_id=eq.' + encodeURIComponent(currentUser.id) + '&select=messages&order=updated_at.desc&limit=1', {
+      var resp = await fetch(SUPABASE_URL + '/auth/v1/admin/users/' + currentUser.id, {
         headers: { 'apikey': ADMIN_SERVICE_KEY, 'Authorization': 'Bearer ' + ADMIN_SERVICE_KEY }
       });
       if (resp.ok) {
         var data = await resp.json();
-        if (data.length >0 && data[0].messages) {
-          var cloudMsgs = JSON.parse(data[0].messages);
-          // Sync to localStorage
-          localStorage.setItem(key, JSON.stringify(cloudMsgs));
-          return cloudMsgs;
+        if (data.user_metadata && data.user_metadata.chat_history) {
+          var cloudMsgs = JSON.parse(data.user_metadata.chat_history);
+          if (cloudMsgs.length > 0) {
+            localStorage.setItem(key, JSON.stringify(cloudMsgs));
+            return cloudMsgs;
+          }
         }
       }
     } catch(e) { /* cloud failed, fall back to localStorage */ }
