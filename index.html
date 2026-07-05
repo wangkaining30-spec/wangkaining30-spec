@@ -1081,6 +1081,80 @@ document.getElementById('modal').addEventListener('click', function(e) {
     showAuthUI();
   };
 
+  function openAdminPanel() {
+    document.getElementById('kechen-auth-form').style.display = 'none';
+    document.getElementById('kechen-chat-messages').style.display = 'none';
+    document.getElementById('kechen-chat-input-area').style.display = 'none';
+    document.getElementById('kechen-admin-panel').style.display = 'flex';
+    loadAdminData();
+  }
+
+  function closeAdminPanel() {
+    document.getElementById('kechen-admin-panel').style.display = 'none';
+    document.getElementById('kechen-chat-messages').style.display = 'flex';
+    document.getElementById('kechen-chat-input-area').style.display = 'flex';
+  }
+
+  async function loadAdminData() {
+    var listEl = document.getElementById('kechen-admin-list');
+    var loadingEl = document.getElementById('kechen-admin-loading');
+    listEl.innerHTML = '';
+    loadingEl.style.display = 'block';
+
+    // Get all usage logs with user info
+    var { data: logs, error } = await supabase
+      .from('usage_log')
+      .select('user_id, usage_date, created_at');
+
+    if (error) { loadingEl.textContent = '加载失败: ' + error.message; return; }
+
+    loadingEl.style.display = 'none';
+
+    // Group by user and count
+    var userMap = {};
+    var today = new Date().toLocaleDateString('zh-CN').replace(/\//g, '-');
+    for (var k = 0; k < logs.length; k++) {
+      var uid = logs[k].user_id;
+      if (!userMap[uid]) userMap[uid] = { total: 0, today: 0 };
+      userMap[uid].total++;
+      if (logs[k].usage_date === today) userMap[uid].today++;
+    }
+
+    // Get banned users
+    var { data: banned } = await supabase.from('banned_users').select('user_id');
+    var bannedSet = {};
+    if (banned) for (var b = 0; b < banned.length; b++) bannedSet[banned[b].user_id] = true;
+
+    var uids = Object.keys(userMap);
+    if (uids.length === 0) {
+      listEl.innerHTML = '<div style="color:#888;text-align:center;padding:20px;">暂无使用记录</div>';
+      return;
+    }
+
+    for (var u = 0; u < uids.length; u++) {
+      var uid = uids[u];
+      var stats = userMap[uid];
+      var isBanned = bannedSet[uid];
+      var row = document.createElement('div');
+      row.className = 'user-row';
+      row.innerHTML = '<div class="info">' + uid.substring(0, 8) + '...</div>' +
+        '<div style="flex:1;margin:0 8px;font-size:11px;color:#888;">' +
+          '今日: <b style="color:#d4a853;">' + stats.today + '</b> / 总计: ' + stats.total +
+        '</div>' +
+        (isBanned ? '<span style="color:#e05555;font-size:11px;">已封禁</span>' :
+          '<button class="ban-btn" onclick="banUser(\'' + uid + '\')">封禁</button>');
+      listEl.appendChild(row);
+    }
+  }
+
+  async function banUser(userId) {
+    if (!confirm('确定封禁此用户？封禁后无法登录。')) return;
+    var { error } = await supabase.from('banned_users').insert({ user_id: userId });
+    if (error) { alert('封禁失败: ' + error.message); return; }
+    alert('已封禁');
+    loadAdminData();
+  }
+
   // ====== UI toggle ======
   function showAuthUI() {
     document.getElementById('kechen-auth-form').style.display = 'flex';
@@ -1093,6 +1167,9 @@ document.getElementById('modal').addEventListener('click', function(e) {
 
   async function showChatUI(user) {
     currentUser = user;
+    var { data: banData } = await supabase.from('banned_users').select('user_id').eq('user_id', user.id);
+    if (banData && banData.length > 0) { alert('您的账户已被管理员封禁'); await supabase.auth.signOut(); showAuthUI(); return; }
+    if (user.email === ADMIN_EMAIL) document.getElementById('kechen-admin-btn').style.display = 'inline-block';
     document.getElementById('kechen-auth-form').style.display = 'none';
     document.getElementById('kechen-chat-messages').style.display = 'flex';
     document.getElementById('kechen-chat-input-area').style.display = 'flex';
