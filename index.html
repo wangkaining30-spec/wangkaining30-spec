@@ -992,7 +992,7 @@ document.getElementById('modal').addEventListener('click', function(e) {
   <!-- Auth form (hidden when logged in) -->
   <div id="kechen-auth-form">
     <h3>🪐 登录客尘 AI 分身</h3>
-    <p style="font-size:11px;color:#888;margin:4px 0;">输入邮箱获取验证码，无需密码</p>
+    <p style="font-size:11px;color:#888;margin:4px 0;">输入邮箱，点击邮件中的链接即可登录</p>
     <input id="kechen-auth-email" type="email" placeholder="邮箱" autocomplete="email">
     <div id="kechen-otp-area" style="display:none;">
       <input id="kechen-auth-otp" type="text" placeholder="输入6位验证码" maxlength="6" autocomplete="one-time-code" style="text-align:center;font-size:18px;letter-spacing:8px;">
@@ -1003,7 +1003,7 @@ document.getElementById('modal').addEventListener('click', function(e) {
     <input id="kechen-auth-hp" type="text" style="position:absolute;left:-9999px;opacity:0;" tabindex="-1" autocomplete="off">
     <div id="kechen-auth-error"></div>
     <div class="kechen-auth-btns">
-      <button id="kechen-btn-send-otp" onclick="sendOTP()">发送验证码</button>
+      <button id="kechen-btn-send-otp" onclick="sendOTP()">发送登录链接</button>
       <button id="kechen-btn-verify-otp" onclick="verifyOTP()" style="display:none;">验证登录</button>
       <button id="kechen-btn-login" onclick="doSignIn()" style="display:none;">密码登录</button>
     </div>
@@ -1107,21 +1107,22 @@ var ADMIN_SERVICE_KEY=[_s0,_s1,_s2,_s3,_s4,_s5,_s6,_s7,_s8,_s9,_s10,_s11,_s12,_s
     
     setAuthLoading(true);
     document.getElementById('kechen-btn-send-otp').textContent = '发送中...';
-    var { data, error } = await supabase.auth.signInWithOtp({ email: email });
+    var redirectTo = window.location.origin + window.location.pathname;
+    var { data, error } = await supabase.auth.signInWithOtp({ 
+      email: email,
+      options: { emailRedirectTo: redirectTo }
+    });
     setAuthLoading(false);
     document.getElementById('kechen-btn-send-otp').textContent = '重新发送';
     
     if (error) { showAuthError(error.message); return; }
     
-    // Show OTP input and verify button
-    document.getElementById('kechen-otp-area').style.display = 'block';
-    document.getElementById('kechen-btn-verify-otp').style.display = 'block';
-    document.getElementById('kechen-auth-otp').focus();
-    showAuthError('验证码已发送至 ' + email + '，请查收（检查垃圾邮件）');
+    showAuthError('✅ 登录链接已发送至 ' + email + '\n请检查邮箱（含垃圾邮件），点击邮件中的按钮即可登录');
     document.getElementById('kechen-auth-error').style.color = '#4a4';
   };
 
-  // OTP: Verify code and sign in
+  // Magic Link: user clicks link in email, auto-login via redirect
+  // This function kept for manual token entry if needed
   window.verifyOTP = async function() {
     hideAuthError();
     var email = document.getElementById('kechen-auth-email').value.trim();
@@ -1134,23 +1135,19 @@ var ADMIN_SERVICE_KEY=[_s0,_s1,_s2,_s3,_s4,_s5,_s6,_s7,_s8,_s9,_s10,_s11,_s12,_s
     
     if (error) { showAuthError(error.message); return; }
     
-    // Check if this is a new user (created within last 30 seconds)
+    // New user? Prompt for password
     if (data.user && data.user.created_at) {
       var created = new Date(data.user.created_at).getTime();
-      var now = Date.now();
-      var isNew = (now - created) < 60000; // created within 1 minute
-      if (isNew) {
-        // Prompt to set password
+      if ((Date.now() - created) < 60000) {
         var pwd = prompt('🎉 注册成功！\n请设置登录密码（6位以上），以后可直接密码登录：');
         if (pwd && pwd.length >= 6) {
           await supabase.auth.updateUser({ password: pwd });
           alert('密码已设置！下次可用密码或验证码登录。');
         } else if (pwd) {
-          alert('密码至少6位，已跳过。可稍后在设置中修改。');
+          alert('密码至少6位，已跳过。');
         }
       }
     }
-    // onAuthStateChange will handle UI
   };
 
   // Toggle between OTP and password mode
