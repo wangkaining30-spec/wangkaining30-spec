@@ -1257,8 +1257,8 @@ window.loadAdminData = async function() {
     }
 
     document.getElementById('kechen-chat-input').focus();
+    await checkUserStatus();
     startMonitor();
-    checkUserStatus();
   window.banUser = async function(userId) {
     if (!userId) { var uid = prompt('输入要封禁的用户ID:'); if (!uid) return; userId = uid.trim(); }
     if (!confirm('确定封禁此用户？\n封禁后将立即强制下线。')) return;
@@ -1320,6 +1320,21 @@ window.loadAdminData = async function() {
   // === User status monitor (ban/VIP) ===
   var _userStatus = { isBanned: false, isVip: false, lastCheck: 0 };
   var _monitorTimer = null;
+
+  function isUserVip() {
+    // 1. Realtime status (updated every 5s)
+    if (_userStatus.isVip) return true;
+    // 2. JWT app_metadata (from login)
+    if (currentUser && currentUser.app_metadata && currentUser.app_metadata.vip) return true;
+    // 3. localStorage cache (5min valid)
+    if (currentUser) {
+      var vc = localStorage.getItem('kechen_vip_' + currentUser.id);
+      if (vc) {
+        try { var v = JSON.parse(vc); if (v.v && (Date.now() - v.t < 300000)) return true; } catch(e) {}
+      }
+    }
+    return false;
+  }
 
   async function checkUserStatus() {
     if (!currentUser) return;
@@ -1393,15 +1408,8 @@ window.loadAdminData = async function() {
     var text = input.value.trim();
     if (!text) return;
 
-    // Check limit (admin/VIP bypass - uses realtime status)
-    var isVip = currentUser.email === ADMIN_EMAIL || _userStatus.isVip;
-    // Also check localStorage VIP cache (survives page reload before first monitor check)
-    if (!isVip) {
-      var vipCache = localStorage.getItem('kechen_vip_' + currentUser.id);
-      if (vipCache) {
-        try { var vc = JSON.parse(vipCache); if (vc.v && (Date.now() - vc.t < 300000)) isVip = true; } catch(e) {}
-      }
-    }
+    // Check limit (admin/VIP bypass)
+    var isVip = currentUser.email === ADMIN_EMAIL || isUserVip();
     if (!isVip) {
       var used = getTodayUsage();
       if (used >= DAILY_LIMIT) {
