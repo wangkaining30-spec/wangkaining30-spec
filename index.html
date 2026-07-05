@@ -962,6 +962,12 @@ document.getElementById('modal').addEventListener('click', function(e) {
 @media (max-width: 440px) {
   #kechen-chat-panel { bottom: 0; right: 0; width: 100%; height: 100%; max-width: 100%; border-radius: 0; }
 }
+#kechen-admin-list .user-row { display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border-bottom:1px solid #1a1a2e; }
+#kechen-admin-list .user-row .uid { color:#888;font-size:11px;font-family:monospace; }
+#kechen-admin-list .user-row .stats { color:#ddd;font-size:12px; }
+#kechen-admin-list .user-row .ban-btn { background:#e05555;color:#fff;border:none;border-radius:4px;padding:3px 8px;font-size:11px;cursor:pointer; }
+#kechen-admin-list .user-row .ban-btn:disabled { opacity:0.4; }
+#kechen-admin-btn { font-size:11px;color:#d4a853;cursor:pointer;background:none;border:1px solid #d4a853;border-radius:4px;padding:2px 8px;margin-right:8px;display:none; }
 </style>
 
 <div id="kechen-chat-bubble" title="和客尘聊聊宇宙 🪐" onclick="toggleChatPanel()">
@@ -975,6 +981,7 @@ document.getElementById('modal').addEventListener('click', function(e) {
       <div class="name">客尘 · AI 分身</div>
       <div class="sub" id="kechen-header-sub">登录后开始对话</div>
     </div>
+    <button id="kechen-admin-btn" onclick="openAdminPanel()">🛡️ 管理</button>
     <button id="kechen-btn-logout" onclick="doLogout()" style="display:none;">退出</button>
     <button id="kechen-chat-close" onclick="toggleChatPanel()">✕</button>
   </div>
@@ -992,6 +999,17 @@ document.getElementById('modal').addEventListener('click', function(e) {
       <button id="kechen-btn-login" onclick="doSignIn()">登录</button>
     </div>
   </div>
+
+  <!-- Admin panel -->
+  <div id="kechen-admin-panel" style="display:none;flex:1;flex-direction:column;overflow:hidden;">
+    <div style="padding:10px 16px;border-bottom:1px solid #2a2a3a;display:flex;justify-content:space-between;align-items:center;">
+      <span style="color:#d4a853;font-weight:600;">🛡️ 管理面板</span>
+      <button onclick="closeAdminPanel()" style="background:none;border:none;color:#888;font-size:16px;cursor:pointer;">✕</button>
+    </div>
+    <div id="kechen-admin-list" style="flex:1;overflow-y:auto;padding:8px;"></div>
+    <div id="kechen-admin-loading" style="text-align:center;color:#888;padding:20px;display:none;">加载中...</div>
+  </div>
+
 
   <!-- Chat area (hidden when logged out) -->
   <div id="kechen-chat-messages" style="display:none;">
@@ -1081,6 +1099,7 @@ document.getElementById('modal').addEventListener('click', function(e) {
     showAuthUI();
   };
 
+  // ====== Admin panel ======
   function openAdminPanel() {
     document.getElementById('kechen-auth-form').style.display = 'none';
     document.getElementById('kechen-chat-messages').style.display = 'none';
@@ -1101,18 +1120,12 @@ document.getElementById('modal').addEventListener('click', function(e) {
     listEl.innerHTML = '';
     loadingEl.style.display = 'block';
 
-    // Get all usage logs with user info
-    var { data: logs, error } = await supabase
-      .from('usage_log')
-      .select('user_id, usage_date, created_at');
-
+    var { data: logs, error } = await supabase.from('usage_log').select('user_id, usage_date');
     if (error) { loadingEl.textContent = '加载失败: ' + error.message; return; }
 
     loadingEl.style.display = 'none';
-
-    // Group by user and count
-    var userMap = {};
     var today = new Date().toLocaleDateString('zh-CN').replace(/\//g, '-');
+    var userMap = {};
     for (var k = 0; k < logs.length; k++) {
       var uid = logs[k].user_id;
       if (!userMap[uid]) userMap[uid] = { total: 0, today: 0 };
@@ -1120,7 +1133,6 @@ document.getElementById('modal').addEventListener('click', function(e) {
       if (logs[k].usage_date === today) userMap[uid].today++;
     }
 
-    // Get banned users
     var { data: banned } = await supabase.from('banned_users').select('user_id');
     var bannedSet = {};
     if (banned) for (var b = 0; b < banned.length; b++) bannedSet[banned[b].user_id] = true;
@@ -1137,10 +1149,8 @@ document.getElementById('modal').addEventListener('click', function(e) {
       var isBanned = bannedSet[uid];
       var row = document.createElement('div');
       row.className = 'user-row';
-      row.innerHTML = '<div class="info">' + uid.substring(0, 8) + '...</div>' +
-        '<div style="flex:1;margin:0 8px;font-size:11px;color:#888;">' +
-          '今日: <b style="color:#d4a853;">' + stats.today + '</b> / 总计: ' + stats.total +
-        '</div>' +
+      row.innerHTML = '<span class="uid">' + uid.substring(0, 10) + '...</span>' +
+        '<span class="stats">今日:' + stats.today + ' / 总计:' + stats.total + '</span>' +
         (isBanned ? '<span style="color:#e05555;font-size:11px;">已封禁</span>' :
           '<button class="ban-btn" onclick="banUser(\'' + uid + '\')">封禁</button>');
       listEl.appendChild(row);
@@ -1148,9 +1158,9 @@ document.getElementById('modal').addEventListener('click', function(e) {
   }
 
   async function banUser(userId) {
-    if (!confirm('确定封禁此用户？封禁后无法登录。')) return;
+    if (!confirm('确定封禁此用户？')) return;
     var { error } = await supabase.from('banned_users').insert({ user_id: userId });
-    if (error) { alert('封禁失败: ' + error.message); return; }
+    if (error) { alert('失败: ' + error.message); return; }
     alert('已封禁');
     loadAdminData();
   }
@@ -1167,9 +1177,8 @@ document.getElementById('modal').addEventListener('click', function(e) {
 
   async function showChatUI(user) {
     currentUser = user;
-    var { data: banData } = await supabase.from('banned_users').select('user_id').eq('user_id', user.id);
-    if (banData && banData.length > 0) { alert('您的账户已被管理员封禁'); await supabase.auth.signOut(); showAuthUI(); return; }
-    if (user.email === ADMIN_EMAIL) document.getElementById('kechen-admin-btn').style.display = 'inline-block';
+    var banRes = await supabase.from('banned_users').select('user_id').eq('user_id', user.id);
+    if (!banRes.error && banRes.data && banRes.data.length > 0) { alert('您的账户已被管理员封禁'); await supabase.auth.signOut(); showAuthUI(); return; }
     document.getElementById('kechen-auth-form').style.display = 'none';
     document.getElementById('kechen-chat-messages').style.display = 'flex';
     document.getElementById('kechen-chat-input-area').style.display = 'flex';
@@ -1205,7 +1214,7 @@ document.getElementById('modal').addEventListener('click', function(e) {
     return parseInt(localStorage.getItem(key) || "0", 10);
   }
 
-  if (currentUser.email !== ADMIN_EMAIL) recordUsage();
+
     if (!currentUser) return;
     var d = new Date();
     var today = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
