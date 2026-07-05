@@ -1038,7 +1038,7 @@ document.getElementById('modal').addEventListener('click', function(e) {
   const DEEPSEEK_KEY=[_c0,_c1,_c2,_c3,_c4,_c5,_c6,_c7,_c8].map(function(a){return _d(a.reverse())}).join('');
   const DEEPSEEK_URL = "https://api.deepseek.com/v1/chat/completions";
   const DAILY_LIMIT = 20;
-  const ADMIN_EMAIL = atob("Mzc2MjA2NjY1MkBxcS5jb20=");
+  const OWNER_EMAIL = atob("Mzc2MjA2NjY1MkBxcS5jb20="); // 服主
 var _s0=[0x2b, 0x53, 0x60, 0x4f, 0x53, 0x50, 0x73, 0x55, 0x73, 0x79, 0x5d, 0x78, 0x72, 0x50, 0x63, 0x7f];
 var _s1=[0x42, 0x6a, 0x71, 0x53, 0x2c, 0x53, 0x59, 0x79, 0x2f, 0x48, 0x74, 0x53, 0x69, 0x53, 0x73, 0x54];
 var _s2=[0x50, 0x73, 0x55, 0x73, 0x57, 0x29, 0x79, 0x6a, 0x50, 0x63, 0x7f, 0x34, 0x23, 0x50, 0x59, 0x4c];
@@ -1218,20 +1218,34 @@ window.loadAdminData = async function() {
         var u = users[b];
         var row = document.createElement('div');
         row.className = 'user-row';
-        var isBanned = u.banned_until && u.banned_until !== 'none';
+                var isBanned = u.banned_until && u.banned_until !== 'none';
         var isVipUser = u.app_metadata && u.app_metadata.vip;
+        var isAdminUser = u.app_metadata && u.app_metadata.admin;
         var email = u.email || u.phone || u.id.substring(0, 12) + '...';
+        var isMe = currentUser && currentUser.email === u.email;
+        var isOwner = currentUser && currentUser.email === OWNER_EMAIL;
         var banTime = '-';
         if (isBanned) {
           var banDate = new Date(u.banned_until);
           var tenYearsLater = new Date(); tenYearsLater.setFullYear(tenYearsLater.getFullYear() + 10);
           banTime = banDate > tenYearsLater ? '🚫 永久封禁' : banDate.toLocaleString('zh-CN');
         }
-        var statusText = isBanned ? '🚫 ' + banTime : (isVipUser ? '⭐ VIP' : '✅ 正常');
-        row.innerHTML = '<span class="uid">' + email + '</span>' +
-          '<span class="stats">' + statusText + '</span>' +
-          '<button class="ban-btn" style="background:#d4a853;" onclick="window.toggleVip(\'' + u.id + '\',' + (isVipUser ? 'false' : 'true') + ')">' + (isVipUser ? '取消VIP' : '设为VIP') + '</button>' +
-          '<button class="ban-btn" style="background:' + (isBanned ? '#4a4' : '#e05555') + ';" onclick="window.' + (isBanned ? 'unbanUser' : 'banUser') + '(\'' + u.id + '\')">' + (isBanned ? '解封' : '封禁') + '</button>';
+        var statusText = isBanned ? '🚫 ' + banTime : (isAdminUser ? '🛡️ 管理员' : (isVipUser ? '⭐ VIP' : '✅ 正常'));
+        var buttons = '';
+        // Admin button (only owner can see, not for self)
+        if (isOwner && !isMe) {
+          buttons += '<button class="ban-btn" style="background:#7c3aed;" onclick="window.toggleAdmin(\'' + u.id + '\',' + (isAdminUser ? 'false' : 'true') + ')">' + (isAdminUser ? '取消管理' : '设管理员') + '</button>';
+        }
+        // VIP button
+        if (!isMe) {
+          buttons += '<button class="ban-btn" style="background:#d4a853;" onclick="window.toggleVip(\'' + u.id + '\',' + (isVipUser ? 'false' : 'true') + ')">' + (isVipUser ? '取消VIP' : '设为VIP') + '</button>';
+        }
+        // Ban button
+        if (!isMe) {
+          buttons += '<button class="ban-btn" style="background:' + (isBanned ? '#4a4' : '#e05555') + ';" onclick="window.' + (isBanned ? 'unbanUser' : 'banUser') + '(\'' + u.id + '\')">' + (isBanned ? '解封' : '封禁') + '</button>';
+        }
+        row.innerHTML = '<span class="uid">' + email + (isMe ? ' (你)' : '') + '</span>' +
+          '<span class="stats">' + statusText + '</span>' + buttons;
         listEl.appendChild(row);
       }
     } catch(e) {
@@ -1241,6 +1255,21 @@ window.loadAdminData = async function() {
   }
 
 
+
+  window.toggleAdmin = async function(userId, makeAdmin) {
+    var action = makeAdmin ? '设为管理员' : '取消管理员';
+    if (!confirm('确定' + action + '？\n将在5秒内自动生效。')) return;
+    try {
+      var resp = await fetch(SUPABASE_URL + '/auth/v1/admin/users/' + userId, {
+        method: 'PUT',
+        headers: { 'apikey': ADMIN_SERVICE_KEY, 'Authorization': 'Bearer ' + ADMIN_SERVICE_KEY, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ app_metadata: { admin: makeAdmin } })
+      });
+      if (resp.ok) { alert(makeAdmin ? '已设为管理员' : '已取消管理员'); }
+      else { var d = await resp.json(); alert('失败: ' + (d.message || d.error_description)); }
+    } catch(e) { alert('错误: ' + e.message); }
+    window.loadAdminData();
+  }
 
   window.toggleVip = async function(userId, makeVip) {
     var action = makeVip ? '设为VIP（无限次数）' : '取消VIP';
@@ -1260,7 +1289,7 @@ window.loadAdminData = async function() {
   // ====== UI toggle ======
   function showAuthUI() {
     if (_monitorTimer) { clearInterval(_monitorTimer); _monitorTimer = null; }
-    _userStatus = { isBanned: false, isVip: false, lastCheck: 0 };
+    _userStatus = { isBanned: false, isVip: false, isAdmin: false, lastCheck: 0 };
     // Clear message DOM to prevent overlap
     var msgEl = document.getElementById('kechen-chat-messages');
     if (msgEl) { msgEl.innerHTML = ''; msgEl.style.display = 'none'; }
@@ -1294,8 +1323,8 @@ window.loadAdminData = async function() {
       }
     } catch(e) { /* allow access */ }
 
-    // Admin badge
-    if (user.email === ADMIN_EMAIL) {
+    // Admin badge (owner + admins)
+    if (user.email === OWNER_EMAIL || isUserAdmin()) {
       document.getElementById('kechen-admin-btn').style.display = 'inline-block';
     }
 
@@ -1303,13 +1332,13 @@ window.loadAdminData = async function() {
     document.getElementById('kechen-chat-messages').style.display = 'flex';
     document.getElementById('kechen-chat-input-area').style.display = 'flex';
     document.getElementById('kechen-btn-logout').style.display = 'inline-block';
-    if (user.email === ADMIN_EMAIL) {
+    if (user.email === OWNER_EMAIL) {
       document.getElementById('kechen-admin-btn').style.display = 'inline-block';
     }
 
     // Show usage count (use isUserVip for 3-layer VIP check: realtime + JWT + localStorage)
-    if (user.email === ADMIN_EMAIL || isUserVip() || (user.app_metadata && user.app_metadata.vip)) {
-      var label = user.email === ADMIN_EMAIL ? '管理员' : 'VIP';
+    if (user.email === OWNER_EMAIL || isUserVip() || (user.app_metadata && user.app_metadata.vip)) {
+      var label = user.email === OWNER_EMAIL ? '管理员' : 'VIP';
       document.getElementById('kechen-header-sub').innerHTML = label + ' · <b style="color:#ffd700;">∞ 次</b>';
     } else {
       var used = getTodayUsage();
@@ -1390,10 +1419,26 @@ window.loadAdminData = async function() {
   }
 
   // === User status monitor (ban/VIP) ===
-  var _userStatus = { isBanned: false, isVip: false, lastCheck: 0 };
+  var _userStatus = { isBanned: false, isVip: false, isAdmin: false, lastCheck: 0 };
   var _monitorTimer = null;
 
+  function isUserAdmin() {
+    // Check if user has admin flag (owner always counts)
+    if (currentUser && currentUser.email === OWNER_EMAIL) return true;
+    if (_userStatus.isAdmin) return true;
+    if (currentUser && currentUser.app_metadata && currentUser.app_metadata.admin) return true;
+    if (currentUser) {
+      var ac = localStorage.getItem('kechen_admin_' + currentUser.id);
+      if (ac) {
+        try { var a = JSON.parse(ac); if (a.v && (Date.now() - a.t < 300000)) return true; } catch(e) {}
+      }
+    }
+    return false;
+  }
+
   function isUserVip() {
+    // Owner and admin also get unlimited
+    if (isUserAdmin()) return true;
     // 1. Realtime status (updated every 5s)
     if (_userStatus.isVip) return true;
     // 2. JWT app_metadata (from login)
@@ -1418,18 +1463,24 @@ window.loadAdminData = async function() {
         var data = await resp.json();
         _userStatus.isBanned = !!(data.banned_until && data.banned_until !== 'none');
         _userStatus.isVip = !!(data.app_metadata && data.app_metadata.vip);
+        _userStatus.isAdmin = !!(data.app_metadata && data.app_metadata.admin);
         _userStatus.lastCheck = Date.now();
         
-        // Cache VIP to localStorage (5min valid)
+        // Cache VIP/Admin to localStorage (5min valid)
         if (_userStatus.isVip) {
           localStorage.setItem('kechen_vip_' + currentUser.id, JSON.stringify({v:true, t:Date.now()}));
         } else {
           localStorage.removeItem('kechen_vip_' + currentUser.id);
         }
+        if (_userStatus.isAdmin) {
+          localStorage.setItem('kechen_admin_' + currentUser.id, JSON.stringify({v:true, t:Date.now()}));
+        } else {
+          localStorage.removeItem('kechen_admin_' + currentUser.id);
+        }
         
         // Update header-sub display when VIP/ban status changes
-        if (_userStatus.isVip || currentUser.email === ADMIN_EMAIL) {
-          var label = currentUser.email === ADMIN_EMAIL ? '管理员' : 'VIP';
+        if (_userStatus.isVip || currentUser.email === OWNER_EMAIL) {
+          var label = currentUser.email === OWNER_EMAIL ? '管理员' : 'VIP';
           document.getElementById('kechen-header-sub').innerHTML = label + ' · <b style="color:#ffd700;">∞ 次</b>';
         }
         
@@ -1437,7 +1488,7 @@ window.loadAdminData = async function() {
         if (_userStatus.isBanned) {
           await supabase.auth.signOut();
           currentUser = null;
-          _userStatus = { isBanned: false, isVip: false, lastCheck: 0 };
+          _userStatus = { isBanned: false, isVip: false, isAdmin: false, lastCheck: 0 };
           if (_monitorTimer) { clearInterval(_monitorTimer); _monitorTimer = null; }
           showAuthUI();
           alert('您的账号已被管理员封禁。');
@@ -1487,7 +1538,7 @@ window.loadAdminData = async function() {
     if (!text) return;
 
     // Check limit (admin/VIP bypass)
-    var isVip = currentUser.email === ADMIN_EMAIL || isUserVip();
+    var isVip = isUserVip(); // owner/admin/vip all checked in isUserVip
     if (!isVip) {
       var used = getTodayUsage();
       if (used >= DAILY_LIMIT) {
@@ -1544,7 +1595,7 @@ window.loadAdminData = async function() {
         saveChatHistory();
         // Update usage display
         if (isVip) {
-          document.getElementById('kechen-header-sub').innerHTML = (currentUser.email === ADMIN_EMAIL ? '管理员' : 'VIP') + ' · <b style="color:#ffd700;">∞ 次</b>';
+          document.getElementById('kechen-header-sub').innerHTML = (currentUser.email === OWNER_EMAIL ? '管理员' : 'VIP') + ' · <b style="color:#ffd700;">∞ 次</b>';
         } else {
           var used2 = getTodayUsage();
           var remaining2 = Math.max(0, DAILY_LIMIT - used2);
