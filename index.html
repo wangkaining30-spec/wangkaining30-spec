@@ -1322,11 +1322,13 @@ window.loadAdminData = async function() {
     var text = input.value.trim();
     if (!text) return;
 
-    // Check limit
-    var used = await getTodayUsage();
-    if (used >= DAILY_LIMIT) {
-      appendMessage('ai', '今日 ' + DAILY_LIMIT + ' 次对话已用完，明天再来吧～ 🪐');
-      return;
+    // Check limit (admin bypass)
+    if (currentUser.email !== ADMIN_EMAIL) {
+      var used = getTodayUsage();
+      if (used >= DAILY_LIMIT) {
+        appendMessage('ai', '今日 ' + DAILY_LIMIT + ' 次对话已用完，明天再来吧～ 🪐');
+        return;
+      }
     }
 
     input.value = '';
@@ -1367,9 +1369,13 @@ window.loadAdminData = async function() {
         if (currentUser.email !== ADMIN_EMAIL) await recordUsage();
         saveChatHistory();
         // Update usage display
-        var used2 = await getTodayUsage();
-        var remaining2 = Math.max(0, DAILY_LIMIT - used2);
-        document.getElementById('kechen-header-sub').innerHTML = '今日剩余 <b style="color:' + (remaining2 <= 5 ? '#e05555' : '#d4a853') + '">' + remaining2 + '</b> / ' + DAILY_LIMIT + ' 次';
+        if (currentUser.email === ADMIN_EMAIL) {
+          document.getElementById('kechen-header-sub').innerHTML = '管理员 · <b style="color:#ffd700;">∞ 次</b>';
+        } else {
+          var used2 = getTodayUsage();
+          var remaining2 = Math.max(0, DAILY_LIMIT - used2);
+          document.getElementById('kechen-header-sub').innerHTML = '今日剩余 <b style="color:' + (remaining2 <= 5 ? '#e05555' : '#d4a853') + '">' + remaining2 + '</b> / ' + DAILY_LIMIT + ' 次';
+        }
       } else {
         appendMessage('ai', '唔...我的宇宙信号好像中断了，稍等再试一次？🛸');
       }
