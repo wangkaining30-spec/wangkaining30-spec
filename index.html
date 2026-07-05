@@ -1445,7 +1445,7 @@ window.loadAdminData = async function() {
     }
 
     // Welcome message for new users (detect browser language) — only once per session
-    if (hist.length === 0 && !localStorage.getItem('kechen_welcomed_' + currentUser.id)) {
+    if (hist.length === 0 && messages.length <= 1 && !localStorage.getItem('kechen_welcomed_' + currentUser.id)) {
       var lang = (navigator.language || 'zh').split('-')[0];
       var greetings = {
         'zh': '嘿，我是客尘。宇宙很大，你想聊点什么？🪐',
