@@ -1085,12 +1085,22 @@ var ADMIN_SERVICE_KEY=[_s0,_s1,_s2,_s3,_s4,_s5,_s6,_s7,_s8,_s9,_s10,_s11,_s12,_s
     var password = document.getElementById('kechen-auth-password').value;
     if (!email || !password) { showAuthError('请填写邮箱和密码'); return; }
     if (password.length < 6) { showAuthError('密码至少6位'); return; }
+    // Validate email format strictly
+    var emailRe = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRe.test(email)) { showAuthError('请输入有效的邮箱地址'); return; }
+    // Block obviously fake emails (random strings)
+    var localPart = email.split('@')[0];
+    if (localPart.length > 30) { showAuthError('邮箱名过长，请输入有效邮箱'); return; }
+    // Check for common disposable patterns
+    if (/^[0-9]{6,}@/.test(email)) { showAuthError('请输入有效邮箱地址'); return; }
     setAuthLoading(true);
     var { data, error } = await supabase.auth.signUp({ email: email, password: password });
     setAuthLoading(false);
     if (error) { showAuthError(error.message); return; }
-    if (data.user) {
-      showAuthError('注册成功！请登录');
+    if (data.user && data.user.identities && data.user.identities.length === 0) {
+      showAuthError('该邮箱已注册，请直接登录');
+    } else if (data.user) {
+      showAuthError('注册成功！请检查邮箱确认链接后登录');
     } else {
       showAuthError('请检查邮箱中的确认链接');
     }
