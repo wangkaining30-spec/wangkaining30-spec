@@ -1171,7 +1171,12 @@ window.loadAdminData = async function() {
         var isBanned = u.banned_until && u.banned_until !== 'none';
         var isVipUser = u.app_metadata && u.app_metadata.vip;
         var email = u.email || u.phone || u.id.substring(0, 12) + '...';
-        var banTime = isBanned ? new Date(u.banned_until).toLocaleString('zh-CN') : '-';
+        var banTime = '-';
+        if (isBanned) {
+          var banDate = new Date(u.banned_until);
+          var tenYearsLater = new Date(); tenYearsLater.setFullYear(tenYearsLater.getFullYear() + 10);
+          banTime = banDate > tenYearsLater ? '🚫 永久封禁' : banDate.toLocaleString('zh-CN');
+        }
         var statusText = isBanned ? '🚫 ' + banTime : (isVipUser ? '⭐ VIP' : '✅ 正常');
         row.innerHTML = '<span class="uid">' + email + '</span>' +
           '<span class="stats">' + statusText + '</span>' +
