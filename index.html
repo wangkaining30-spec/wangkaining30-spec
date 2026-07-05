@@ -1406,11 +1406,8 @@ window.loadAdminData = async function() {
   }
 
   // ====== UI toggle ======
-  function showAuthUI() {
-    if (_monitorTimer) { clearInterval(_monitorTimer); _monitorTimer = null; }
-    _userStatus = { isBanned: false, isVip: false, isAdmin: false, lastCheck: 0 };
-
-  // ===== Owner delete user functions =====
+  
+  // ===== Owner delete user functions (global scope) =====
   window.ownerDeleteUser = async function(userId) {
     alert('DEBUG: ownerDeleteUser called, userId=' + userId);
     if (!confirm('确定要注销该用户吗？\n\n注销后该账号将无法使用，24小时内可恢复。')) return;
@@ -1467,6 +1464,9 @@ window.loadAdminData = async function() {
       loadAdminData();
     } catch(e) { alert('错误: ' + e.message); }
   };
+function showAuthUI() {
+    if (_monitorTimer) { clearInterval(_monitorTimer); _monitorTimer = null; }
+    _userStatus = { isBanned: false, isVip: false, isAdmin: false, lastCheck: 0 };
 
   // Clear message DOM to prevent overlap
     var msgEl = document.getElementById('kechen-chat-messages');
