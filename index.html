@@ -1124,7 +1124,14 @@ window.loadAdminData = async function() {
     var { data: banned, error } = await supabase.from('banned_users').select('user_id, created_at');
     loadingEl.style.display = 'none';
 
-    if (error) { listEl.innerHTML = '<div style="color:#e05555;text-align:center;padding:20px;">加载失败: ' + error.message + '</div>'; return; }
+    if (error) {
+      if (error.message && error.message.indexOf('banned_users') !== -1) {
+        listEl.innerHTML = '<div style="color:#ffd700;text-align:center;padding:20px;">⚠️ 封禁表未创建，请前往 Supabase SQL Editor 执行建表 SQL<br><small style="color:#888;">CREATE TABLE banned_users (user_id UUID PRIMARY KEY, created_at TIMESTAMPTZ DEFAULT NOW());</small></div>';
+      } else {
+        listEl.innerHTML = '<div style="color:#e05555;text-align:center;padding:20px;">加载失败: ' + error.message + '</div>';
+      }
+      return;
+    }
 
     if (!banned || banned.length === 0) {
       listEl.innerHTML = '<div style="color:#888;text-align:center;padding:20px;">暂无封禁用户</div>';
