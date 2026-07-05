@@ -1211,10 +1211,16 @@ window.loadAdminData = async function() {
   function showAuthUI() {
     if (_monitorTimer) { clearInterval(_monitorTimer); _monitorTimer = null; }
     _userStatus = { isBanned: false, isVip: false, lastCheck: 0 };
+    // Clear message DOM to prevent overlap
+    var msgEl = document.getElementById('kechen-chat-messages');
+    if (msgEl) { msgEl.innerHTML = ''; msgEl.style.display = 'none'; }
+    var inputEl = document.getElementById('kechen-chat-input-area');
+    if (inputEl) { inputEl.style.display = 'none'; }
+    var adminEl = document.getElementById('kechen-admin-panel');
+    if (adminEl) { adminEl.style.display = 'none'; }
     document.getElementById('kechen-auth-form').style.display = 'flex';
-    document.getElementById('kechen-chat-messages').style.display = 'none';
-    document.getElementById('kechen-chat-input-area').style.display = 'none';
     document.getElementById('kechen-btn-logout').style.display = 'none';
+    document.getElementById('kechen-admin-btn').style.display = 'none';
     document.getElementById('kechen-header-sub').textContent = '登录后开始对话';
     document.getElementById('kechen-usage-info') && document.getElementById('kechen-usage-info').remove();
   }
@@ -1247,6 +1253,9 @@ window.loadAdminData = async function() {
     document.getElementById('kechen-chat-messages').style.display = 'flex';
     document.getElementById('kechen-chat-input-area').style.display = 'flex';
     document.getElementById('kechen-btn-logout').style.display = 'inline-block';
+    if (user.email === ADMIN_EMAIL) {
+      document.getElementById('kechen-admin-btn').style.display = 'inline-block';
+    }
 
     // Show usage count (use isUserVip for 3-layer VIP check: realtime + JWT + localStorage)
     if (user.email === ADMIN_EMAIL || isUserVip() || (user.app_metadata && user.app_metadata.vip)) {
