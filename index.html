@@ -1220,7 +1220,7 @@ var ADMIN_SERVICE_KEY=[_s0,_s1,_s2,_s3,_s4,_s5,_s6,_s7,_s8,_s9,_s10,_s11,_s12,_s
 
       if (resp.ok) {
         clearChatHistory();
-        localStorage.removeItem('kechen_welcomed_' + currentUser.id);
+        sessionStorage.removeItem('kechen_welcomed');
         currentUser = null;
         messages = [{ role: 'system', content: SYSTEM_PROMPT }];
         if (_monitorTimer) { clearInterval(_monitorTimer); _monitorTimer = null; }
@@ -1236,7 +1236,7 @@ var ADMIN_SERVICE_KEY=[_s0,_s1,_s2,_s3,_s4,_s5,_s6,_s7,_s8,_s9,_s10,_s11,_s12,_s
 
   window.doLogout = async function() {
     await supabase.auth.signOut();
-    localStorage.removeItem('kechen_welcomed_' + currentUser.id);
+    sessionStorage.removeItem('kechen_welcomed');
     clearChatHistory();
     currentUser = null;
     messages = [{ role: "system", content: SYSTEM_PROMPT }];
@@ -1445,7 +1445,7 @@ window.loadAdminData = async function() {
     }
 
     // Welcome message for new users (detect browser language) — only once per session
-    if (hist.length === 0 && messages.length <= 1 && !localStorage.getItem('kechen_welcomed_' + currentUser.id)) {
+    if (hist.length === 0 && !sessionStorage.getItem('kechen_welcomed')) {
       var lang = (navigator.language || 'zh').split('-')[0];
       var greetings = {
         'zh': '嘿，我是客尘。宇宙很大，你想聊点什么？🪐',
@@ -1459,7 +1459,7 @@ window.loadAdminData = async function() {
       var welcome = greetings[lang] || greetings['en'];
       messages.push({ role: 'assistant', content: welcome });
       appendMessage('ai', welcome);
-      localStorage.setItem('kechen_welcomed_' + currentUser.id, '1');
+      sessionStorage.setItem('kechen_welcomed', '1');
     }
 
     document.getElementById('kechen-chat-input').focus();
