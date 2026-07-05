@@ -1071,6 +1071,7 @@ document.getElementById('modal').addEventListener('click', function(e) {
 
   window.doLogout = async function() {
     await supabase.auth.signOut();
+    clearChatHistory();
     currentUser = null;
     messages = [{ role: "system", content: SYSTEM_PROMPT }];
     showAuthUI();
@@ -1099,6 +1100,16 @@ document.getElementById('modal').addEventListener('click', function(e) {
     var subEl = document.getElementById('kechen-header-sub');
     subEl.innerHTML = '今日剩余 <b style="color:' + (remaining <= 5 ? '#e05555' : '#d4a853') + '">' + remaining + '</b> / ' + DAILY_LIMIT + ' 次';
 
+  // Load chat history
+    var hist = loadChatHistory();
+    if (hist.length > 0) {
+      messages = [{ role: "system", content: SYSTEM_PROMPT }].concat(hist);
+      var msgContainer = document.getElementById('kechen-chat-messages');
+      msgContainer.innerHTML = '';
+      for (var hi = 0; hi < hist.length; hi++) {
+        appendMessage(hist[hi].role, hist[hi].content);
+      }
+    }
     document.getElementById('kechen-chat-input').focus();
   }
 
@@ -1118,6 +1129,28 @@ document.getElementById('modal').addEventListener('click', function(e) {
     var key = "kechen_usage_" + currentUser.id + "_" + today;
     var cur = parseInt(localStorage.getItem(key) || "0", 10);
     localStorage.setItem(key, cur + 1);
+  }
+
+  function saveChatHistory() {
+    if (!currentUser) return;
+    var key = 'kechen_chat_' + currentUser.id;
+    var toSave = messages.slice(1); // skip system prompt
+    if (toSave.length > 50) toSave = toSave.slice(-50);
+    localStorage.setItem(key, JSON.stringify(toSave));
+  }
+
+  function loadChatHistory() {
+    if (!currentUser) return [];
+    var key = 'kechen_chat_' + currentUser.id;
+    var raw = localStorage.getItem(key);
+    if (!raw) return [];
+    try { return JSON.parse(raw); } catch(e) { return []; }
+  }
+
+  function clearChatHistory() {
+    if (!currentUser) return;
+    var key = 'kechen_chat_' + currentUser.id;
+    localStorage.removeItem(key);
   }
 
   // ====== Chat ======
@@ -1179,6 +1212,7 @@ document.getElementById('modal').addEventListener('click', function(e) {
         messages.push({ role: 'assistant', content: reply });
         appendMessage('ai', reply);
         await recordUsage();
+        saveChatHistory();
         // Update usage display
         var used2 = await getTodayUsage();
         var remaining2 = Math.max(0, DAILY_LIMIT - used2);
