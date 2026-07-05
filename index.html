@@ -1117,7 +1117,7 @@ var ADMIN_SERVICE_KEY=[_s0,_s1,_s2,_s3,_s4,_s5,_s6,_s7,_s8,_s9,_s10,_s11,_s12,_s
     
     if (error) { showAuthError(error.message); return; }
     
-    showAuthError('✅ 登录链接已发送至 ' + email + '\n请检查邮箱（含垃圾邮件），点击邮件中的按钮即可登录');
+    showAuthError('✅ 登录链接已发送至 ' + email + '\n请检查邮箱，【长按邮件中的按钮→复制链接→粘贴到本浏览器打开】即可登录');
     document.getElementById('kechen-auth-error').style.color = '#4a4';
   };
 
@@ -1609,6 +1609,24 @@ window.loadAdminData = async function() {
       showAuthUI();
     }
   });
+
+  // Handle Magic Link callback - extract token from URL hash
+  (function() {
+    var hash = window.location.hash;
+    if (hash && hash.indexOf('access_token=') > -1) {
+      // Supabase SDK will handle this automatically via getSession
+      // Just clean up the URL
+      try {
+        var params = new URLSearchParams(hash.substring(1));
+        if (params.get('access_token')) {
+          // Replace URL to remove hash (clean URL)
+          if (window.history && window.history.replaceState) {
+            window.history.replaceState(null, '', window.location.pathname);
+          }
+        }
+      } catch(e) {}
+    }
+  })();
 
   // Check existing session on load
   supabase.auth.getSession().then(function(result) {
