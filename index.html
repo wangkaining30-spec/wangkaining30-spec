@@ -1181,7 +1181,7 @@ window.loadAdminData = async function() {
 
   window.toggleVip = async function(userId, makeVip) {
     var action = makeVip ? '设为VIP（无限次数）' : '取消VIP';
-    if (!confirm('确定' + action + '？用户需重新登录后生效。')) return;
+    if (!confirm('确定' + action + '？\nVIP状态将在5秒内自动生效。')) return;
     try {
       var resp = await fetch(SUPABASE_URL + '/auth/v1/admin/users/' + userId, {
         method: 'PUT',
@@ -1235,8 +1235,8 @@ window.loadAdminData = async function() {
     document.getElementById('kechen-chat-input-area').style.display = 'flex';
     document.getElementById('kechen-btn-logout').style.display = 'inline-block';
 
-    // Show usage count
-    if (user.email === ADMIN_EMAIL || (user.app_metadata && user.app_metadata.vip)) {
+    // Show usage count (use isUserVip for 3-layer VIP check: realtime + JWT + localStorage)
+    if (user.email === ADMIN_EMAIL || isUserVip() || (user.app_metadata && user.app_metadata.vip)) {
       var label = user.email === ADMIN_EMAIL ? '管理员' : 'VIP';
       document.getElementById('kechen-header-sub').innerHTML = label + ' · <b style="color:#ffd700;">∞ 次</b>';
     } else {
@@ -1353,6 +1353,12 @@ window.loadAdminData = async function() {
           localStorage.setItem('kechen_vip_' + currentUser.id, JSON.stringify({v:true, t:Date.now()}));
         } else {
           localStorage.removeItem('kechen_vip_' + currentUser.id);
+        }
+        
+        // Update header-sub display when VIP/ban status changes
+        if (_userStatus.isVip || currentUser.email === ADMIN_EMAIL) {
+          var label = currentUser.email === ADMIN_EMAIL ? '管理员' : 'VIP';
+          document.getElementById('kechen-header-sub').innerHTML = label + ' · <b style="color:#ffd700;">∞ 次</b>';
         }
         
         // If banned, force logout
