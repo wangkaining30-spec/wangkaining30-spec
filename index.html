@@ -950,9 +950,11 @@ document.getElementById('modal').addEventListener('click', function(e) {
   flex: 1; padding: 10px; border-radius: 8px; border: none;
   font-size: 13px; cursor: pointer; font-weight: 600;
 }
-#kechen-btn-signup { background: var(--gold, #d4a853); color: #111; }
-#kechen-btn-login { background: #2a2a3a; color: #ddd; border: 1px solid #444; }
-#kechen-auth-error { color: #e05555; font-size: 12px; text-align: center; display: none; }
+#kechen-btn-send-otp { background: var(--gold, #d4a853); color: #111; }
+    #kechen-btn-verify-otp { background: #4a4; color: #fff; }
+/* OTP-only: no login button needed */
+#kechen-auth-error { color: #e05555; font-size: 12px; text-align: center; display: none; margin-top: 6px; }
+    #kechen-auth-otp { margin-top: 8px; }
 
 /* Logged-in header extra */
 #kechen-usage-info { font-size: 11px; color: #888; }
@@ -990,14 +992,16 @@ document.getElementById('modal').addEventListener('click', function(e) {
   <!-- Auth form (hidden when logged in) -->
   <div id="kechen-auth-form">
     <h3>🪐 登录客尘 AI 分身</h3>
-    <p>注册即同意每日对话上限 20 次</p>
+    <p style="font-size:11px;color:#888;margin:4px 0;">输入邮箱获取验证码，无需密码</p>
     <input id="kechen-auth-email" type="email" placeholder="邮箱" autocomplete="email">
-    <input id="kechen-auth-password" type="password" placeholder="密码" autocomplete="current-password">
+    <div id="kechen-otp-area" style="display:none;">
+      <input id="kechen-auth-otp" type="text" placeholder="输入6位验证码" maxlength="6" autocomplete="one-time-code" style="text-align:center;font-size:18px;letter-spacing:8px;">
+    </div>
     <input id="kechen-auth-hp" type="text" style="position:absolute;left:-9999px;opacity:0;" tabindex="-1" autocomplete="off">
     <div id="kechen-auth-error"></div>
     <div class="kechen-auth-btns">
-      <button id="kechen-btn-signup" onclick="doSignUp()">注册</button>
-      <button id="kechen-btn-login" onclick="doSignIn()">登录</button>
+      <button id="kechen-btn-send-otp" onclick="sendOTP()">发送验证码</button>
+      <button id="kechen-btn-verify-otp" onclick="verifyOTP()" style="display:none;">验证登录</button>
     </div>
   </div>
 
@@ -1072,49 +1076,61 @@ var ADMIN_SERVICE_KEY=[_s0,_s1,_s2,_s3,_s4,_s5,_s6,_s7,_s8,_s9,_s10,_s11,_s12,_s
   }
 
   function setAuthLoading(loading) {
-    document.getElementById('kechen-btn-signup').disabled = loading;
-    document.getElementById('kechen-btn-login').disabled = loading;
+    var btn1 = document.getElementById('kechen-btn-send-otp');
+    var btn2 = document.getElementById('kechen-btn-verify-otp');
+    if (btn1) btn1.disabled = loading;
+    if (btn2) btn2.disabled = loading;
     document.getElementById('kechen-auth-email').disabled = loading;
-    document.getElementById('kechen-auth-password').disabled = loading;
+    var otpEl = document.getElementById('kechen-auth-otp');
+    if (otpEl) otpEl.disabled = loading;
   }
 
-  window.doSignUp = async function() {
+  // OTP: Send verification code
+  window.sendOTP = async function() {
     hideAuthError();
-    var hp = document.getElementById('kechen-auth-hp'); if (hp && hp.value) { showAuthError('注册失败，请稍后重试'); return; }
+    var hp = document.getElementById('kechen-auth-hp'); if (hp && hp.value) { showAuthError('发送失败，请稍后重试'); return; }
     var email = document.getElementById('kechen-auth-email').value.trim();
-    var password = document.getElementById('kechen-auth-password').value;
-    if (!email || !password) { showAuthError('请填写邮箱和密码'); return; }
-    if (password.length < 6) { showAuthError('密码至少6位'); return; }
-    // Validate email format (allows QQ/163 numeric emails)
+    if (!email) { showAuthError('请输入邮箱'); return; }
     var emailRe = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
     if (!emailRe.test(email)) { showAuthError('请输入有效的邮箱地址'); return; }
-    // Block unreasonably long local parts (>64 chars per RFC)
     var localPart = email.split('@')[0];
     if (localPart.length > 64) { showAuthError('邮箱名过长'); return; }
+    
     setAuthLoading(true);
-    var { data, error } = await supabase.auth.signUp({ email: email, password: password });
+    document.getElementById('kechen-btn-send-otp').textContent = '发送中...';
+    var { data, error } = await supabase.auth.signInWithOtp({ email: email });
     setAuthLoading(false);
+    document.getElementById('kechen-btn-send-otp').textContent = '重新发送';
+    
     if (error) { showAuthError(error.message); return; }
-    if (data.user && data.user.identities && data.user.identities.length === 0) {
-      showAuthError('该邮箱已注册，请直接登录');
-    } else if (data.user) {
-      showAuthError('注册成功！请检查邮箱确认链接后登录');
-    } else {
-      showAuthError('请检查邮箱中的确认链接');
-    }
+    
+    // Show OTP input and verify button
+    document.getElementById('kechen-otp-area').style.display = 'block';
+    document.getElementById('kechen-btn-verify-otp').style.display = 'block';
+    document.getElementById('kechen-auth-otp').focus();
+    showAuthError('验证码已发送至 ' + email + '，请查收（检查垃圾邮件）');
+    document.getElementById('kechen-auth-error').style.color = '#4a4';
   };
 
-  window.doSignIn = async function() {
+  // OTP: Verify code and sign in
+  window.verifyOTP = async function() {
     hideAuthError();
-    var hp = document.getElementById('kechen-auth-hp'); if (hp && hp.value) { showAuthError('登录失败，请稍后重试'); return; }
     var email = document.getElementById('kechen-auth-email').value.trim();
-    var password = document.getElementById('kechen-auth-password').value;
-    if (!email || !password) { showAuthError('请填写邮箱和密码'); return; }
+    var token = document.getElementById('kechen-auth-otp').value.trim();
+    if (!token || token.length < 6) { showAuthError('请输入6位验证码'); return; }
+    
     setAuthLoading(true);
-    var { data, error } = await supabase.auth.signInWithPassword({ email: email, password: password });
+    var { data, error } = await supabase.auth.verifyOtp({ email: email, token: token, type: 'email' });
     setAuthLoading(false);
+    
     if (error) { showAuthError(error.message); return; }
     // onAuthStateChange will handle UI
+  };
+
+  // Keep old signIn for backward compat (if user has password)
+  window.doSignIn = async function() {
+    // OTP is primary; this is hidden now
+    alert('请使用验证码登录');
   };
 
   window.doLogout = async function() {
