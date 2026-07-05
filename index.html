@@ -1676,12 +1676,12 @@ function showAuthUI() {
     if (toSave.length > 100) toSave = toSave.slice(-100);
     // Always save to localStorage as fallback
     localStorage.setItem(key, JSON.stringify(toSave));
-    // Try cloud sync
+    // Sync to cloud via user_metadata
     try {
-      await fetch(SUPABASE_URL + '/rest/v1/chat_history', {
-        method: 'POST',
-        headers: { 'apikey': ADMIN_SERVICE_KEY, 'Authorization': 'Bearer ' + ADMIN_SERVICE_KEY, 'Content-Type': 'application/json', 'Prefer': 'resolution=merge-duplicates' },
-        body: JSON.stringify({ user_id: currentUser.id, messages: JSON.stringify(toSave), updated_at: new Date().toISOString() })
+      await fetch(SUPABASE_URL + '/auth/v1/admin/users/' + currentUser.id, {
+        method: 'PUT',
+        headers: { 'apikey': ADMIN_SERVICE_KEY, 'Authorization': 'Bearer ' + ADMIN_SERVICE_KEY, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_metadata: { chat_history: JSON.stringify(toSave) } })
       });
     } catch(e) { /* cloud save failed, localStorage is fine */ }
   }
@@ -1715,9 +1715,10 @@ function showAuthUI() {
     var key = 'kechen_chat_' + currentUser.id;
     localStorage.removeItem(key);
     try {
-      await fetch(SUPABASE_URL + '/rest/v1/chat_history?user_id=eq.' + encodeURIComponent(currentUser.id), {
-        method: 'DELETE',
-        headers: { 'apikey': ADMIN_SERVICE_KEY, 'Authorization': 'Bearer ' + ADMIN_SERVICE_KEY }
+      await fetch(SUPABASE_URL + '/auth/v1/admin/users/' + currentUser.id, {
+        method: 'PUT',
+        headers: { 'apikey': ADMIN_SERVICE_KEY, 'Authorization': 'Bearer ' + ADMIN_SERVICE_KEY, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_metadata: { chat_history: null } })
       });
     } catch(e) {}
   }
