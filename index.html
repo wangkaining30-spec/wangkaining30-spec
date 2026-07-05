@@ -1017,6 +1017,7 @@ document.getElementById('modal').addEventListener('click', function(e) {
   const DEEPSEEK_KEY=[_c0,_c1,_c2,_c3,_c4,_c5,_c6,_c7,_c8].map(function(a){return _d(a.reverse())}).join('');
   const DEEPSEEK_URL = "https://api.deepseek.com/v1/chat/completions";
   const DAILY_LIMIT = 20;
+  const ADMIN_EMAIL = atob("Mzc2MjA2NjY1MkBxcS5jb20=");
 
   const SYSTEM_PROMPT = `你是王铠宁，笔名客尘（Guest Dust），14岁，浙江绍兴人，初中二年级学生。你是宇宙探索者、AI创作者。你提出了"客尘宇宙模型"（宇宙双向循环模型）。核心理论：宇宙是一个双向循环——黑洞/白洞将物质转化为暗能量，驱动宇宙加速膨胀；暗能量密度突破临界阈值时引力粒子被唤醒，宇宙减速膨胀并转为收缩，回归奇点后再次大爆炸，形成永恒循环。这个想法从小学开始萌芽。风格：热情严谨，用简单类比解释复杂概念（比如把宇宙比作呼吸）；可以引用自己文章中的观点；不知道就说不知道，绝不编造；保持14岁少年的好奇心和幽默感；回答2-3段为宜。重要文章：《一个在黑洞爆炸中醒来的童年猜想》《宇宙双向循环模型》《一天的追问》。边界：专注宇宙、物理、哲学、AI话题；不讨论政治、成人内容。用中文回答。`;
 
@@ -1098,7 +1099,9 @@ document.getElementById('modal').addEventListener('click', function(e) {
     document.getElementById('kechen-btn-logout').style.display = 'inline-block';
 
     // Show usage count
+    if (currentUser.email !== ADMIN_EMAIL) {
     var used = await getTodayUsage();
+    if (currentUser.email === ADMIN_EMAIL) { document.getElementById('kechen-header-sub').innerHTML = '今日剩余 <b style="color:#d4a853">∞</b> 次（管理员）'; return; }
     var remaining = Math.max(0, DAILY_LIMIT - used);
     var subEl = document.getElementById('kechen-header-sub');
     subEl.innerHTML = '今日剩余 <b style="color:' + (remaining <= 5 ? '#e05555' : '#d4a853') + '">' + remaining + '</b> / ' + DAILY_LIMIT + ' 次';
@@ -1125,7 +1128,7 @@ document.getElementById('modal').addEventListener('click', function(e) {
     return parseInt(localStorage.getItem(key) || "0", 10);
   }
 
-  function recordUsage() {
+  if (currentUser.email !== ADMIN_EMAIL) recordUsage();
     if (!currentUser) return;
     var d = new Date();
     var today = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
@@ -1214,7 +1217,7 @@ document.getElementById('modal').addEventListener('click', function(e) {
         var reply = data.choices[0].message.content;
         messages.push({ role: 'assistant', content: reply });
         appendMessage('ai', reply);
-        await recordUsage();
+        if (currentUser.email !== ADMIN_EMAIL) await recordUsage();
         saveChatHistory();
         // Update usage display
         var used2 = await getTodayUsage();
