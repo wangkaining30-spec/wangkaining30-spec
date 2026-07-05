@@ -1196,6 +1196,8 @@ window.loadAdminData = async function() {
 
   // ====== UI toggle ======
   function showAuthUI() {
+    if (_monitorTimer) { clearInterval(_monitorTimer); _monitorTimer = null; }
+    _userStatus = { isBanned: false, isVip: false, lastCheck: 0 };
     document.getElementById('kechen-auth-form').style.display = 'flex';
     document.getElementById('kechen-chat-messages').style.display = 'none';
     document.getElementById('kechen-chat-input-area').style.display = 'none';
@@ -1313,6 +1315,47 @@ window.loadAdminData = async function() {
     localStorage.removeItem(key);
   }
 
+  // === User status monitor (ban/VIP) ===
+  var _userStatus = { isBanned: false, isVip: false, lastCheck: 0 };
+  var _monitorTimer = null;
+
+  async function checkUserStatus() {
+    if (!currentUser) return;
+    try {
+      var resp = await fetch(SUPABASE_URL + '/auth/v1/admin/users/' + currentUser.id, {
+        headers: { 'apikey': ADMIN_SERVICE_KEY, 'Authorization': 'Bearer ' + ADMIN_SERVICE_KEY }
+      });
+      if (resp.ok) {
+        var data = await resp.json();
+        _userStatus.isBanned = !!(data.banned_until && data.banned_until !== 'none');
+        _userStatus.isVip = !!(data.app_metadata && data.app_metadata.vip);
+        _userStatus.lastCheck = Date.now();
+        
+        // Cache VIP to localStorage (5min valid)
+        if (_userStatus.isVip) {
+          localStorage.setItem('kechen_vip_' + currentUser.id, JSON.stringify({v:true, t:Date.now()}));
+        } else {
+          localStorage.removeItem('kechen_vip_' + currentUser.id);
+        }
+        
+        // If banned, force logout
+        if (_userStatus.isBanned) {
+          await supabase.auth.signOut();
+          currentUser = null;
+          _userStatus = { isBanned: false, isVip: false, lastCheck: 0 };
+          if (_monitorTimer) { clearInterval(_monitorTimer); _monitorTimer = null; }
+          showAuthUI();
+          alert('您的账号已被管理员封禁。');
+        }
+      }
+    } catch(e) { /* network error, keep old status */ }
+  }
+
+  function startMonitor() {
+    if (_monitorTimer) clearInterval(_monitorTimer);
+    _monitorTimer = setInterval(checkUserStatus, 15000);
+  }
+
   function getTodayUsage() {
     if (!currentUser) return 999;
     var d = new Date();
@@ -1348,8 +1391,15 @@ window.loadAdminData = async function() {
     var text = input.value.trim();
     if (!text) return;
 
-    // Check limit (admin/VIP bypass)
-    var isVip = currentUser.email === ADMIN_EMAIL || (currentUser.app_metadata && currentUser.app_metadata.vip);
+    // Check limit (admin/VIP bypass - uses realtime status)
+    var isVip = currentUser.email === ADMIN_EMAIL || _userStatus.isVip;
+    // Also check localStorage VIP cache (survives page reload before first monitor check)
+    if (!isVip) {
+      var vipCache = localStorage.getItem('kechen_vip_' + currentUser.id);
+      if (vipCache) {
+        try { var vc = JSON.parse(vipCache); if (vc.v && (Date.now() - vc.t < 300000)) isVip = true; } catch(e) {}
+      }
+    }
     if (!isVip) {
       var used = getTodayUsage();
       if (used >= DAILY_LIMIT) {
@@ -1358,22 +1408,14 @@ window.loadAdminData = async function() {
       }
     }
 
-    // Quick ban re-check (catches mid-session bans)
-    try {
-      var reBan = await fetch(SUPABASE_URL + '/auth/v1/admin/users/' + currentUser.id, {
-        headers: { 'apikey': ADMIN_SERVICE_KEY, 'Authorization': 'Bearer ' + ADMIN_SERVICE_KEY }
-      });
-      if (reBan.ok) {
-        var reBanData = await reBan.json();
-        if (reBanData.banned_until && reBanData.banned_until !== 'none') {
-          appendMessage('ai', '您的账号已被管理员封禁。');
-          await supabase.auth.signOut();
-          currentUser = null;
-          showAuthUI();
-          return;
-        }
-      }
-    } catch(e) { /* proceed */ }
+    // Check ban status before sending (monitor may not have caught it yet)
+    if (_userStatus.isBanned || (_userStatus.lastCheck > 0 && _userStatus.isBanned)) {
+      appendMessage('ai', '您的账号已被管理员封禁。');
+      await supabase.auth.signOut();
+      currentUser = null;
+      showAuthUI();
+      return;
+    }
 
     input.value = '';
     input.disabled = true;
