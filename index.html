@@ -1302,13 +1302,14 @@ window.loadAdminData = async function() {
         var email = u.email || u.phone || u.id.substring(0, 12) + '...';
         var isMe = currentUser && currentUser.email === u.email;
         var isOwner = currentUser && currentUser.email === OWNER_EMAIL;
+        var isOwnerUser = u.email === OWNER_EMAIL;
         var banTime = '-';
         if (isBanned) {
           var banDate = new Date(u.banned_until);
           var tenYearsLater = new Date(); tenYearsLater.setFullYear(tenYearsLater.getFullYear() + 10);
           banTime = banDate > tenYearsLater ? '🚫 永久封禁' : banDate.toLocaleString('zh-CN');
         }
-        var statusText = isBanned ? '🚫 ' + banTime : (isAdminUser ? '🛡️ 管理员' : (isVipUser ? '💎 VIP' : '✅ 正常'));
+        var statusText = isBanned ? '🚫 ' + banTime : (isOwnerUser ? '👑 服主' : (isAdminUser ? '🛡️ 管理员' : (isVipUser ? '💎 VIP' : '✅ 正常')));
         var buttons = '';
         // Admin button (only owner can see, not for self)
         if (isOwner && !isMe) {
