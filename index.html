@@ -1660,16 +1660,12 @@ window.loadAdminData = async function() {
 
     // Detect user language and adapt response language
     var userText = text.toLowerCase();
-    var langHint = '';
     var cjkCount = (text.match(/[\u4e00-\u9fff\u3040-\u309f\u30a0-\u30ff\uac00-\ud7af]/g) || []).length;
     var latinCount = (text.match(/[a-zA-Z]/g) || []).length;
     if (cjkCount > latinCount) {
-      langHint = '\n【重要：请用中文回复】';
+      messages[0].content = SYSTEM_PROMPT + '\n【请用中文回复，包括动作描写也使用中文括号】';
     } else if (latinCount > cjkCount && latinCount > 3) {
-      langHint = '\n【Important: Please reply in English】';
-    }
-    if (langHint) {
-      messages[0].content = SYSTEM_PROMPT + langHint;
+      messages[0].content = SYSTEM_PROMPT + '\n【CRITICAL: Reply entirely in English. NO Chinese characters anywhere — not in action descriptions, not in thoughts, not in parentheses. Use English-style actions like *smiles warmly* instead of Chinese brackets.】';
     } else {
       messages[0].content = SYSTEM_PROMPT;
     }
