@@ -1191,14 +1191,21 @@ document.getElementById('modal').addEventListener('click', function(e) {
       window.loadAdminData();
     };
 
-// Ban check
-    var banRes = await supabase.from('banned_users').select('user_id').eq('user_id', user.id);
-    if (!banRes.error && banRes.data && banRes.data.length > 0) {
-      alert('您的账户已被管理员封禁');
-      await supabase.auth.signOut();
-      showAuthUI();
-      return;
-    }
+// Ban check via Admin API
+    try {
+      var banResp = await fetch(SUPABASE_URL + '/auth/v1/admin/users/' + user.id, {
+        headers: { 'apikey': ADMIN_SERVICE_KEY, 'Authorization': 'Bearer ' + ADMIN_SERVICE_KEY }
+      });
+      if (banResp.ok) {
+        var banData = await banResp.json();
+        if (banData.banned_until && banData.banned_until !== 'none') {
+          alert('您的账户已被管理员封禁');
+          await supabase.auth.signOut();
+          showAuthUI();
+          return;
+        }
+      }
+    } catch(e) { /* allow access */ }
 
     // Admin badge
     if (user.email === ADMIN_EMAIL) {
@@ -1211,22 +1218,9 @@ document.getElementById('modal').addEventListener('click', function(e) {
     document.getElementById('kechen-btn-logout').style.display = 'inline-block';
 
     // Show usage count
-window.banUser = async function() {
-    var uid = prompt('输入要封禁的用户ID:');
-    if (!uid) return;
-    var { error } = await supabase.from('banned_users').insert({ user_id: uid.trim() });
-    if (error) { alert('失败: ' + error.message); return; }
-    alert('已封禁');
-    window.loadAdminData();
-  }
 
-  window.unbanUser = async function(userId) {
-    if (!confirm('确定解封此用户？')) return;
-    var { error } = await supabase.from('banned_users').delete().eq('user_id', userId);
-    if (error) { alert('失败: ' + error.message); return; }
-    alert('已解封');
-    window.loadAdminData();
-  }
+
+  
 
     // Load chat history
     var hist = loadChatHistory();
