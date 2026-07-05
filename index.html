@@ -985,7 +985,8 @@ document.getElementById('modal').addEventListener('click', function(e) {
       <div class="sub" id="kechen-header-sub">登录后开始对话</div>
     </div>
     <button id="kechen-admin-btn" onclick="openAdminPanel()">🛡️ 管理</button>
-    <button id="kechen-btn-logout" onclick="doLogout()" style="display:none;">退出</button>
+    <button id="kechen-btn-password" onclick="changePassword()" style="display:none;">🔑 改密</button>
+      <button id="kechen-btn-logout" onclick="doLogout()" style="display:none;">退出</button>
     <button id="kechen-chat-close" onclick="toggleChatPanel()">✕</button>
   </div>
 
@@ -1167,6 +1168,18 @@ var ADMIN_SERVICE_KEY=[_s0,_s1,_s2,_s3,_s4,_s5,_s6,_s7,_s8,_s9,_s10,_s11,_s12,_s
     // onAuthStateChange will handle UI
   };
 
+  window.changePassword = async function() {
+    var newPw = prompt('请输入新密码（至少6位）：');
+    if (!newPw || newPw.length < 6) { alert('密码至少6位'); return; }
+    var newPw2 = prompt('请再次输入新密码：');
+    if (newPw !== newPw2) { alert('两次输入不一致'); return; }
+    try {
+      var { error } = await supabase.auth.updateUser({ password: newPw });
+      if (error) { alert('修改失败: ' + error.message); }
+      else { alert('密码修改成功！'); }
+    } catch(e) { alert('错误: ' + e.message); }
+  };
+
   window.doLogout = async function() {
     await supabase.auth.signOut();
     clearChatHistory();
@@ -1313,6 +1326,7 @@ window.loadAdminData = async function() {
     var adminEl = document.getElementById('kechen-admin-panel');
     if (adminEl) { adminEl.style.display = 'none'; }
     document.getElementById('kechen-auth-form').style.display = 'flex';
+    document.getElementById('kechen-btn-password').style.display = 'none';
     document.getElementById('kechen-btn-logout').style.display = 'none';
     document.getElementById('kechen-admin-btn').style.display = 'none';
     document.getElementById('kechen-header-sub').textContent = '登录后开始对话';
@@ -1346,6 +1360,7 @@ window.loadAdminData = async function() {
     document.getElementById('kechen-auth-form').style.display = 'none';
     document.getElementById('kechen-chat-messages').style.display = 'flex';
     document.getElementById('kechen-chat-input-area').style.display = 'flex';
+    document.getElementById('kechen-btn-password').style.display = 'inline-block';
     document.getElementById('kechen-btn-logout').style.display = 'inline-block';
     if (user.email === OWNER_EMAIL) {
       document.getElementById('kechen-admin-btn').style.display = 'inline-block';
