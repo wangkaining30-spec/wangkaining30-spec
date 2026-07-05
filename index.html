@@ -1219,12 +1219,9 @@ window.loadAdminData = async function() {
     if (user.email === ADMIN_EMAIL) {
       document.getElementById('kechen-header-sub').innerHTML = '管理员 · <b style="color:#ffd700;">∞ 次</b>';
     } else {
-      getTodayUsage().then(function(used) {
-        var remaining = Math.max(0, DAILY_LIMIT - used);
-        document.getElementById('kechen-header-sub').innerHTML = '今日剩余 <b style="color:' + (remaining <= 5 ? '#e05555' : '#d4a853') + '">' + remaining + '/' + DAILY_LIMIT + '</b> 次';
-      }).catch(function() {
-        document.getElementById('kechen-header-sub').textContent = '已登录';
-      });
+      var used = getTodayUsage();
+      var remaining = Math.max(0, DAILY_LIMIT - used);
+      document.getElementById('kechen-header-sub').innerHTML = '今日剩余 <b style="color:' + (remaining <= 5 ? '#e05555' : '#d4a853') + '">' + remaining + '/' + DAILY_LIMIT + '</b> 次';
     }
 
     // Load chat history
@@ -1288,6 +1285,25 @@ window.loadAdminData = async function() {
     if (!currentUser) return;
     var key = 'kechen_chat_' + currentUser.id;
     localStorage.removeItem(key);
+  }
+
+  function getTodayUsage() {
+    if (!currentUser) return 999;
+    var d = new Date();
+    var today = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    var key = 'kechen_usage_' + currentUser.id + '_' + today;
+    var val = localStorage.getItem(key);
+    return val ? parseInt(val, 10) : 0;
+  }
+
+  function recordUsage() {
+    if (!currentUser) return false;
+    var d = new Date();
+    var today = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    var key = 'kechen_usage_' + currentUser.id + '_' + today;
+    var current = parseInt(localStorage.getItem(key) || '0', 10);
+    localStorage.setItem(key, String(current + 1));
+    return true;
   }
 
   // ====== Chat ======
