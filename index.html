@@ -1199,6 +1199,41 @@ var ADMIN_SERVICE_KEY=[_s0,_s1,_s2,_s3,_s4,_s5,_s6,_s7,_s8,_s9,_s10,_s11,_s12,_s
     } catch(e) { alert('错误: ' + e.message); }
   };
 
+  window.deleteAccount = async function() {
+    // Triple confirmation
+    if (!confirm('⚠️【1/3】确定要注销账号吗？\n\n注销后所有数据将被永久删除，3天内无法用同一邮箱重新注册。')) return;
+    if (!confirm('⚠️【2/3】再次确认：你真的要注销账号吗？\n\n此操作不可撤销！')) return;
+    if (!confirm('⚠️【3/3】最后一次确认：注销后所有聊天记录、VIP状态将被清除。\n\n确定注销？')) return;
+
+    var email = currentUser.email;
+    try {
+      // Store deletion record (3-day cooldown)
+      var deletions = JSON.parse(localStorage.getItem('kechen_deleted') || '{}');
+      deletions[email] = Date.now();
+      localStorage.setItem('kechen_deleted', JSON.stringify(deletions));
+
+      // Delete user from Supabase
+      var resp = await fetch(SUPABASE_URL + '/auth/v1/admin/users/' + currentUser.id, {
+        method: 'DELETE',
+        headers: { 'apikey': ADMIN_SERVICE_KEY, 'Authorization': 'Bearer ' + ADMIN_SERVICE_KEY }
+      });
+
+      if (resp.ok) {
+        clearChatHistory();
+        localStorage.removeItem('kechen_welcomed_' + currentUser.id);
+        currentUser = null;
+        messages = [{ role: 'system', content: SYSTEM_PROMPT }];
+        if (_monitorTimer) { clearInterval(_monitorTimer); _monitorTimer = null; }
+        _userStatus = { isBanned: false, isVip: false, isAdmin: false, lastCheck: 0 };
+        showAuthUI();
+        alert('账号已注销。3天内无法用此邮箱重新注册。');
+      } else {
+        var d = await resp.json();
+        alert('注销失败: ' + (d.message || d.error_description || '未知错误'));
+      }
+    } catch(e) { alert('错误: ' + e.message); }
+  };
+
   window.doLogout = async function() {
     await supabase.auth.signOut();
     localStorage.removeItem('kechen_welcomed_' + currentUser.id);
