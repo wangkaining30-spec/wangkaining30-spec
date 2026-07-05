@@ -981,9 +981,10 @@ document.getElementById('modal').addEventListener('click', function(e) {
   <div id="kechen-chat-header">
     <div class="avatar">🪐</div>
     <div class="info">
-      <div class="name">客尘 · AI 分身</div>
+      <div class="name">客尘 · AI <span id="kechen-header-user">分身</span></div>
       <div class="sub" id="kechen-header-sub">登录后开始对话</div>
     </div>
+    <button id="kechen-btn-theme" onclick="toggleTheme()" style="background:none;border:none;color:#d4a853;font-size:16px;cursor:pointer;padding:012px;">🌙</button>
     <button id="kechen-admin-btn" onclick="openAdminPanel()">🛡️ 管理</button>
     <button id="kechen-btn-nickname" onclick="changeNickname()" style="color:#d4a853;border-color:#d4a853;">✏️ 改名</button>
       <button id="kechen-btn-password" onclick="changePassword()" style="display:none;">🔑 改密</button>
@@ -1627,6 +1628,8 @@ function showAuthUI() {
       }
     }
 
+    var savedNick = localStorage.getItem('kechen_nickname');
+    if (savedNick) { document.getElementById('kechen-header-user').textContent = savedNick; }
     document.getElementById('kechen-chat-input').focus();
     await checkUserStatus();
     startMonitor();
@@ -1796,7 +1799,9 @@ function showAuthUI() {
     var panel = document.getElementById('kechen-chat-panel');
     panel.classList.toggle('open');
     if (panel.classList.contains('open') && currentUser) {
-      document.getElementById('kechen-chat-input').focus();
+      var savedNick = localStorage.getItem('kechen_nickname');
+    if (savedNick) { document.getElementById('kechen-header-user').textContent = savedNick; }
+    document.getElementById('kechen-chat-input').focus();
     }
   };
 
