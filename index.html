@@ -977,6 +977,86 @@ document.getElementById('modal').addEventListener('click', function(e) {
 #kechen-admin-list .user-row .ban-btn { background:#e05555;color:#fff;border:none;border-radius:4px;padding:3px 8px;font-size:11px;cursor:pointer; }
 #kechen-admin-list .user-row .ban-btn:disabled { opacity:0.4; }
 #kechen-admin-btn { font-size:11px;color:#d4a853;cursor:pointer;background:none;border:1px solid #d4a853;border-radius:4px;padding:2px 8px;margin-right:8px;display:none; }
+
+/* ===== Light Theme Overrides ===== */
+body.light-theme #kechen-chat-panel,
+body.light-theme #kechen-chat-header,
+body.light-theme #kechen-admin-panel {
+  background: #ffffff !important;
+}
+body.light-theme #kechen-chat-header {
+  border-bottom-color: #e0e0e0 !important;
+  background: #fafafa !important;
+}
+body.light-theme #kechen-chat-messages {
+  background: #f5f5f5 !important;
+}
+body.light-theme .msg.user {
+  background: #e3f2fd !important;
+  color: #1565c0 !important;
+}
+body.light-theme .msg.ai {
+  background: #fff !important;
+  color: #333 !important;
+  border: 1px solid #e0e0e0;
+}
+body.light-theme #kechen-chat-input {
+  background: #fff !important;
+  color: #333 !important;
+  border-color: #ccc !important;
+}
+body.light-theme #kechen-chat-input-area {
+  background: #fafafa !important;
+  border-top-color: #e0e0e0 !important;
+}
+body.light-theme #kechen-auth-form {
+  background: #fff !important;
+}
+body.light-theme #kechen-auth-form input {
+  background: #f5f5f5 !important;
+  color: #333 !important;
+  border-color: #ccc !important;
+}
+body.light-theme #kechen-auth-form h3 {
+  color: #333 !important;
+}
+body.light-theme #kechen-admin-panel {
+  background: #fff !important;
+}
+body.light-theme #kechen-admin-list .user-row {
+  border-bottom-color: #eee !important;
+}
+body.light-theme #kechen-admin-list .uid {
+  color: #555 !important;
+}
+body.light-theme #kechen-admin-list .stats {
+  color: #333 !important;
+}
+body.light-theme #kechen-admin-search {
+  background: #f5f5f5 !important;
+  color: #333 !important;
+  border-color: #ccc !important;
+}
+body.light-theme #kechen-chat-header .name {
+  color: #b8860b !important;
+}
+body.light-theme #kechen-chat-header .sub {
+  color: #666 !important;
+}
+body.light-theme .kechen-hdr-btn,
+body.light-theme #kechen-btn-logout {
+  color: #555 !important;
+  border-color: #ccc !important;
+}
+body.light-theme #kechen-admin-btn,
+body.light-theme #kechen-btn-nickname,
+body.light-theme #kechen-btn-password {
+  color: #b8860b !important;
+  border-color: #b8860b !important;
+}
+body.light-theme #kechen-header-sub {
+  color: #666 !important;
+}
 </style>
 
 <div id="kechen-chat-bubble" title="和客尘聊聊宇宙 🪐" onclick="toggleChatPanel()">
@@ -1991,34 +2071,21 @@ function showAuthUI() {
   // Theme toggle
   (function(){
     var theme = localStorage.getItem('kechen_theme') || 'dark';
-    applyTheme(theme);
+    if (theme === 'light') document.body.classList.add('light-theme');
+    updateThemeIcon();
   })();
   
-  function applyTheme(t) {
-    var root = document.documentElement;
-    if (t === 'light') {
-      root.style.setProperty('--bg', '#f5f5f5');
-      root.style.setProperty('--card-bg', '#ffffff');
-      root.style.setProperty('--text', '#222');
-      root.style.setProperty('--muted', '#666');
-      root.style.setProperty('--border', '#ddd');
-      document.body.style.background = '#f5f5f5';
-      document.body.style.color = '#222';
-      document.getElementById('kechen-btn-theme').textContent = '☀️';
-    } else {
-      document.body.style.background = '';
-      document.body.style.color = '';
-      document.getElementById('kechen-btn-theme').textContent = '🌙';
-    }
+  function updateThemeIcon() {
+    var btn = document.getElementById('kechen-btn-theme');
+    if (btn) btn.textContent = document.body.classList.contains('light-theme') ? '☀️' : '🌙';
   }
   
   window.toggleTheme = function() {
-    var current = localStorage.getItem('kechen_theme') || 'dark';
-    var next = current === 'dark' ? 'light' : 'dark';
-    localStorage.setItem('kechen_theme', next);
-    applyTheme(next);
-  };
-})();
+    document.body.classList.toggle('light-theme');
+    var isLight = document.body.classList.contains('light-theme');
+    localStorage.setItem('kechen_theme', isLight ? 'light' : 'dark');
+    updateThemeIcon();
+  };})();
 </script>
 <!-- ========== End AI Chat Widget ========== -->
 
