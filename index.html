@@ -885,8 +885,8 @@ document.getElementById('modal').addEventListener('click', function(e) {
 #kechen-chat-panel.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
 
 #kechen-chat-header {
-  padding: 12px 16px; border-bottom: 1px solid #2a2a3a;
-  display: flex; align-items: center; gap: 10px; background: #1a1a2e;
+  padding: 10px 12px; border-bottom: 1px solid #2a2a3a;
+  display: flex; align-items: center; gap: 6px; background: #1a1a2e; flex-wrap: wrap;
 }
 #kechen-chat-header .avatar {
   width: 36px; height: 36px; border-radius: 50%;
@@ -958,7 +958,8 @@ document.getElementById('modal').addEventListener('click', function(e) {
 
 /* Logged-in header extra */
 #kechen-usage-info { font-size: 11px; color: #888; }
-#kechen-btn-logout { font-size: 11px; color: #888; cursor: pointer; background: none; border: none; }
+#kechen-btn-logout, #kechen-btn-theme, .kechen-hdr-btn { font-size: 11px; cursor: pointer; background: none; border: 1px solid #555; color: #aaa; border-radius: 4px; padding: 3px 8px; white-space: nowrap; }
+#kechen-admin-btn, #kechen-btn-nickname, #kechen-btn-password { font-size: 11px; cursor: pointer; background: none; border: 1px solid #d4a853; color: #d4a853; border-radius: 4px; padding: 3px 8px; white-space: nowrap; }
 #kechen-btn-logout:hover { color: #e05555; }
 
 @media (max-width: 440px) {
