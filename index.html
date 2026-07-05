@@ -1257,6 +1257,7 @@ window.loadAdminData = async function() {
     }
 
     document.getElementById('kechen-chat-input').focus();
+    startMonitor();
   window.banUser = async function(userId) {
     if (!userId) { var uid = prompt('输入要封禁的用户ID:'); if (!uid) return; userId = uid.trim(); }
     if (!confirm('确定封禁此用户？\n封禁后将立即强制下线。')) return;
