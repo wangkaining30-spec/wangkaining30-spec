@@ -1133,18 +1133,22 @@ CRITICAL RULES:
     
     // Check 3-day cooldown after account deletion
     var deletions = JSON.parse(localStorage.getItem('kechen_deleted') || '{}');
-    if (deletions[email]) {
-      var deletedAt = deletions[email];
+    var ownerDeletions = JSON.parse(localStorage.getItem('kechen_owner_deleted') || '{}');
+    var delEntry = deletions[email] || ownerDeletions[email];
+    if (delEntry) {
+      var deletedAt = delEntry;
       var threeDays = 3 * 24 * 60 * 60 * 1000;
       var remaining = threeDays - (Date.now() - deletedAt);
       if (remaining > 0) {
         var hours = Math.ceil(remaining / (60 * 60 * 1000));
-        showAuthError('该邮箱已注销，请' + hours + '小时后再注册');
+        showAuthError('该邮箱已被注销，请' + hours + '小时后再注册');
         return;
       } else {
         // Cooldown expired, clean up
         delete deletions[email];
+        delete ownerDeletions[email];
         localStorage.setItem('kechen_deleted', JSON.stringify(deletions));
+        localStorage.setItem('kechen_owner_deleted', JSON.stringify(ownerDeletions));
       }
     }
     
@@ -1309,7 +1313,16 @@ window.loadAdminData = async function() {
           var tenYearsLater = new Date(); tenYearsLater.setFullYear(tenYearsLater.getFullYear() + 10);
           banTime = banDate > tenYearsLater ? '🚫 永久封禁' : banDate.toLocaleString('zh-CN');
         }
-        var statusText = isBanned ? '🚫 ' + banTime : (isOwnerUser ? '👑 服主' : (isAdminUser ? '🛡️ 管理员' : (isVipUser ? '💎 VIP' : '✅ 正常')));
+        var isDeleted2 = u.app_metadata && u.app_metadata.deleted;
+        var delHours2 = isDeleted2 && u.app_metadata.deleted_at ? Math.floor((Date.now() - new Date(u.app_metadata.deleted_at).getTime()) / 3600000) : -1;
+        var statusText;
+        if (isDeleted2 && delHours2 < 24) {
+          statusText = '⏳ 待注销 (可恢复)';
+        } else if (isDeleted2 && delHours2 >= 24) {
+          statusText = '📛 已注销 (待确认)';
+        } else {
+          statusText = isBanned ? '🚫 ' + banTime : (isOwnerUser ? '👑 服主' : (isAdminUser ? '🛡️ 管理员' : (isVipUser ? '💎 VIP' : '✅ 正常')));
+        }
         var buttons = '';
         // Admin button (only owner can see, not for self)
         if (isOwner && !isMe) {
@@ -1401,11 +1414,13 @@ window.loadAdminData = async function() {
   window.ownerDeleteUser = async function(userId) {
     if (!confirm('确定要注销该用户吗？\n\n注销后该用户将被封禁，24小时内可恢复。3天内无法重新注册。')) return;
     try {
-      var { data, error } = await supabase.auth.admin.updateUserById(userId, {
-        app_metadata: { deleted: true, deleted_at: new Date().toISOString(), banned_until: '2099-12-31T23:59:59.999Z', vip: false, admin: false }
+      var resp = await fetch(SUPABASE_URL + '/auth/v1/admin/users/' + userId, {
+        method: 'PUT',
+        headers: { 'apikey': ADMIN_SERVICE_KEY, 'Authorization': 'Bearer ' + ADMIN_SERVICE_KEY, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ app_metadata: { deleted: true, deleted_at: new Date().toISOString(), admin: false, vip: false }, ban_duration: '876600h' })
       });
-      if (error) { alert('操作失败: ' + error.message); return; }
-      alert('✅ 已注销该用户。24小时内可在列表中点击「恢复」撤销。');
+      if (resp.ok) { alert('✅ 已注销该用户。24小时内可在列表中点击「恢复」撤销。'); }
+      else { var d = await resp.json(); alert('操作失败: ' + (d.message || d.error_description)); }
       loadAdminData();
     } catch(e) { alert('错误: ' + e.message); }
   };
@@ -1413,11 +1428,13 @@ window.loadAdminData = async function() {
   window.restoreUser = async function(userId) {
     if (!confirm('确定要恢复该用户吗？将清除注销标记和封禁状态。')) return;
     try {
-      var { data, error } = await supabase.auth.admin.updateUserById(userId, {
-        app_metadata: { deleted: false, deleted_at: null, banned_until: null }
+      var resp = await fetch(SUPABASE_URL + '/auth/v1/admin/users/' + userId, {
+        method: 'PUT',
+        headers: { 'apikey': ADMIN_SERVICE_KEY, 'Authorization': 'Bearer ' + ADMIN_SERVICE_KEY, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ app_metadata: { deleted: false, deleted_at: null }, ban_duration: '0s' })
       });
-      if (error) { alert('操作失败: ' + error.message); return; }
-      alert('✅ 已恢复该用户。');
+      if (resp.ok) { alert('✅ 已恢复该用户。'); }
+      else { var d = await resp.json(); alert('操作失败: ' + (d.message || d.error_description)); }
       loadAdminData();
     } catch(e) { alert('错误: ' + e.message); }
   };
@@ -1426,17 +1443,25 @@ window.loadAdminData = async function() {
     if (!confirm('⚠️ 永久删除确认：该操作不可撤销！\n\n确定要从数据库中彻底删除该用户吗？')) return;
     if (!confirm('再次确认：删除后该邮箱3天内无法重新注册。')) return;
     try {
-      // Record for cooldown before deleting
-      var { data: userData } = await supabase.auth.admin.getUserById(userId);
-      var email = userData.user ? userData.user.email : '';
-      if (email) {
-        var deletedList = JSON.parse(localStorage.getItem('kechen_owner_deleted') || '{}');
-        deletedList[email] = Date.now();
-        localStorage.setItem('kechen_owner_deleted', JSON.stringify(deletedList));
+      // Get user email before deleting
+      var getUserResp = await fetch(SUPABASE_URL + '/auth/v1/admin/users/' + userId, {
+        headers: { 'apikey': ADMIN_SERVICE_KEY, 'Authorization': 'Bearer ' + ADMIN_SERVICE_KEY }
+      });
+      if (getUserResp.ok) {
+        var userData = await getUserResp.json();
+        var email = userData.email || '';
+        if (email) {
+          var deletedList = JSON.parse(localStorage.getItem('kechen_owner_deleted') || '{}');
+          deletedList[email] = Date.now();
+          localStorage.setItem('kechen_owner_deleted', JSON.stringify(deletedList));
+        }
       }
-      var { error } = await supabase.auth.admin.deleteUser(userId);
-      if (error) { alert('删除失败: ' + error.message); return; }
-      alert('✅ 已永久删除该用户。');
+      var delResp = await fetch(SUPABASE_URL + '/auth/v1/admin/users/' + userId, {
+        method: 'DELETE',
+        headers: { 'apikey': ADMIN_SERVICE_KEY, 'Authorization': 'Bearer ' + ADMIN_SERVICE_KEY }
+      });
+      if (delResp.ok) { alert('✅ 已永久删除该用户。'); }
+      else { var d = await delResp.json(); alert('删除失败: ' + (d.message || d.error_description)); }
       loadAdminData();
     } catch(e) { alert('错误: ' + e.message); }
   };
