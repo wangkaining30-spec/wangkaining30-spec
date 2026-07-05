@@ -962,6 +962,7 @@ document.getElementById('modal').addEventListener('click', function(e) {
 @media (max-width: 440px) {
   #kechen-chat-panel { bottom: 0; right: 0; width: 100%; height: 100%; max-width: 100%; border-radius: 0; }
 }
+    <div style="padding:8px;"><button onclick="window.banUser()" style="background:#e05555;color:#fff;border:none;border-radius:4px;padding:6px 14px;font-size:12px;cursor:pointer;">+ 封禁用户</button></div>
 #kechen-admin-list .user-row { display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border-bottom:1px solid #1a1a2e; }
 #kechen-admin-list .user-row .uid { color:#888;font-size:11px;font-family:monospace; }
 #kechen-admin-list .user-row .stats { color:#ddd;font-size:12px; }
@@ -1114,45 +1115,29 @@ document.getElementById('modal').addEventListener('click', function(e) {
     document.getElementById('kechen-chat-input-area').style.display = 'flex';
   }
 
-  window.loadAdminData = async function() {
+window.loadAdminData = async function() {
     var listEl = document.getElementById('kechen-admin-list');
     var loadingEl = document.getElementById('kechen-admin-loading');
     listEl.innerHTML = '';
     loadingEl.style.display = 'block';
 
-    var { data: logs, error } = await supabase.from('usage_log').select('user_id, usage_date');
-    if (error) { loadingEl.textContent = '加载失败: ' + error.message; return; }
-
+    var { data: banned, error } = await supabase.from('banned_users').select('user_id, created_at');
     loadingEl.style.display = 'none';
-    var today = new Date().toLocaleDateString('zh-CN').replace(/\//g, '-');
-    var userMap = {};
-    for (var k = 0; k < logs.length; k++) {
-      var uid = logs[k].user_id;
-      if (!userMap[uid]) userMap[uid] = { total: 0, today: 0 };
-      userMap[uid].total++;
-      if (logs[k].usage_date === today) userMap[uid].today++;
-    }
 
-    var { data: banned } = await supabase.from('banned_users').select('user_id');
-    var bannedSet = {};
-    if (banned) for (var b = 0; b < banned.length; b++) bannedSet[banned[b].user_id] = true;
+    if (error) { listEl.innerHTML = '<div style="color:#e05555;text-align:center;padding:20px;">加载失败: ' + error.message + '</div>'; return; }
 
-    var uids = Object.keys(userMap);
-    if (uids.length === 0) {
-      listEl.innerHTML = '<div style="color:#888;text-align:center;padding:20px;">暂无使用记录</div>';
+    if (!banned || banned.length === 0) {
+      listEl.innerHTML = '<div style="color:#888;text-align:center;padding:20px;">暂无封禁用户</div>';
       return;
     }
 
-    for (var u = 0; u < uids.length; u++) {
-      var uid = uids[u];
-      var stats = userMap[uid];
-      var isBanned = bannedSet[uid];
+    for (var b = 0; b < banned.length; b++) {
       var row = document.createElement('div');
       row.className = 'user-row';
-      row.innerHTML = '<span class="uid">' + uid.substring(0, 10) + '...</span>' +
-        '<span class="stats">今日:' + stats.today + ' / 总计:' + stats.total + '</span>' +
-        (isBanned ? '<span style="color:#e05555;font-size:11px;">已封禁</span>' :
-          '<button class="ban-btn" onclick="banUser(\'' + uid + '\')">封禁</button>');
+      var time = banned[b].created_at ? new Date(banned[b].created_at).toLocaleString('zh-CN') : '-';
+      row.innerHTML = '<span class="uid">' + banned[b].user_id.substring(0, 12) + '...</span>' +
+        '<span class="stats">封禁时间: ' + time + '</span>' +
+        '<button class="ban-btn" style="background:#4a4;" onclick="window.unbanUser(\'' + banned[b].user_id + '\')">解封</button>';
       listEl.appendChild(row);
     }
   }
@@ -1198,13 +1183,22 @@ document.getElementById('modal').addEventListener('click', function(e) {
     document.getElementById('kechen-btn-logout').style.display = 'inline-block';
 
     // Show usage count
-    if (user.email === ADMIN_EMAIL) {
-      document.getElementById('kechen-header-sub').innerHTML = '今日剩余 <b style="color:#d4a853">∞</b> 次（管理员）';
-    } else {
-      var used = getTodayUsage();
-      var remaining = Math.max(0, DAILY_LIMIT - used);
-      document.getElementById('kechen-header-sub').innerHTML = '今日剩余 <b style="color:' + (remaining <= 5 ? '#e05555' : '#d4a853') + '">' + remaining + '</b> / ' + DAILY_LIMIT + ' 次';
-    }
+window.banUser = async function() {
+    var uid = prompt('输入要封禁的用户ID:');
+    if (!uid) return;
+    var { error } = await supabase.from('banned_users').insert({ user_id: uid.trim() });
+    if (error) { alert('失败: ' + error.message); return; }
+    alert('已封禁');
+    window.loadAdminData();
+  }
+
+  window.unbanUser = async function(userId) {
+    if (!confirm('确定解封此用户？')) return;
+    var { error } = await supabase.from('banned_users').delete().eq('user_id', userId);
+    if (error) { alert('失败: ' + error.message); return; }
+    alert('已解封');
+    window.loadAdminData();
+  }
 
     // Load chat history
     var hist = loadChatHistory();
