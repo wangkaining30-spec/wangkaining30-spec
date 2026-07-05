@@ -1355,7 +1355,7 @@ window.loadAdminData = async function() {
 
   function startMonitor() {
     if (_monitorTimer) clearInterval(_monitorTimer);
-    _monitorTimer = setInterval(checkUserStatus, 15000);
+    _monitorTimer = setInterval(checkUserStatus, 5000);
   }
 
   function getTodayUsage() {
