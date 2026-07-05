@@ -1161,10 +1161,13 @@ window.loadAdminData = async function() {
         var row = document.createElement('div');
         row.className = 'user-row';
         var isBanned = u.banned_until && u.banned_until !== 'none';
+        var isVipUser = u.app_metadata && u.app_metadata.vip;
         var email = u.email || u.phone || u.id.substring(0, 12) + '...';
         var banTime = isBanned ? new Date(u.banned_until).toLocaleString('zh-CN') : '-';
+        var statusText = isBanned ? '🚫 ' + banTime : (isVipUser ? '⭐ VIP' : '✅ 正常');
         row.innerHTML = '<span class="uid">' + email + '</span>' +
-          '<span class="stats">' + (isBanned ? '🚫 ' + banTime : '✅ 正常') + '</span>' +
+          '<span class="stats">' + statusText + '</span>' +
+          '<button class="ban-btn" style="background:#d4a853;" onclick="window.toggleVip(\'' + u.id + '\',' + (isVipUser ? 'false' : 'true') + ')">' + (isVipUser ? '取消VIP' : '设为VIP') + '</button>' +
           '<button class="ban-btn" style="background:' + (isBanned ? '#4a4' : '#e05555') + ';" onclick="window.' + (isBanned ? 'unbanUser' : 'banUser') + '(\'' + u.id + '\')">' + (isBanned ? '解封' : '封禁') + '</button>';
         listEl.appendChild(row);
       }
@@ -1216,8 +1219,9 @@ window.loadAdminData = async function() {
     document.getElementById('kechen-btn-logout').style.display = 'inline-block';
 
     // Show usage count
-    if (user.email === ADMIN_EMAIL) {
-      document.getElementById('kechen-header-sub').innerHTML = '管理员 · <b style="color:#ffd700;">∞ 次</b>';
+    if (user.email === ADMIN_EMAIL || (user.app_metadata && user.app_metadata.vip)) {
+      var label = user.email === ADMIN_EMAIL ? '管理员' : 'VIP';
+      document.getElementById('kechen-header-sub').innerHTML = label + ' · <b style="color:#ffd700;">∞ 次</b>';
     } else {
       var used = getTodayUsage();
       var remaining = Math.max(0, DAILY_LIMIT - used);
@@ -1322,8 +1326,9 @@ window.loadAdminData = async function() {
     var text = input.value.trim();
     if (!text) return;
 
-    // Check limit (admin bypass)
-    if (currentUser.email !== ADMIN_EMAIL) {
+    // Check limit (admin/VIP bypass)
+    var isVip = currentUser.email === ADMIN_EMAIL || (currentUser.app_metadata && currentUser.app_metadata.vip);
+    if (!isVip) {
       var used = getTodayUsage();
       if (used >= DAILY_LIMIT) {
         appendMessage('ai', '今日 ' + DAILY_LIMIT + ' 次对话已用完，明天再来吧～ 🪐');
@@ -1366,11 +1371,11 @@ window.loadAdminData = async function() {
         var reply = data.choices[0].message.content;
         messages.push({ role: 'assistant', content: reply });
         appendMessage('ai', reply);
-        if (currentUser.email !== ADMIN_EMAIL) await recordUsage();
+        if (!isVip) await recordUsage();
         saveChatHistory();
         // Update usage display
-        if (currentUser.email === ADMIN_EMAIL) {
-          document.getElementById('kechen-header-sub').innerHTML = '管理员 · <b style="color:#ffd700;">∞ 次</b>';
+        if (isVip) {
+          document.getElementById('kechen-header-sub').innerHTML = (currentUser.email === ADMIN_EMAIL ? '管理员' : 'VIP') + ' · <b style="color:#ffd700;">∞ 次</b>';
         } else {
           var used2 = getTodayUsage();
           var remaining2 = Math.max(0, DAILY_LIMIT - used2);
