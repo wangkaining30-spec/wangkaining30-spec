@@ -1133,6 +1133,23 @@ var ADMIN_SERVICE_KEY=[_s0,_s1,_s2,_s3,_s4,_s5,_s6,_s7,_s8,_s9,_s10,_s11,_s12,_s
     setAuthLoading(false);
     
     if (error) { showAuthError(error.message); return; }
+    
+    // Check if this is a new user (created within last 30 seconds)
+    if (data.user && data.user.created_at) {
+      var created = new Date(data.user.created_at).getTime();
+      var now = Date.now();
+      var isNew = (now - created) < 60000; // created within 1 minute
+      if (isNew) {
+        // Prompt to set password
+        var pwd = prompt('🎉 注册成功！\n请设置登录密码（6位以上），以后可直接密码登录：');
+        if (pwd && pwd.length >= 6) {
+          await supabase.auth.updateUser({ password: pwd });
+          alert('密码已设置！下次可用密码或验证码登录。');
+        } else if (pwd) {
+          alert('密码至少6位，已跳过。可稍后在设置中修改。');
+        }
+      }
+    }
     // onAuthStateChange will handle UI
   };
 
