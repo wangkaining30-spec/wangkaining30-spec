@@ -1238,7 +1238,7 @@ var ADMIN_SERVICE_KEY=[_s0,_s1,_s2,_s3,_s4,_s5,_s6,_s7,_s8,_s9,_s10,_s11,_s12,_s
 
   window.doLogout = async function() {
     await supabase.auth.signOut();
-    sessionStorage.removeItem('kechen_welcomed');
+    localStorage.removeItem('kechen_welcomed_ts');
     clearChatHistory();
     currentUser = null;
     messages = [{ role: "system", content: SYSTEM_PROMPT }];
@@ -1436,18 +1436,20 @@ window.loadAdminData = async function() {
     }
 
     // Load chat history
+    var msgContainer = document.getElementById('kechen-chat-messages');
+    msgContainer.innerHTML = '';
     var hist = loadChatHistory();
     if (hist.length > 0) {
       messages = [{ role: "system", content: SYSTEM_PROMPT }].concat(hist);
-      var msgContainer = document.getElementById('kechen-chat-messages');
-      msgContainer.innerHTML = '';
       for (var hi = 0; hi < hist.length; hi++) {
         appendMessage(hist[hi].role, hist[hi].content);
       }
     }
 
-    // Welcome message for new users (detect browser language) — only once per session
-    if (hist.length === 0 && !sessionStorage.getItem('kechen_welcomed') && !document.querySelector('.kechen-welcome-msg')) {
+    // Welcome message for new users — uses localStorage timestamp (10s cooldown)
+    if (hist.length === 0 && !document.querySelector('.kechen-welcome-msg')) {
+      var lastWelcome = parseInt(localStorage.getItem('kechen_welcomed_ts') || '0');
+      if (Date.now() - lastWelcome > 10000) {
       var lang = (navigator.language || 'zh').split('-')[0];
       var greetings = {
         'zh': '嘿，我是客尘。宇宙很大，你想聊点什么？🪐',
@@ -1461,12 +1463,12 @@ window.loadAdminData = async function() {
       var welcome = greetings[lang] || greetings['en'];
       messages.push({ role: 'assistant', content: welcome });
       appendMessage('ai', welcome);
-      // Mark DOM element to prevent duplicate from second showChatUI call
-      var msgContainer = document.getElementById('kechen-chat-messages');
-      if (msgContainer && msgContainer.lastChild) {
-        msgContainer.lastChild.classList.add('kechen-welcome-msg');
+      var msgContainer2 = document.getElementById('kechen-chat-messages');
+      if (msgContainer2 && msgContainer2.lastChild) {
+        msgContainer2.lastChild.classList.add('kechen-welcome-msg');
       }
-      sessionStorage.setItem('kechen_welcomed', '1');
+      localStorage.setItem('kechen_welcomed_ts', Date.now());
+      }
     }
 
     document.getElementById('kechen-chat-input').focus();
