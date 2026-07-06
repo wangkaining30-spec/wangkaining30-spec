@@ -27,7 +27,18 @@
     .work-page .content .placeholder { padding:2rem; background:var(--card); border:1px dashed var(--border); border-radius:8px; text-align:center; color:var(--muted); }
     .work-page .tags { display:flex; gap:6px; flex-wrap:wrap; margin-top:2rem; }
     .work-page .tags span { font-size:0.75rem; padding:2px 8px; background:var(--card); border:1px solid var(--border); border-radius:4px; color:var(--muted); }
-    </style>
+    
+    /* === Video Player === */
+    .video-list { margin-top: 1rem; }
+    .video-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 1.5rem; }
+    .video-player { background: #000; }
+    .video-player video { display: block; width: 100%; max-height: 70vh; }
+    .video-info { padding: 0.8rem 1rem; display: flex; align-items: center; gap: 0.6rem; }
+    .video-number { background: var(--accent); color: #fff; font-size: 0.75rem; font-weight: 700; padding: 2px 8px; border-radius: 4px; }
+    .video-title { font-size: 0.9rem; font-weight: 500; color: var(--text); }
+    .video-note { text-align: center; color: var(--muted); font-size: 0.85rem; padding: 1rem; }
+
+  </style>
 </head>
 <body>
   <nav>
@@ -54,6 +65,24 @@
     <div class="meta">游戏 · 开发 · 创作</div>
     <div class="content">
       <p>《我的世界》热门模组深度评测与推荐。多年深度玩法经验的沉淀。</p><h2>包含内容</h2><p>从科技模组到魔法模组、从冒险地图到建筑工具，用玩家视角告诉你哪些模组真正值得装、怎么搭配最好玩。</p><h2>当前进度</h2><div class="placeholder">📦 内容整理中，合集页面即将上线。<br>敬请期待！</div>
+
+    <h2>📺 模组测评视频</h2>
+    <div class="video-list">
+      <div class="video-card">
+        <div class="video-player">
+          <video controls preload="metadata" style="width:100%;border-radius:8px;">
+            <source src="https://github.com/wangkaining30-spec/wangkaining30-spec/releases/download/videos-v1/video_1.mp4" type="video/mp4">
+            您的浏览器不支持视频播放。
+          </video>
+        </div>
+        <div class="video-info">
+          <span class="video-number">#1</span>
+          <span class="video-title">我的世界模组测评</span>
+        </div>
+      </div>
+      <p class="video-note">更多视频即将添加…</p>
+    </div>
+
     </div>
     <div class="tags"><span>游戏</span><span>开发</span><span>创作</span><span>Minecraft</span></div>
   </div>
