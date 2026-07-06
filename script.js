@@ -1290,7 +1290,13 @@ function showAuthUI() {
   // Hamburger menu toggle
   window.toggleHamburger = function() {
     var links = document.querySelector('nav .links');
-    if (links) links.classList.toggle('open');
+    if (!links) return;
+    links.classList.toggle('open');
+    if (links.classList.contains('open')) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
   };
   // Close hamburger when clicking a link
   document.addEventListener('DOMContentLoaded', function() {
@@ -1298,6 +1304,7 @@ function showAuthUI() {
     for (var i = 0; i < navLinks.length; i++) {
       navLinks[i].addEventListener('click', function() {
         document.querySelector('nav .links').classList.remove('open');
+        document.body.style.overflow = '';
       });
     }
   });
