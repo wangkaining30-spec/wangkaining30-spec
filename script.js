@@ -1291,20 +1291,47 @@ function showAuthUI() {
   window.toggleHamburger = function() {
     var links = document.querySelector('nav .links');
     if (!links) return;
-    links.classList.toggle('open');
-    if (links.classList.contains('open')) {
+    var isOpen = !links.classList.contains('open');
+    if (isOpen) {
+      links.classList.add('open');
       document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
     } else {
+      links.classList.remove('open');
       document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
     }
   };
-  // Close hamburger when clicking a link
+
+  function closeHamburger() {
+    var links = document.querySelector('nav .links');
+    if (links && links.classList.contains('open')) {
+      links.classList.remove('open');
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+    }
+  }
+
+  // Close when clicking outside menu
+  document.addEventListener('click', function(e) {
+    var links = document.querySelector('nav .links');
+    var btn = document.getElementById('hamburgerBtn');
+    if (links && links.classList.contains('open')) {
+      if (!links.contains(e.target) && e.target !== btn && !btn.contains(e.target)) {
+        closeHamburger();
+      }
+    }
+  });
+
+  // Close when clicking a nav link
   document.addEventListener('DOMContentLoaded', function() {
     var navLinks = document.querySelectorAll('nav .links a');
     for (var i = 0; i < navLinks.length; i++) {
       navLinks[i].addEventListener('click', function() {
-        document.querySelector('nav .links').classList.remove('open');
-        document.body.style.overflow = '';
+        closeHamburger();
       });
     }
   });
