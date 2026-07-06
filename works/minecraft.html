@@ -30,12 +30,18 @@
     
     /* === Video Player === */
     .video-list { margin-top: 1rem; }
-    .video-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 1.5rem; }
+    .video-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 1.5rem; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+    .video-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.25); }
+    .video-thumb { position: relative; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); height: 200px; display: flex; align-items: center; justify-content: center; }
+    .video-thumb::after { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,0.3); }
+    .play-btn { position: relative; z-index: 1; width: 60px; height: 60px; background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.4); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #fff; transition: all 0.2s; }
+    .video-card:hover .play-btn { background: var(--accent); border-color: var(--accent); transform: scale(1.1); }
     .video-player { background: #000; }
     .video-player video { display: block; width: 100%; max-height: 70vh; }
     .video-info { padding: 0.8rem 1rem; display: flex; align-items: center; gap: 0.6rem; }
-    .video-number { background: var(--accent); color: #fff; font-size: 0.75rem; font-weight: 700; padding: 2px 8px; border-radius: 4px; }
-    .video-title { font-size: 0.9rem; font-weight: 500; color: var(--text); }
+    .video-number { background: var(--accent); color: #fff; font-size: 0.75rem; font-weight: 700; padding: 2px 8px; border-radius: 4px; flex-shrink: 0; }
+    .video-title { font-size: 0.9rem; font-weight: 500; color: var(--text); flex: 1; }
+    .video-duration { font-size: 0.75rem; color: var(--muted); flex-shrink: 0; }
     .video-note { text-align: center; color: var(--muted); font-size: 0.85rem; padding: 1rem; }
 
   </style>
@@ -68,20 +74,30 @@
 
     <h2>📺 模组测评视频</h2>
     <div class="video-list">
-      <div class="video-card">
-        <div class="video-player">
-          <video controls preload="none" playsinline style="width:100%;border-radius:8px;" poster="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='640' height='360'><rect fill='%23111' width='640' height='360'/><text fill='%23aaa' x='50%25' y='50%25' text-anchor='middle' dy='.3em' font-size='20'>▶ 点击播放</text></svg>">
-            <source src="https://cdn.jsdelivr.net/gh/wangkaining30-spec/wangkaining30-spec@main/works/videos/video_1.mp4" type="video/mp4">
-            您的浏览器不支持视频播放。
-          </video>
+      <div class="video-card" data-video="https://cdn.jsdelivr.net/gh/wangkaining30-spec/wangkaining30-spec@main/works/videos/video_1.mp4" onclick="playVideo(this)">
+        <div class="video-thumb">
+          <div class="play-btn">▶</div>
         </div>
         <div class="video-info">
           <span class="video-number">#1</span>
           <span class="video-title">我的世界模组测评</span>
+          <span class="video-duration">9.4 MB</span>
         </div>
       </div>
       <p class="video-note">更多视频即将添加…</p>
     </div>
+    <script>
+    function playVideo(card) {
+      var url = card.getAttribute('data-video');
+      var player = document.createElement('div');
+      player.className = 'video-player';
+      player.innerHTML = '<video controls autoplay playsinline style="width:100%;border-radius:8px;"><source src="' + url + '" type="video/mp4"></video>';
+      var thumb = card.querySelector('.video-thumb');
+      thumb.parentNode.replaceChild(player, thumb);
+      card.onclick = null;
+      card.style.cursor = 'default';
+    }
+    </script>
 
     </div>
     <div class="tags"><span>游戏</span><span>开发</span><span>创作</span><span>Minecraft</span></div>
