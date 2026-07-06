@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>超现实视觉作品集 — 客尘</title>
+  <meta name="description" content="油彩黑底、点彩几何、五维空间扭曲风格的数字艺术作品">
+  <meta property="og:title" content="超现实视觉作品集 — 客尘">
+  <meta property="og:description" content="油彩黑底、点彩几何、五维空间扭曲风格的数字艺术作品">
+  <meta property="og:url" content="https://wangkaining30-spec.github.io/wangkaining30-spec/works/surreal-art.html">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🪐</text></svg>">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .work-page { max-width:800px; margin:0 auto; padding:80px 1rem 60px; }
+    .work-page .back-link { display:inline-block; margin-bottom:2rem; color:var(--muted); font-size:0.85rem; }
+    .work-page .back-link:hover { color:var(--text); }
+    .work-page h1 { font-size:2rem; margin-bottom:0.5rem; color:var(--text); }
+    .work-page .status-badge { display:inline-block; padding:2px 10px; border-radius:4px; font-size:0.75rem; margin-bottom:1.5rem; }
+    .work-page .status-badge.wip { background:rgba(184,155,91,0.15); color:var(--accent); }
+    .work-page .status-badge.planned { background:rgba(106,140,175,0.15); color:var(--accent2); }
+    .work-page .status-badge.done { background:rgba(100,180,120,0.15); color:#64b478; }
+    .work-page .meta { color:var(--muted); font-size:0.85rem; margin-bottom:2rem; }
+    .work-page .content { line-height:1.9; color:var(--text); }
+    .work-page .content h2 { font-size:1.3rem; margin:2rem 0 0.8rem; color:var(--gold); }
+    .work-page .content p { margin-bottom:1rem; }
+    .work-page .content .placeholder { padding:2rem; background:var(--card); border:1px dashed var(--border); border-radius:8px; text-align:center; color:var(--muted); }
+    .work-page .tags { display:flex; gap:6px; flex-wrap:wrap; margin-top:2rem; }
+    .work-page .tags span { font-size:0.75rem; padding:2px 8px; background:var(--card); border:1px solid var(--border); border-radius:4px; color:var(--muted); }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="inner">
+      <a href="../" class="logo">客尘</a>
+      <div class="links">
+        <a href="../#about" data-zh>关于</a>
+        <a href="../#interests" data-zh>兴趣</a>
+        <a href="../#models" data-zh>模型</a>
+        <a href="../#articles" data-zh>文章</a>
+        <a href="../#works" data-zh>作品</a>
+        <a href="../#contact" data-zh>联系</a>
+      </div>
+      <button class="hamburger-btn" onclick="toggleHamburger()" id="hamburgerBtn" title="菜单">☰</button>
+      <button class="lang-switch auto-trans-btn" onclick="autoTranslatePage()" id="autoTransBtn" title="自动翻译页面">🌐</button>
+      <button class="lang-switch" onclick="toggleTheme()" id="themeBtn" title="切换深色/浅色模式">🌙</button>
+    </div>
+  </nav>
+
+  <div class="work-page">
+    <a href="../#works" class="back-link">← 返回作品列表</a>
+    <h1>超现实视觉作品集</h1>
+    <span class="status-badge wip">进行中</span>
+    <div class="meta">艺术 · 创作 · 视觉</div>
+    <div class="content">
+      <p>超现实风格数字艺术作品系列。以油彩黑底为基调，融合点彩几何与五维空间扭曲的视觉语言。</p><h2>风格说明</h2><p>深黑底色呼应宇宙背景，高饱和度点彩笔触构建几何形体，空间扭曲打破三维限制。</p><h2>创作工具</h2><p>主要使用 AI 图像生成（Midjourney / Stable Diffusion）结合后期数字绘画处理。</p><h2>当前进度</h2><div class="placeholder">🎨 作品正在积累中，精选集即将上线。<br>敬请期待！</div>
+    </div>
+    <div class="tags"><span>艺术</span><span>创作</span><span>视觉</span><span>超现实</span></div>
+  </div>
+
+  <footer id="contact">
+    <p>© 2026 客尘. All Rights Reserved.</p>
+    <p>浙江绍兴 · 宇宙探索者 · AI 创作者</p>
+    <p>联系我：<a href="mailto:3762066652@qq.com">3762066652@qq.com</a></p>
+  </footer>
+
+  <button id="btn-back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="回到顶部">↑</button>
+  <script src="../script.js"></script>
+</body>
+</html>
