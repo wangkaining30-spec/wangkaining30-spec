@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title data-zh="客尘 · 宇宙探索者">客尘 · 宇宙探索者</title>
+<meta name="description" content="客尘（王铠宁）——14岁宇宙探索者，物理、哲学与AI创作者。探索黑洞演化、暗能量与宇宙呼吸模型。">
+<meta property="og:title" content="客尘 · 宇宙探索者">
+<meta property="og:description" content="14岁宇宙探索者，热爱物理、哲学与AI创作。相信星空之下，每一个问题都值得被追问。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://wangkaining30-spec.github.io/wangkaining30-spec/">
+<meta name="twitter:card" content="summary">
 <style>
   :root {
     --bg: #0a0a0f;
@@ -226,6 +232,16 @@
     footer { padding:2rem 1rem; font-size:0.75rem; }
   }
 
+  /* Hamburger menu */
+  .hamburger-btn { display:none; background:none; border:none; font-size:1.4rem; cursor:pointer; color:var(--text); padding:4px 8px; }
+  @media (max-width:768px) {
+    .hamburger-btn { display:inline-block; }
+    nav .links { display:none; flex-direction:column; position:absolute; top:56px; left:0; right:0;
+      background:var(--card); border-bottom:1px solid var(--border); padding:8px 16px; gap:6px; z-index:200; }
+    nav .links.open { display:flex; }
+    nav .links a { font-size:0.85rem; padding:8px 0; border-bottom:1px solid var(--border); }
+  }
+
   /* Auto-translate button */
   .auto-trans-btn { margin-left:4px; }
   .auto-trans-btn.translating { animation: pulse 1.5s infinite; }
@@ -246,6 +262,12 @@
     opacity: 0; transition: opacity 0.3s; pointer-events: none;
   }
   #autoTransToast.show { opacity: 1; }
+  /* Back to top */
+  #btn-back-top { position:fixed; bottom:24px; right:24px; z-index:250;
+    width:40px; height:40px; border-radius:50%; background:var(--accent); color:var(--bg);
+    border:none; font-size:1.2rem; cursor:pointer; opacity:0; transition:opacity 0.3s; pointer-events:none; }
+  #btn-back-top.visible { opacity:0.8; pointer-events:auto; }
+  #btn-back-top:hover { opacity:1; }
 </style>
 </head>
 <body>
@@ -263,6 +285,7 @@
       <a href="#contact" data-zh>联系</a>
     </div>
     
+    <button class="hamburger-btn" onclick="toggleHamburger()" id="hamburgerBtn" title="菜单">☰</button>
     <button class="lang-switch auto-trans-btn" onclick="autoTranslatePage()" id="autoTransBtn" title="自动翻译页面 / Auto-translate page">🌐</button>
     <button class="lang-switch" onclick="toggleTheme()" id="themeBtn" title="切换深色/浅色模式">🌙</button>
   </div>
@@ -781,6 +804,7 @@ function restoreOriginalPage() {
 
 
 function openArticle(key) {
+  window.location.hash = key;
   const articles = {
     article6: {
       title: "客尘宇宙模型：从-1号元素到引力元素的完整宇宙图景",
@@ -857,6 +881,10 @@ const a = articles[key];
 function closeModal() {
   document.getElementById('modal').classList.remove('active');
   document.body.style.overflow = '';
+  // Clear URL hash when closing article
+  if (window.location.hash) {
+    history.replaceState(null, '', window.location.pathname + window.location.search);
+  }
 }
 
 document.getElementById('modal').addEventListener('click', function(e) {
@@ -2084,10 +2112,53 @@ function showAuthUI() {
     }
   })();
 
+  // Listen for hash changes (back/forward navigation)
+  window.addEventListener('hashchange', function() {
+    var hash = window.location.hash.substring(1);
+    if (hash && hash.startsWith('article')) {
+      openArticle(hash);
+    } else if (!hash) {
+      var modal = document.getElementById('modal');
+      if (modal) modal.style.display = 'none';
+    }
+  });
+
   // Check existing session on load
+  // Check URL hash for article on load
+  (function(){
+    var hash = window.location.hash.substring(1);
+    if (hash && hash.startsWith('article')) {
+      setTimeout(function() { openArticle(hash); }, 300);
+    }
+  })();
+
   supabase.auth.getSession().then(function(result) {
     if (result.data.session && result.data.session.user) {
       showChatUI(result.data.session.user);
+    }
+  });
+
+  // Hamburger menu toggle
+  window.toggleHamburger = function() {
+    var links = document.querySelector('nav .links');
+    if (links) links.classList.toggle('open');
+  };
+  // Close hamburger when clicking a link
+  document.addEventListener('DOMContentLoaded', function() {
+    var navLinks = document.querySelectorAll('nav .links a');
+    for (var i = 0; i < navLinks.length; i++) {
+      navLinks[i].addEventListener('click', function() {
+        document.querySelector('nav .links').classList.remove('open');
+      });
+    }
+  });
+
+  // Back to top visibility
+  window.addEventListener('scroll', function() {
+    var btn = document.getElementById('btn-back-top');
+    if (btn) {
+      if (window.scrollY > 300) { btn.classList.add('visible'); }
+      else { btn.classList.remove('visible'); }
     }
   });
 
@@ -2113,13 +2184,12 @@ function showAuthUI() {
     var icon = isLight ? '☀️' : '🌙';
     var navBtn = document.getElementById('themeBtn');
     if (navBtn) navBtn.textContent = icon;
-    var chatBtn = document.getElementById('kechen-btn-theme');
-    if (chatBtn) chatBtn.textContent = icon;
   };})();
 </script>
 <!-- ========== End AI Chat Widget ========== -->
 
 
+<button id="btn-back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="回到顶部">↑</button>
 </body>
 </html>if (currentUser.email === OWNER_EMAIL) { alert('服主账号不可注销'); return; }
     
