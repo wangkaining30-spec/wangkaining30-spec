@@ -1287,7 +1287,55 @@ function showAuthUI() {
     }
   });
 
-  // Hamburger menu toggle
+  
+// Article series filter
+var _currentSeries = null;
+window.filterArticles = function(series) {
+  var items = document.querySelectorAll('.article-item');
+  if (_currentSeries === series) {
+    // Toggle off - show all
+    _currentSeries = null;
+    for (var i = 0; i < items.length; i++) { items[i].style.display = ''; }
+    // Remove active style from all series buttons
+    var btns = document.querySelectorAll('.interest-item');
+    for (var j = 0; j < btns.length; j++) { btns[j].style.borderColor = ''; }
+    return;
+  }
+  _currentSeries = series;
+  for (var i = 0; i < items.length; i++) {
+    var s = items[i].getAttribute('data-series');
+    items[i].style.display = (s === series) ? '' : 'none';
+  }
+  // Highlight active button
+  var btns = document.querySelectorAll('.interest-item');
+  var seriesNames = {cosmology: 0, thoughts: 1, philosophy: 2};
+  for (var j = 0; j < btns.length; j++) {
+    btns[j].style.borderColor = (j === seriesNames[series]) ? 'var(--accent)' : '';
+  }
+};
+
+// Scroll reveal observer
+(function(){
+  if (typeof IntersectionObserver === 'undefined') return;
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.15 });
+  
+  // Observe sections and cards
+  document.addEventListener('DOMContentLoaded', function() {
+    var targets = document.querySelectorAll('section > h2, .article-item, .work-card, .interest-item, .hero, .cosmology-card');
+    for (var i = 0; i < targets.length; i++) {
+      targets[i].classList.add('animate-on-scroll');
+      observer.observe(targets[i]);
+    }
+  });
+})();
+
+// Hamburger menu toggle
   window.toggleHamburger = function() {
     var links = document.querySelector('nav .links');
     if (!links) return;
