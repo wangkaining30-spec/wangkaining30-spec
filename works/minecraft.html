@@ -27,6 +27,76 @@
     .work-page .content .placeholder { padding:2rem; background:var(--card); border:1px dashed var(--border); border-radius:8px; text-align:center; color:var(--muted); }
     .work-page .tags { display:flex; gap:6px; flex-wrap:wrap; margin-top:2rem; }
     .work-page .tags span { font-size:0.75rem; padding:2px 8px; background:var(--card); border:1px solid var(--border); border-radius:4px; color:var(--muted); }
+  
+
+    /* === Video Grid === */
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+    .video-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .video-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+    }
+    .video-wrapper {
+      position: relative;
+      padding-top: 56.25%; /* 16:9 */
+      background: #000;
+    }
+    .video-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    .video-info {
+      padding: 0.8rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+    .video-number {
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+    .video-title {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text);
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .video-date {
+      font-size: 0.78rem;
+      color: var(--text-secondary, #999);
+      flex-shrink: 0;
+    }
+    @media (max-width: 768px) {
+      .video-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -54,6 +124,88 @@
     <div class="meta">游戏 · 开发 · 创作</div>
     <div class="content">
       <p>《我的世界》热门模组深度评测与推荐。多年深度玩法经验的沉淀。</p><h2>包含内容</h2><p>从科技模组到魔法模组、从冒险地图到建筑工具，用玩家视角告诉你哪些模组真正值得装、怎么搭配最好玩。</p><h2>当前进度</h2><div class="placeholder">📦 内容整理中，合集页面即将上线。<br>敬请期待！</div>
+
+    <h2>📺 模组测评视频</h2>
+    <div class="video-grid">
+
+      <div class="video-card">
+        <div class="video-wrapper">
+          <iframe src="//player.bilibili.com/player.html?bvid=BV1VjEQzEEgk&page=1&high_quality=1" 
+                  scrolling="no" border="0" frameborder="no" framespacing="0" 
+                  allowfullscreen="true" loading="lazy"></iframe>
+        </div>
+        <div class="video-info">
+          <span class="video-number">#1</span>
+          <span class="video-title">我的世界模组测评</span>
+          <span class="video-date">2026-05-04</span>
+        </div>
+      </div>
+
+      <div class="video-card">
+        <div class="video-wrapper">
+          <iframe src="//player.bilibili.com/player.html?bvid=BV1uUEQz7EWN&page=1&high_quality=1" 
+                  scrolling="no" border="0" frameborder="no" framespacing="0" 
+                  allowfullscreen="true" loading="lazy"></iframe>
+        </div>
+        <div class="video-info">
+          <span class="video-number">#2</span>
+          <span class="video-title">666，这模组是真的牛！</span>
+          <span class="video-date">2026-03-14</span>
+        </div>
+      </div>
+
+      <div class="video-card">
+        <div class="video-wrapper">
+          <iframe src="//player.bilibili.com/player.html?bvid=BV1LAEjzlEzn&page=1&high_quality=1" 
+                  scrolling="no" border="0" frameborder="no" framespacing="0" 
+                  allowfullscreen="true" loading="lazy"></iframe>
+        </div>
+        <div class="video-info">
+          <span class="video-number">#3</span>
+          <span class="video-title">我的世界模组测评</span>
+          <span class="video-date">2026-04-03</span>
+        </div>
+      </div>
+
+      <div class="video-card">
+        <div class="video-wrapper">
+          <iframe src="//player.bilibili.com/player.html?bvid=BV1nSEmziEQa&page=1&high_quality=1" 
+                  scrolling="no" border="0" frameborder="no" framespacing="0" 
+                  allowfullscreen="true" loading="lazy"></iframe>
+        </div>
+        <div class="video-info">
+          <span class="video-number">#4</span>
+          <span class="video-title">我的世界模组测评推荐_(:з」∠)_</span>
+          <span class="video-date">2026-04-05</span>
+        </div>
+      </div>
+
+      <div class="video-card">
+        <div class="video-wrapper">
+          <iframe src="//player.bilibili.com/player.html?bvid=BV1NLEjzYEvE&page=1&high_quality=1" 
+                  scrolling="no" border="0" frameborder="no" framespacing="0" 
+                  allowfullscreen="true" loading="lazy"></iframe>
+        </div>
+        <div class="video-info">
+          <span class="video-number">#5</span>
+          <span class="video-title">我的世界模组测评</span>
+          <span class="video-date">2026-04-11</span>
+        </div>
+      </div>
+
+      <div class="video-card">
+        <div class="video-wrapper">
+          <iframe src="//player.bilibili.com/player.html?bvid=BV1cSEmzYEZV&page=1&high_quality=1" 
+                  scrolling="no" border="0" frameborder="no" framespacing="0" 
+                  allowfullscreen="true" loading="lazy"></iframe>
+        </div>
+        <div class="video-info">
+          <span class="video-number">#6</span>
+          <span class="video-title">我的世界模组测评</span>
+          <span class="video-date">2026-04-14</span>
+        </div>
+      </div>
+    </div>
     </div>
     <div class="tags"><span>游戏</span><span>开发</span><span>创作</span><span>Minecraft</span></div>
   </div>
