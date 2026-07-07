@@ -33,7 +33,7 @@
     .video-list { margin-top: 1rem; }
     .video-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 1.5rem; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
     .video-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.25); }
-    .video-thumb { position: relative; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); height: 200px; display: flex; align-items: center; justify-content: center; }
+    .video-thumb { position: relative; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); height: 200px; position: relative; display: flex; align-items: center; justify-content: center; }
     .video-thumb::after { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,0.3); }
     .play-btn { position: relative; z-index: 1; width: 60px; height: 60px; background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.4); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #fff; transition: all 0.2s; }
     .video-card:hover .play-btn { background: var(--accent); border-color: var(--accent); transform: scale(1.1); }
@@ -44,6 +44,13 @@
     .video-title { font-size: 0.9rem; font-weight: 500; color: var(--text); flex: 1; }
     .video-duration { font-size: 0.75rem; color: var(--muted); flex-shrink: 0; }
     .video-note { text-align: center; color: var(--muted); font-size: 0.85rem; padding: 1rem; }
+
+  
+    .video-desc { font-size: 0.78rem; color: var(--muted); display: block; margin-top: 0.3rem; }
+    .video-info { flex-wrap: wrap; }
+    .video-info .video-title { f
+    .video-thumb-bg { position: absolute; inset: 0; opacity: 0.1; background: repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(255,255,255,0.03) 40px, rgba(255,255,255,0.03) 41px), repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(255,255,255,0.03) 40px, rgba(255,255,255,0.03) 41px); }
+lex: 1 1 100%; }
 
   </style>
 </head>
@@ -77,28 +84,32 @@
     <div class="video-list">
       <div class="video-card" data-video="https://wangkaining30-spec.github.io/wangkaining30-spec/works/videos/video_1.mp4" onclick="playVideo(this)">
         <div class="video-thumb">
-          <div class="play-btn">▶</div>
+          <div class="video-thumb-bg"></div><div class="play-btn">▶</div>
         </div>
         <div class="video-info">
           <span class="video-number">#1</span>
           <span class="video-title">我的世界模组测评</span>
+          <span class="video-desc">更多模组推荐，持续更新中</span>
+          <span class="video-desc">精选模组深度评测，告诉你哪些值得装</span>
+          <span class="video-desc">热门模组上手实测，从安装到体验全流程展示</span>
           <span class="video-duration">9.4 MB</span>
         </div>
       </div>
       
       <div class="video-card" data-video="https://wangkaining30-spec.github.io/wangkaining30-spec/works/videos/video_2.mp4" onclick="playVideo(this)">
         <div class="video-thumb">
-          <div class="play-btn">▶</div>
+          <div class="video-thumb-bg"></div><div class="play-btn">▶</div>
         </div>
         <div class="video-info">
           <span class="video-number">#2</span>
           <span class="video-title">如何建造双向水电梯</span>
+          <span class="video-desc">简单实用的水电梯教程，生存模式必备技巧</span>
           <span class="video-duration">7.2 MB</span>
         </div>
       </div>
       <div class="video-card" data-video="https://wangkaining30-spec.github.io/wangkaining30-spec/works/videos/video_3.mp4" onclick="playVideo(this)">
         <div class="video-thumb">
-          <div class="play-btn">▶</div>
+          <div class="video-thumb-bg"></div><div class="play-btn">▶</div>
         </div>
         <div class="video-info">
           <span class="video-number">#3</span>
@@ -111,7 +122,7 @@
       
 <div class="video-card" data-video="https://wangkaining30-spec.github.io/wangkaining30-spec/works/videos/video_5.mp4" onclick="playVideo(this)">
         <div class="video-thumb">
-          <div class="play-btn">▶</div>
+          <div class="video-thumb-bg"></div><div class="play-btn">▶</div>
         </div>
         <div class="video-info">
           <span class="video-number">#4</span>
@@ -122,7 +133,7 @@
     
       <div class="video-card" data-video="https://wangkaining30-spec.github.io/wangkaining30-spec/works/videos/video_7.mp4" onclick="playVideo(this)">
         <div class="video-thumb">
-          <div class="play-btn">▶</div>
+          <div class="video-thumb-bg"></div><div class="play-btn">▶</div>
         </div>
         <div class="video-info">
           <span class="video-number">#5</span>
