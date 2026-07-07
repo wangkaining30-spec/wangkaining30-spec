@@ -317,7 +317,8 @@ function closeModal() {
   }
 }
 
-document.getElementById('modal').addEventListener('click', function(e) {
+var modalEl = document.getElementById('modal');
+if (modalEl) modalEl.addEventListener('click', function(e) {
   if (e.target === this) closeModal();
 });
 
