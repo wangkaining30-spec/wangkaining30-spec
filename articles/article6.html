@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<script>(function(){var t=localStorage.getItem('kechen_theme')||'dark';if(t==='light')document.body.classList.add('light-theme');})();</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>客尘宇宙模型：从-1号元素到引力元素的完整宇宙图景</title>
@@ -57,19 +56,19 @@
 
 
 <script>
-(function(){
-  var t=localStorage.getItem('kechen_theme')||'dark';
-  if(t==='light')document.body.classList.add('light-theme');
-  var b=document.getElementById('themeBtn');
-  if(b)b.textContent=t==='light'?'昼':'夜';
-  window.toggleTheme=function(){
-    document.body.classList.toggle('light-theme');
-    var i=document.body.classList.contains('light-theme');
-    localStorage.setItem('kechen_theme',i?'light':'dark');
-    var n=document.getElementById('themeBtn');
-    if(n)n.textContent=i?'昼':'夜';
-  };
-})();
-</script>
-
+  // 主题切换（内联双保险，不依赖 script.js）
+  (function(){
+    var theme = localStorage.getItem('kechen_theme') || 'dark';
+    if (theme === 'light') document.body.classList.add('light-theme');
+    var btn = document.getElementById('themeBtn');
+    if (btn) btn.textContent = theme === 'light' ? '☀️' : '🌙';
+    window.toggleTheme = function() {
+      document.body.classList.toggle('light-theme');
+      var isLight = document.body.classList.contains('light-theme');
+      localStorage.setItem('kechen_theme', isLight ? 'light' : 'dark');
+      var navBtn = document.getElementById('themeBtn');
+      if (navBtn) navBtn.textContent = isLight ? '☀️' : '🌙';
+    };
+  })();
+  </script>
 </body>
