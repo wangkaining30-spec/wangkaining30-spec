@@ -207,6 +207,7 @@
     for (var i = 0; i < els.length; i++) {
       var e = els[i];
       if (e.closest && e.closest('script, style, noscript')) continue;
+      if (e.parentElement) { var p = e.parentElement; while (p) { if (['SCRIPT','STYLE','NOSCRIPT'].indexOf(p.tagName) >= 0) { e = null; break; } p = p.parentElement; } if (!e) continue; }
       var zh = e.getAttribute('data-zh');
       if (!zh || !zh.trim()) { zh = (e.textContent || '').trim(); if (!zh) continue; }
       e.textContent = active ? (EN_MAP[zh] || zh) : zh;
