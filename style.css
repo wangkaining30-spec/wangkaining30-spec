@@ -264,7 +264,7 @@
   }
   #autoTransToast.show { opacity: 1; }
   /* Back to top */
-  #btn-back-top { position:fixed; bottom:24px; right:24px; z-index:250;
+  #btn-back-top { position:fixed; bottom:90px; right:24px; z-index:9998;
     width:40px; height:40px; border-radius:50%; background:var(--accent); color:var(--bg);
     border:none; font-size:1.2rem; cursor:pointer; opacity:0; transition:opacity 0.3s; pointer-events:none; }
   #btn-back-top.visible { opacity:0.8; pointer-events:auto; }
