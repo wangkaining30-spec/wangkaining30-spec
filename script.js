@@ -1,4 +1,17 @@
-/* 客尘网站 - 主脚本 */
+/* 客尘网站 - 主脚本 v4 */
+
+// Polyfill for Element.closest() - for old mobile browsers
+if (!Element.prototype.closest) {
+  Element.prototype.closest = function(selector) {
+    var el = this;
+    while (el && el.nodeType === 1) {
+      if (el.matches(selector)) return el;
+      el = el.parentElement;
+    }
+    return null;
+  };
+}
+
 // Force scroll to top on load (prevent browser scroll restoration)
 if ('scrollRestoration' in history) {
   history.scrollRestoration = 'manual';
