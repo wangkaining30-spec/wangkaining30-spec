@@ -1124,11 +1124,14 @@ function showAuthUI() {
   // ====== Chat ======
   window.toggleChatPanel = function() {
     var panel = document.getElementById('kechen-chat-panel');
+    var input = document.getElementById('kechen-chat-input');
     panel.classList.toggle('open');
     if (panel.classList.contains('open') && currentUser) {
       var savedNick = localStorage.getItem('kechen_nickname');
     if (savedNick) { document.getElementById('kechen-header-user').textContent = savedNick; }
-    document.getElementById('kechen-chat-input').focus();
+    if (input) input.focus();
+    } else {
+      if (input) input.blur();
     }
   };
 
