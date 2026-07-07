@@ -56,20 +56,20 @@
   <script src="../script.js"></script>
 
 
-  <script>
-  (function(){
-    var t=localStorage.getItem('kechen_theme')||'dark';
-    if(t==='light')document.body.classList.add('light-theme');
-    var b=document.getElementById('themeBtn');
-    if(b)b.textContent=t==='light'?'L':'D';
-    window.toggleTheme=function(){
-      document.body.classList.toggle('light-theme');
-      var i=document.body.classList.contains('light-theme');
-      localStorage.setItem('kechen_theme',i?'light':'dark');
-      var n=document.getElementById('themeBtn');
-      if(n)n.textContent=i?'L':'D';
-    };
-  })();
-  </script>
+<script>
+(function(){
+  var t=localStorage.getItem('kechen_theme')||'dark';
+  if(t==='light')document.body.classList.add('light-theme');
+  var b=document.getElementById('themeBtn');
+  if(b)b.textContent=t==='light'?'昼':'夜';
+  window.toggleTheme=function(){
+    document.body.classList.toggle('light-theme');
+    var i=document.body.classList.contains('light-theme');
+    localStorage.setItem('kechen_theme',i?'light':'dark');
+    var n=document.getElementById('themeBtn');
+    if(n)n.textContent=i?'昼':'夜';
+  };
+})();
+</script>
 
 </body>
