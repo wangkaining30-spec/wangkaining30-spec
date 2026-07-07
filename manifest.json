@@ -1,0 +1,16 @@
+{
+  "name": "客尘 - 个人网站",
+  "short_name": "客尘",
+  "description": "宇宙探索者 · AI 创作者",
+  "start_url": "/wangkaining30-spec/",
+  "display": "standalone",
+  "background_color": "#0a0a0f",
+  "theme_color": "#b89b5b",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪐</text></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
