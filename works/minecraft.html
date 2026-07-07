@@ -326,7 +326,7 @@ lex: 1 1 100%; }
       var e = els[i];
       if (e.closest && e.closest('script, style, noscript')) continue;
       var zh = e.getAttribute('data-zh');
-      if (!zh || !zh.trim()) continue;
+      if (!zh || !zh.trim()) { zh = (e.textContent || '').trim(); if (!zh) continue; }
       e.textContent = active ? (EN_MAP[zh] || zh) : zh;
     }
     var btn = document.getElementById('autoTransBtn');
