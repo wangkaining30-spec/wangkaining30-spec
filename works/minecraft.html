@@ -1,12 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<script>
-(function(){
-  var t=localStorage.getItem('kechen_theme')||'dark';
-  if(t==='light')document.body.classList.add('light-theme');
-})();
-</script>
+<script>(function(){var t=localStorage.getItem('kechen_theme')||'dark';if(t==='light')document.body.classList.add('light-theme');})();</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Minecraft 模组评价 — 客尘</title>
@@ -179,21 +174,21 @@ lex: 1 1 100%; }
   <script src="../script.js"></script>
 
 
-  <script>
-  (function(){
-    var t=localStorage.getItem('kechen_theme')||'dark';
-    if(t==='light')document.body.classList.add('light-theme');
-    var b=document.getElementById('themeBtn');
-    if(b)b.textContent=t==='light'?'L':'D';
-    window.toggleTheme=function(){
-      document.body.classList.toggle('light-theme');
-      var i=document.body.classList.contains('light-theme');
-      localStorage.setItem('kechen_theme',i?'light':'dark');
-      var n=document.getElementById('themeBtn');
-      if(n)n.textContent=i?'L':'D';
-    };
-  })();
-  </script>
+<script>
+(function(){
+  var t=localStorage.getItem('kechen_theme')||'dark';
+  if(t==='light')document.body.classList.add('light-theme');
+  var b=document.getElementById('themeBtn');
+  if(b)b.textContent=t==='light'?'昼':'夜';
+  window.toggleTheme=function(){
+    document.body.classList.toggle('light-theme');
+    var i=document.body.classList.contains('light-theme');
+    localStorage.setItem('kechen_theme',i?'light':'dark');
+    var n=document.getElementById('themeBtn');
+    if(n)n.textContent=i?'昼':'夜';
+  };
+})();
+</script>
 
 </body>
 </html>
