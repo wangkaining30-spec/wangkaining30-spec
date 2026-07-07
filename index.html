@@ -11,6 +11,8 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://wangkaining30-spec.github.io/wangkaining30-spec/">
 <meta name="twitter:card" content="summary">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#b89b5b">
 <script>history.scrollRestoration="manual";window.addEventListener("pageshow",function(e){if(e.persisted||!window.location.hash)window.scrollTo(0,0)});setTimeout(function(){if(!window.location.hash)window.scrollTo(0,0)},100)</script>
   <link rel="stylesheet" href="style.css">
 
@@ -394,5 +396,22 @@
 
 
 <button id="btn-back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="回到顶部">↑</button>
+
+<script>
+// Service Worker
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/wangkaining30-spec/sw.js');
+}
+</script>
+<script>
+// Baidu Analytics
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?REPLACE_WITH_YOUR_ID";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
 </body>
 </html>
