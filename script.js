@@ -330,7 +330,11 @@ if (modalEl) modalEl.addEventListener('click', function(e) {
   // Supabase init
   const SUPABASE_URL = "https://fegouedpioqqzsuazbeb.supabase.co";
   const SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZlZ291ZWRwaW9xcXpzdWF6YmViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMxNjc4MTIsImV4cCI6MjA5ODc0MzgxMn0.8GaW6cjoNhvI6k5ms4I_yVzSXcKSL40197f4Slrvin8";
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+  const supabase = (function() {
+    if (typeof window.supabase === 'undefined') return null;
+    try { return window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON); }
+    catch(e) { console.warn('Supabase init failed:', e); return null; }
+  })();
 
   // DeepSeek API (obfuscated)
   const _c0=[0x41,0x09,0x4f,0x57];const _c1=[0x47,0x11,0x1d,0x40];const _c2=[0x40,0x42,0x16,0x46];const _c3=[0x10,0x40,0x41,0x15];const _c4=[0x46,0x14,0x45,0x15];const _c5=[0x11,0x12,0x46,0x17];const _c6=[0x41,0x42,0x46,0x14];const _c7=[0x40,0x12,0x47,0x12];const _c8=[0x14,0x13,0x45];
@@ -1246,7 +1250,7 @@ function showAuthUI() {
   }
 
   // ====== Session listener ======
-  supabase.auth.onAuthStateChange(function(event, session) {
+  if (supabase) supabase.auth.onAuthStateChange(function(event, session) {
     if (session && session.user) {
       showChatUI(session.user);
     } else {
@@ -1293,7 +1297,7 @@ function showAuthUI() {
     }
   })();
 
-  supabase.auth.getSession().then(function(result) {
+  if (supabase) supabase.auth.getSession().then(function(result) {
     if (result.data.session && result.data.session.user) {
       showChatUI(result.data.session.user);
     }
