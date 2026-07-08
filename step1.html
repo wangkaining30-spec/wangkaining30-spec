@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Step1: +localStorage</title>
+<style>
+  body { font-family: sans-serif; padding: 20px; background: #111; color: #eee; }
+  button { padding: 15px 30px; font-size: 18px; margin: 5px; }
+  a { color: #88f; margin: 0 10px; }
+  .box { margin: 15px 0; padding: 10px; background: #222; border-radius: 8px; }
+</style>
+</head>
+<body>
+<h2>Step 1: 小字典 + localStorage（无自动翻译）</h2>
+
+<nav>
+  <a href="#" data-zh>客尘</a>
+  <a href="#" data-zh>关于</a>
+  <a href="#" data-zh>兴趣</a>
+</nav>
+
+<button onclick="doTranslate()" id="btn">🌐 翻译</button>
+<button onclick="localStorage.removeItem('kechen_lang');location.reload()">🗑 清除</button>
+
+<div class="box">
+  <b>localStorage.kechen_lang =</b> <span id="storageVal"></span><br>
+  <b>状态：</b><span id="log"></span>
+</div>
+
+<p><a href="step2.html">→ 去 Step2 页面</a></p>
+
+<script>
+  var en = false;
+  var map = { '客尘': 'guest dust', '关于': 'about', '兴趣': 'interest' };
+  
+  function updateDisplay() {
+    document.getElementById('storageVal').textContent = '"' + (localStorage.getItem('kechen_lang') || '(空)') + '"';
+  }
+  
+  window.doTranslate = function() {
+    en = !en;
+    localStorage.setItem('kechen_lang', en ? 'en' : 'zh');
+    document.getElementById('log').textContent = 'en=' + en;
+    
+    var els = document.querySelectorAll('[data-zh]');
+    for (var i = 0; i < els.length; i++) {
+      var e = els[i];
+      var zh = e.getAttribute('data-zh');
+      if (!zh || !zh.trim()) {
+        zh = e.textContent.trim();
+        if (!zh) continue;
+        e.setAttribute('data-zh', zh);
+      }
+      e.textContent = en ? (map[zh] || zh) : zh;
+    }
+    
+    document.getElementById('btn').textContent = en ? '↩ 恢复' : '🌐 翻译';
+    updateDisplay();
+  };
+  
+  updateDisplay();
+</script>
+</body>
+</html>
