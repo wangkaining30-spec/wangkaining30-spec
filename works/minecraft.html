@@ -318,9 +318,9 @@ lex: 1 1 100%; }
   '⚠️ 本模型为探索性假说，尚未经同行评审，不构成已确立的科学理论。核心想法来自作者本人（王铠宁 / 客尘），AI 辅助了文字整理、语言润色与可视化呈现。文中所有机制均为定性猜想，尚无数学形式化与定量预测，欢迎批评与讨论。': '⚠️ This model is an exploratory hypothesis that has not yet been peer-reviewed and does not constitute an established scientific theory. The core idea comes from the author himself (Wang Kaining/Kechen), and AI assists in text organization, language polishing and visual presentation. All mechanisms in this article are qualitative conjectures, and there is no mathematical formalization or quantitative prediction. Criticism and discussion are welcome.',
   '14 岁的宇宙探索者，热爱物理、哲学与 AI 创作。相信星空之下，每一个问题都值得被追问。': 'A 14-year-old universe explorer, passionate about physics, philosophy, and AI creation. I believe that under the starry sky, every question is worth asking.',
 };
-  var active = false;
+  var active = localStorage.getItem('kechen_lang') === 'en';
   window.autoTranslatePage = function() {
-    active = !active;
+    active = !active;\n    localStorage.setItem('kechen_lang', active ? 'en' : 'zh');
     var els = document.querySelectorAll('[data-zh]');
     for (var i = 0; i < els.length; i++) {
       var e = els[i];
@@ -333,6 +333,21 @@ lex: 1 1 100%; }
     var btn = document.getElementById('autoTransBtn');
     if (btn) btn.style.opacity = active ? '1' : '0.6';
   };
+  
+  // Auto-translate if page was already in English mode
+  if (active) {
+    var _els = document.querySelectorAll('[data-zh]');
+    for (var _i = 0; _i < _els.length; _i++) {
+      var _e = _els[_i];
+      if (_e.closest && _e.closest('script, style, noscript')) continue;
+      if (_e.parentElement) { var _p = _e.parentElement; while (_p) { if (['SCRIPT','STYLE','NOSCRIPT'].indexOf(_p.tagName) >= 0) { _e = null; break; } _p = _p.parentElement; } if (!_e) continue; }
+      var _zh = _e.getAttribute('data-zh');
+      if (!_zh || !_zh.trim()) { _zh = (_e.textContent || '').trim(); if (!_zh) continue; _e.setAttribute('data-zh', _zh); }
+      _e.textContent = EN_MAP[_zh] || _zh;
+    }
+    var _btn = document.getElementById('autoTransBtn');
+    if (_btn) _btn.style.opacity = '1';
+  }
 })();
 </script>
 </body>
