@@ -320,7 +320,8 @@ lex: 1 1 100%; }
 };
   var active = localStorage.getItem('kechen_lang') === 'en';
   window.autoTranslatePage = function() {
-    active = !active;\n    localStorage.setItem('kechen_lang', active ? 'en' : 'zh');
+    active = !active;
+    localStorage.setItem('kechen_lang', active ? 'en' : 'zh');
     var els = document.querySelectorAll('[data-zh]');
     for (var i = 0; i < els.length; i++) {
       var e = els[i];
