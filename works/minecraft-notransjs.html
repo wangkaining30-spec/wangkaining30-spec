@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Minecraft 模组评价 — 客尘</title>
+  <meta name="description" content="《我的世界》热门模组深度评测与推荐">
+  <meta property="og:title" content="Minecraft 模组评价 — 客尘">
+  <meta property="og:description" content="《我的世界》热门模组深度评测与推荐">
+  <meta property="og:url" content="https://wangkaining30-spec.github.io/wangkaining30-spec/works/minecraft.html">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🪐</text></svg>">
+  <script>history.scrollRestoration="manual";window.addEventListener("pageshow",function(e){window.scrollTo(0,0)});setTimeout(function(){window.scrollTo(0,0)},100)</script>
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .work-page { max-width:800px; margin:0 auto; padding:80px 1rem 60px; }
+    .work-page .back-link { display:inline-block; margin-bottom:2rem; color:var(--muted); font-size:0.85rem; }
+    .work-page .back-link:hover { color:var(--text); }
+    .work-page h1 { font-size:2rem; margin-bottom:0.5rem; color:var(--text); }
+    .work-page .status-badge { display:inline-block; padding:2px 10px; border-radius:4px; font-size:0.75rem; margin-bottom:1.5rem; }
+    .work-page .status-badge.wip { background:rgba(184,155,91,0.15); color:var(--accent); }
+    .work-page .status-badge.planned { background:rgba(106,140,175,0.15); color:var(--accent2); }
+    .work-page .status-badge.done { background:rgba(100,180,120,0.15); color:#4a9; }
+    .work-page .meta { color:var(--muted); font-size:0.85rem; margin-bottom:2rem; }
+    .work-page .content { line-height:1.9; color:var(--text); }
+    .work-page .content h2 { font-size:1.3rem; margin:2rem 0 0.8rem; color:var(--gold); }
+    .work-page .content p { margin-bottom:1rem; }
+    .work-page .content .placeholder { padding:2rem; background:var(--card); border:1px dashed var(--border); border-radius:8px; text-align:center; color:var(--muted); }
+    .work-page .tags { display:flex; gap:6px; flex-wrap:wrap; margin-top:2rem; }
+    .work-page .tags span { font-size:0.75rem; padding:2px 8px; background:var(--card); border:1px solid var(--border); border-radius:4px; color:var(--muted); }
+    
+    /* === Video Player === */
+    .video-list { margin-top: 1rem; }
+    .video-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 1.5rem; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+    .video-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.25); }
+    body.light-theme .video-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+    .video-thumb { position: relative; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); height: 200px; position: relative; display: flex; align-items: center; justify-content: center; }
+    .video-thumb::after { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,0.3); }
+    .play-btn { position: relative; z-index: 1; width: 60px; height: 60px; background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.4); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #fff; transition: all 0.2s; }
+    .video-card:hover .play-btn { background: var(--accent); border-color: var(--accent); transform: scale(1.1); }
+    .video-player { background: #000; }
+    body.light-theme .video-player { background: #222; }
+    .video-player video { display: block; width: 100%; max-height: 70vh; }
+    .video-info { padding: 0.8rem 1rem; display: flex; align-items: center; gap: 0.6rem; }
+    .video-number { background: var(--accent); color: #fff; font-size: 0.75rem; font-weight: 700; padding: 2px 8px; border-radius: 4px; flex-shrink: 0; }
+    body.light-theme .video-number { color: #fff; }
+    .video-title { font-size: 0.9rem; font-weight: 500; color: var(--text); flex: 1; }
+    .video-duration { font-size: 0.75rem; color: var(--muted); flex-shrink: 0; }
+    .video-note { text-align: center; color: var(--muted); font-size: 0.85rem; padding: 1rem; }
+
+  
+    .video-desc { font-size: 0.78rem; color: var(--muted); display: block; margin-top: 0.3rem; }
+    .video-info { flex-wrap: wrap; }
+    .video-info .video-title { f
+    .video-thumb-bg { position: absolute; inset: 0; opacity: 0.1; background: repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(255,255,255,0.03) 40px, rgba(255,255,255,0.03) 41px), repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(255,255,255,0.03) 40px, rgba(255,255,255,0.03) 41px); }
+lex: 1 1 100%; }
+
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="inner">
+      <a href="../" class="logo">客尘</a>
+      <div class="links">
+        <a href="../#about" data-zh>关于</a>
+        <a href="../#interests" data-zh>兴趣</a>
+        <a href="../#models" data-zh>模型</a>
+        <a href="../#articles" data-zh>文章</a>
+        <a href="../#works" data-zh>作品</a>
+        <a href="../#contact" data-zh>联系</a>
+      </div>
+      <button class="hamburger-btn" onclick="toggleHamburger()" id="hamburgerBtn" title="菜单">☰</button>
+      <button class="lang-switch auto-trans-btn" onclick="autoTranslatePage()" id="autoTransBtn" title="自动翻译页面">🌐</button>
+      <button class="lang-switch" onclick="toggleTheme()" id="themeBtn" title="切换深色/浅色模式">🌙</button>
+    </div>
+  </nav>
+
+  <div class="work-page">
+    <a href="../#works" class="back-link">← 返回作品列表</a>
+    <h1>Minecraft 模组评价</h1>
+    <span class="status-badge done">已完成</span>
+    <div class="meta">游戏 · 开发 · 创作</div>
+    <div class="content">
+      <p>《我的世界》热门模组深度评测与推荐。多年深度玩法经验的沉淀。</p><h2>包含内容</h2><p>从科技模组到魔法模组、从冒险地图到建筑工具，用玩家视角告诉你哪些模组真正值得装、怎么搭配最好玩。</p><h2>当前进度</h2><div class="placeholder">📦 内容整理中，合集页面即将上线。<br>敬请期待！</div>
+
+    <h2>📺 模组测评视频</h2>
+    <div class="video-list">
+      <div class="video-card" data-video="https://wangkaining30-spec.github.io/wangkaining30-spec/works/videos/video_1.mp4" onclick="playVideo(this)">
+        <div class="video-thumb">
+          <div class="video-thumb-bg"></div><div class="play-btn">▶</div>
+        </div>
+        <div class="video-info">
+          <span class="video-number">#1</span>
+          <span class="video-title">我的世界模组测评</span>
+          <span class="video-desc">更多模组推荐，持续更新中</span>
+          <span class="video-desc">精选模组深度评测，告诉你哪些值得装</span>
+          <span class="video-desc">热门模组上手实测，从安装到体验全流程展示</span>
+          <span class="video-duration">9.4 MB</span>
+        </div>
+      </div>
+      
+      <div class="video-card" data-video="https://wangkaining30-spec.github.io/wangkaining30-spec/works/videos/video_2.mp4" onclick="playVideo(this)">
+        <div class="video-thumb">
+          <div class="video-thumb-bg"></div><div class="play-btn">▶</div>
+        </div>
+        <div class="video-info">
+          <span class="video-number">#2</span>
+          <span class="video-title">如何建造双向水电梯</span>
+          <span class="video-desc">简单实用的水电梯教程，生存模式必备技巧</span>
+          <span class="video-duration">7.2 MB</span>
+        </div>
+      </div>
+      <div class="video-card" data-video="https://wangkaining30-spec.github.io/wangkaining30-spec/works/videos/video_3.mp4" onclick="playVideo(this)">
+        <div class="video-thumb">
+          <div class="video-thumb-bg"></div><div class="play-btn">▶</div>
+        </div>
+        <div class="video-info">
+          <span class="video-number">#3</span>
+          <span class="video-title">我的世界模组测评</span>
+          <span class="video-duration">7.7 MB</span>
+        </div>
+      </div>
+
+
+      
+<div class="video-card" data-video="https://wangkaining30-spec.github.io/wangkaining30-spec/works/videos/video_5.mp4" onclick="playVideo(this)">
+        <div class="video-thumb">
+          <div class="video-thumb-bg"></div><div class="play-btn">▶</div>
+        </div>
+        <div class="video-info">
+          <span class="video-number">#4</span>
+          <span class="video-title">我的世界模组测评</span>
+          <span class="video-duration">7.4 MB</span>
+        </div>
+      </div>
+    
+      <div class="video-card" data-video="https://wangkaining30-spec.github.io/wangkaining30-spec/works/videos/video_7.mp4" onclick="playVideo(this)">
+        <div class="video-thumb">
+          <div class="video-thumb-bg"></div><div class="play-btn">▶</div>
+        </div>
+        <div class="video-info">
+          <span class="video-number">#5</span>
+          <span class="video-title">我的世界模组测评</span>
+          <span class="video-duration">7.4 MB</span>
+        </div>
+      </div>
+    </div>
+    </div>
+    <script>
+    function playVideo(card) {
+      var url = card.getAttribute('data-video');
+      var player = document.createElement('div');
+      player.className = 'video-player';
+      player.innerHTML = '<video controls autoplay playsinline style="width:100%;border-radius:8px;"><source src="' + url + '" type="video/mp4"></video>';
+      var thumb = card.querySelector('.video-thumb');
+      thumb.parentNode.replaceChild(player, thumb);
+      card.onclick = null;
+      card.style.cursor = 'default';
+    }
+    </script>
+
+    </div>
+    <div class="tags"><span>游戏</span><span>开发</span><span>创作</span><span>Minecraft</span></div>
+  </div>
+
+  <footer id="contact">
+    <p>© 2026 客尘. All Rights Reserved.</p>
+    <p>浙江绍兴 · 宇宙探索者 · AI 创作者</p>
+    <p>联系我：<a href="mailto:3762066652@qq.com">3762066652@qq.com</a></p>
+  </footer>
+
+  <button id="btn-back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="回到顶部">↑</button>
+  <!-- script.js REMOVED for testing -->
+<script>
+  // 主题切换（内联双保险，不依赖 script.js）
+  (function(){
+    var theme = localStorage.getItem('kechen_theme') || 'dark';
+    if (theme === 'light') document.body.classList.add('light-theme');
+    var btn = document.getElementById('themeBtn');
+    if (btn) btn.textContent = theme === 'light' ? '☀️' : '🌙';
+    window.toggleTheme = function() {
+      document.body.classList.toggle('light-theme');
+      var isLight = document.body.classList.contains('light-theme');
+      localStorage.setItem('kechen_theme', isLight ? 'light' : 'dark');
+      var navBtn = document.getElementById('themeBtn');
+      if (navBtn) navBtn.textContent = isLight ? '☀️' : '🌙';
+    };
+  })();
+  </script>
+
+<script>
+// 极简翻译脚本 — 无 closest，无复杂遍历，最大兼容性
+(function(){
+  var M = {
+  '作品': 'work','本名': 'real name','联系': 'connect','笔名': 'pen name',
+  '坐标': 'coordinate','文章': 'article','年龄': 'age','模型': 'Model',
+  '关于': 'about','兴趣': 'interest','客尘': 'guest dust',
+  '膨胀期': 'expansion period','计划中': 'in plan','关于我': 'About me',
+  '进行中': 'in progress','王铠宁': 'Wang Kaining','积累期': 'accumulation period',
+  '临界点': 'critical point','收缩期': 'systole','已完成': 'Completed',
+  '时间原子': 'time atoms','研究意义': 'Research significance',
+  '引力粒子': 'gravitational particle','负一物质': 'negative one matter',
+  '浙江绍兴': 'Shaoxing, Zhejiang','更多系列': 'More series',
+  '更新日志': 'Change log','哲学思辨': 'philosophical speculation',
+  '普通物质': 'Ordinary matter','兴趣领域': 'areas of interest',
+  '14 岁': '14 years old','游戏探索': 'Game exploration',
+  '联系我：': 'Contact me:','宇宙探索者': 'space explorer',
+  '暗能量本质': 'The nature of dark energy','时间物质性': 'time materiality',
+  '写作与创作': 'Writing and Creation','大爆炸起因': 'Cause of the big bang',
+  'AI 创作者': 'AI Creator','宇宙循环引擎': 'cosmic cycle engine',
+  '个人网站上线': 'Personal website online','宇宙呼吸模型': 'cosmic breathing model',
+  '视觉艺术创作': 'visual art creation','思想起源与随笔': 'Origins of Thoughts and Essays',
+  '作品 / 项目': 'Works/Projects','哲学与人生思考': 'Philosophy and life thinking',
+  '宇宙物理与科幻': 'Cosmic Physics and Science Fiction',
+  '记录思想发展历程': 'Record the development of ideas',
+  '点击阅读全文 →': 'Click to read the full text →',
+  'AI 创作与开发': 'AI creation and development',
+  '更多作品即将上线': 'More works will be released soon',
+  '零元素 / 混沌': 'Zero Element/Chaos',
+  '超现实视觉作品集': 'Surreal Visual Portfolio',
+  '个人宇宙学猜想系列': 'Personal cosmological conjecture series',
+  'AI 陪伴平台原型': 'AI companion platform prototype',
+  '与 ΛCDM 对比': 'Compare with ΛCDM',
+  '关于人生、命运、意识': 'About life, destiny, consciousness',
+  '客尘 · 宇宙探索者': 'Kechen·Space Explorer',
+  '探索性假说与思想实验': 'Exploratory Hypotheses and Thought Experiments',
+  '第六篇理论文章定稿投稿': 'The sixth theoretical article is finalized and submitted for publication',
+  '游戏 · 开发 · 创作': 'Games · Development · Creation',
+  'AI · 开发 · 产品': 'AI · Development · Products',
+  '艺术 · 创作 · 视觉': 'Art · Creation · Vision',
+  '首次整理童年猜想，开启写作': 'For the first time, I sorted out my childhood guesses and started writing.',
+  '物理 · 科幻 · 可视化': 'Physics · Science Fiction · Visualization',
+  'Minecraft 指令工坊': 'Minecraft Command Workshop',
+  '一个在黑洞爆炸中醒来的童年猜想': 'A childhood conjecture about waking up in a black hole explosion',
+  '客尘宇宙模型 · 五大基本实体': 'Kechen Universe Model · Five Basic Entities',
+  '保持创作热情，不断探索新事物的边界': 'Maintain creative enthusiasm and constantly explore the boundaries of new things',
+  '「在宇宙的呼吸中，寻找意识的坐标。」': '"Looking for the coordinates of consciousness in the breath of the universe."',
+  '一天的追问：从真理的边界到宇宙的边界': 'A day of questioning: from the boundary of truth to the boundary of the universe',
+  '探讨意识本质、AI 本质与虚拟世界真实性': 'Explore the nature of consciousness, the nature of AI, and the authenticity of virtual worlds',
+  '深度玩家，精通《我的世界》指令与高级玩法': 'Deep player, proficient in "Minecraft" commands and advanced gameplay',
+  '从归源衰变到引力元素：宇宙模型的深度续论': 'From origin decay to gravitational elements: an in-depth continuation of the universe model',
+  '我们的人生，是不是早就被写好的“幻灯片”？': 'Is our life a “slideshow” that has been written long ago?',
+  '稳定相负一物质总量突破阈值，引力粒子被唤醒': 'The total amount of matter in the stable phase negative one breaks through the threshold, and the gravitational particles are awakened',
+  '《我的世界》高级指令系统与红石机械装置合集': '"Minecraft" advanced command system and redstone mechanical device collection',
+  '浙江绍兴 · 宇宙探索者 · AI 创作者': 'Shaoxing, Zhejiang · Universe Explorer · AI Creator',
+  '超现实风格，油彩黑底、点彩几何、五维空间扭曲': 'Surreal style, oil paint on black background, pointillism geometry, five-dimensional space distortion',
+  '基于暗能量与黑洞演化的宇宙呼吸假说可视化探索': 'Visual exploration of the cosmic breathing hypothesis based on dark energy and black hole evolution',
+  '引力粒子主导，宇宙减速膨胀并转为收缩，回归奇点': 'Gravitational particles dominate, the universe slows down its expansion and turns to contraction, returning to the singularity',
+  '基于大语言模型的陪伴式 AI 对话平台概念设计': 'Conceptual design of companion AI dialogue platform based on large language model',
+  '关注大模型 API 开发，探索陪伴式 AI 平台': 'Focus on large model API development and explore companion AI platforms',
+  '能量的基底基质。暗能量的本质——宇宙膨胀的介质。': 'The base matrix of energy. The nature of dark energy - the expanding medium of the universe.',
+  '归源衰变持续产生稳定相负一物质，普通物质逐渐合成': 'Return-to-origin decay continues to produce stable negative-one matter, and ordinary matter is gradually synthesized.',
+  '探索黑洞演化、暗能量与宇宙呼吸模型，热爱天文摄影': 'Explore the evolution of black holes, dark energy and the cosmic respiration model, and love astronomical photography',
+  '客尘（王铠宁） · 2026年 · 约1100字': 'Guest Chen (Wang Kaining) · 2026 · About 1,100 words',
+  '活性相负一物质与零元素相互作用，驱动空间加速膨胀': 'Active negative one matter interacts with zero elements, driving the accelerated expansion of space',
+  '客尘（王铠宁） · 2026年 · 约1400字': 'Guest Chen (Wang Kaining) · 2026 · About 1,400 words',
+  '客尘宇宙模型：从-1号元素到引力元素的完整宇宙图景': 'Kechen Universe Model: A complete picture of the universe from element -1 to gravitational elements',
+  '油彩黑底、点彩几何、五维空间扭曲风格的数字艺术作品': 'Digital art work with oil paint on black background, pointillism geometry, and five-dimensional space distortion style',
+  '一个宇宙双向循环模型：从黑洞到中子星的物质-能量转化': 'A two-way circulation model of the universe: matter-energy conversion from black holes to neutron stars',
+  '我的猜想：从-1号元素物质到引力粒子觉醒的宇宙学框架': 'My conjecture: The cosmological framework from element-1 matter to the awakening of gravitational particles',
+  '从绝对零度到-1号元素：一个双向循环宇宙模型的深度追问': 'From absolute zero to element -1: An in-depth inquiry into a two-way cyclic universe model',
+  '客尘（王铠宁） · 2026年4月28日 · 约6700字': 'Kechen (Wang Kaining) · April 28, 2026 · About 6,700 words',
+  '客尘（王铠宁） · 2026年4月19日 · 约1700字': 'Kechen (Wang Kaining) · April 19, 2026 · About 1,700 words',
+  '客尘（王铠宁） · 2026年4月28日 · 约2400字': 'Kechen (Wang Kaining) · April 28, 2026 · About 2,400 words',
+  '客尘（王铠宁） · 2026年4月28日 · 约2700字': 'Kechen (Wang Kaining) · April 28, 2026 · About 2,700 words',
+  '客尘（王铠宁） · 2026年4月28日 · 约2000字': 'Kechen (Wang Kaining) · April 28, 2026 · About 2,000 words',
+  '© 2026 客尘. All Rights Reserved.': '© 2026 Kechen. All Rights Reserved.',
+  '将暗能量重新解释为零元素/混沌的基底基质，提供暗能量的物质性来源': 'Reinterpret dark energy as a base matrix of zero elements/chaos, providing a material source of dark energy',
+  '客尘（王铠宁） · 2026年 · 英文论文 · 约34000字': 'Kechen (Wang Kaining) · 2026 · English paper · About 34,000 words',
+  '与俄罗斯物理学者 Youri Melnichenko 建立学术友谊': 'Establishing an academic friendship with Russian physicist Youri Melnichenko',
+  '构成时间物理流动的物质粒子，具有内在方向性。时间不是维度，是实体。': 'The material particles that constitute the physical flow of time have inherent directionality. Time is not a dimension, it is an entity.',
+  '完成《Physics Essays》审稿（PHES-26-202）': 'Complete the review of "Physics Essays" (PHES-26-202)',
+  '惰性、永恒的吸引媒介。自由态与休眠态两种形式，等待临界条件被唤醒。': 'The inert, eternal medium of attraction. There are two forms: free state and dormant state, waiting for critical conditions to be awakened.',
+  '最基本的物理实体，构成奇点。活性相与稳定相之间的相变，驱动宇宙膨胀。': 'The most basic physical entities constitute singularities. The phase transition between active and stable phases drives the expansion of the universe.',
+  '从零元素和时间原子合成的可见宇宙物质。构成星系、恒星、及一切可观测结构。': 'Visible cosmic matter synthesized from zero elements and atoms of time. Constituting galaxies, stars, and all observable structures.',
+  '以负一物质相变机制替代奇点爆炸的单一事件，宇宙起源成为循环相变的自然结果': 'The single event of singularity explosion is replaced by a minus one matter phase change mechanism, and the origin of the universe becomes a natural result of cyclic phase changes.',
+  '设想时间由“时间原子”构成，具有内在方向性和物理实体性，为时间箭头提供微观解释': 'Imagine that time is composed of "time atoms", which have inherent directionality and physical entity, providing a microscopic explanation for the arrow of time.',
+  '在保留宇宙膨胀观测一致性的前提下，为暗能量状态方程、星系旋转曲线等提供替代解释路径': 'Provide alternative explanation paths for the dark energy state equation, galaxy rotation curve, etc. while retaining the consistency of observations of universe expansion.',
+  'Elemental Cosmology — 从负一物质到引力粒子阈值觉醒的假说框架': 'Elemental Cosmology — A hypothetical framework for threshold awakening from negative one matter to gravitational particles',
+  '设想归源衰变假说、趋势不对称原理、宇宙结构失稳假说、奇点相变引爆机制、四维种子假说、相变化石与骨相假说、以及引力元素假说。': 'Consider the hypothesis of origin decay, the principle of trend asymmetry, the instability hypothesis of the universe structure, the singularity phase change detonation mechanism, the four-dimensional seed hypothesis, the phase change stone and bone phase hypothesis, and the gravitational element hypothesis.',
+  '以化学元素周期表的逻辑为框架，设想一套完整的“宇宙元素体系”：引力元素、-1号元素、0号元素（暗能量·混沌）、时间原子、以及由它们衍生出的普通物质世界。': 'Using the logic of the periodic table of chemical elements as a framework, we imagine a complete "cosmic element system": gravitational elements, element -1, element 0 (dark energy and chaos), time atoms, and the ordinary material world derived from them.',
+  '一个宇宙尺度的物质-能量双向循环模型：黑洞/白洞系统将普通物质转化为暗能量，驱动宇宙加速膨胀；中子星系统则将暗物质/暗能量逆向转化为普通物质与可观测辐射。': 'A cosmic-scale matter-energy two-way circulation model: the black hole/white hole system converts ordinary matter into dark energy, driving the accelerated expansion of the universe; the neutron star system reversely converts dark matter/dark energy into ordinary matter and observable radiation.',
+  '从小学时看的一本天文科普书出发，对黑洞“不合理”的疑问引出了一个童年猜想：黑洞内部是否在进行某种“销毁机制”？由黑洞奇点中的“爆炸”唤醒，探讨宇宙的终极命运。': 'Starting from a popular astronomy book I read in elementary school, the "irrational" question about black holes led to a childhood conjecture: Is there some kind of "destruction mechanism" going on inside the black hole? Awakened by the "explosion" in the black hole singularity, we explore the ultimate fate of the universe.',
+  '以“绝对零度能否达到”为起点，探讨暗能量作为宇宙背景能量场的存在，设想暗能量是“0号元素”——元素周期表诞生之前的本源能量，并以中国神话中的“混沌”为其命名。': 'Taking "whether absolute zero can be achieved" as the starting point, we explore the existence of dark energy as the background energy field of the universe. We imagine that dark energy is "Element 0" - the original energy before the birth of the periodic table of elements, and named it after "chaos" in Chinese mythology.',
+  '从网络视频中“维度”和“命运”的讨论出发，以一个初二学生的视角，用“幻灯片”隐喻思考四维空间与宿命论：如果时间是一张静态的四维胶片，我们的人生是否早已被注定？': 'Starting from the discussion of "dimension" and "destiny" in online videos, from the perspective of a second-year junior high school student, we use the metaphor of "slideshow" to think about four-dimensional space and fatalism: If time is a static four-dimensional film, is our life already doomed?',
+  '2026年4月19日，与DeepSeek进行了长达数小时的思想对话。从“真理的边界”一路追问到“宇宙的边界”，记录了一个14岁少年对宇宙、真理、时间、意识的连续追问与思考。': 'On April 19, 2026, I had a several-hour intellectual conversation with DeepSeek. From the "border of truth" to the "border of the universe", it records a 14-year-old boy's continuous questioning and thinking about the universe, truth, time and consciousness.',
+  '英文原版论文。系统阐述以“元素”层级光谱为基础的假设性宇宙学框架：引力粒子、-1号物质、0号元素（暗能量·混沌）、时间原子、以及引力粒子阈值觉醒机制。（英文原文，附中文导读）': 'Original English paper. Systematically expounds the hypothetical cosmological framework based on the "element" level spectrum: gravitational particles, -1 matter, 0 element (dark energy and chaos), time atoms, and the threshold awakening mechanism of gravitational particles. (Original English text, with Chinese introduction)',
+  '⚠️ 本模型为探索性假说，尚未经同行评审，不构成已确立的科学理论。核心想法来自作者本人（王铠宁 / 客尘），AI 辅助了文字整理、语言润色与可视化呈现。文中所有机制均为定性猜想，尚无数学形式化与定量预测，欢迎批评与讨论。': '⚠️ This model is an exploratory hypothesis that has not yet been peer-reviewed and does not constitute an established scientific theory. The core idea comes from the author himself (Wang Kaining/Kechen), and AI assists in text organization, language polishing and visual presentation. All mechanisms in this article are qualitative conjectures, and there is no mathematical formalization or quantitative prediction. Criticism and discussion are welcome.',
+  '14 岁的宇宙探索者，热爱物理、哲学与 AI 创作。相信星空之下，每一个问题都值得被追问。': 'A 14-year-old universe explorer, passionate about physics, philosophy, and AI creation. I believe that under the starry sky, every question is worth asking.',
+};
+  
+  var on = localStorage.getItem('kechen_lang') === 'en';
+  
+  window.autoTranslatePage = function(){
+    on = !on;
+    localStorage.setItem('kechen_lang', on ? 'en' : 'zh');
+    apply();
+  };
+  
+  function apply(){
+    var els = document.querySelectorAll('[data-zh]');
+    for (var i = 0; i < els.length; i++){
+      var e = els[i];
+      var zh = e.getAttribute('data-zh');
+      if (!zh || !zh.trim()){
+        zh = (e.textContent || '').trim();
+        if (!zh) continue;
+        e.setAttribute('data-zh', zh);
+      }
+      e.textContent = on ? (M[zh] || zh) : zh;
+    }
+    var b = document.getElementById('autoTransBtn');
+    if (b) b.style.opacity = on ? '1' : '0.6';
+  }
+  
+  if (on) apply();
+})();
+</script>
+</body>
+</html>
