@@ -25,6 +25,12 @@
   <button onclick="autoTranslatePage()" id="autoTransBtn">🌐 翻译</button>
 </nav>
 
+<div style="background:#330;padding:10px;margin:10px 0;border-radius:8px;font-family:monospace;font-size:13px;" id="debugInfo">
+  加载中...
+</div>
+
+<button onclick="localStorage.removeItem('kechen_lang');location.reload()" style="background:#600;color:#fff;">🗑 清除 localStorage 并刷新</button>
+
 <div class="result">
   <strong>localStorage.kechen_lang =</strong> <span id="storageDisplay">(读取中...)</span>
 </div>
@@ -93,7 +99,8 @@
       btn.style.opacity = active ? '1' : '0.6';
     }
     
-    updateDisplay();
+    window._updateDisplay = updateDisplay;
+  updateDisplay();
   };
   
   // Auto-translate if already in English mode
@@ -121,12 +128,27 @@
     console.log('⚪ Not auto-translating. localStorage.kechen_lang = ' + localStorage.getItem('kechen_lang'));
   }
   
-  function updateDisplay() {
-    document.getElementById('storageDisplay').textContent = '"' + (localStorage.getItem('kechen_lang') || '(空)') + '"';
+function updateDisplay() {
+    var storageVal = localStorage.getItem('kechen_lang') || '(空)';
+    document.getElementById('storageDisplay').textContent = '"' + storageVal + '"';
     var navs = document.querySelectorAll('nav a[data-zh]');
     document.getElementById('navDisplay').textContent = [...navs].map(a => a.textContent).join(' | ');
+    
+    // Update debug panel
+    var debugEl = document.getElementById('debugInfo');
+    if (debugEl) {
+      var now = new Date().toLocaleTimeString();
+      debugEl.innerHTML = 
+        '<b>时间:</b> ' + now + '<br>' +
+        '<b>localStorage.kechen_lang:</b> "' + storageVal + '"<br>' +
+        '<b>active变量:</b> ' + (typeof active !== 'undefined' ? active : '未定义') + '<br>' +
+        '<b>autoTranslatePage:</b> ' + (typeof window.autoTranslatePage) + '<br>' +
+        '<b>localStorage可用:</b> ' + (typeof localStorage !== 'undefined' ? '✅' : '❌') + '<br>' +
+        '<b>页面URL:</b> ' + window.location.href;
+    }
   }
   
+  window._updateDisplay = updateDisplay;
   updateDisplay();
 })();
 </script>
