@@ -151,7 +151,7 @@ const EN_MAP = {
   '14 岁的宇宙探索者，热爱物理、哲学与 AI 创作。相信星空之下，每一个问题都值得被追问。': 'A 14-year-old universe explorer, passionate about physics, philosophy, and AI creation. I believe that under the starry sky, every question is worth asking.',
 };
 
-let autoTransActive = false;
+let autoTransActive = localStorage.getItem('kechen_lang') === 'en';
 
 // Pre-fill data-zh and data-en on all elements at page load
 function initDataZh() {
@@ -169,7 +169,13 @@ function initDataZh() {
     }
   }
 }
-document.addEventListener('DOMContentLoaded', initDataZh);
+document.addEventListener('DOMContentLoaded', function() {
+  initDataZh();
+  // Auto-translate if page was already in English mode
+  if (autoTransActive) {
+    setTimeout(function() { autoTranslatePage(); }, 100);
+  }
+});
 
 function showAutoToast(msg) {
   let toast = document.getElementById('autoTransToast');
@@ -200,6 +206,7 @@ function autoTranslatePage() {
     if (mt && mt.getAttribute('data-zh')) mt.textContent = mt.getAttribute('data-zh');
     if (mb && mb.getAttribute('data-zh')) mb.textContent = mb.getAttribute('data-zh');
     autoTransActive = false;
+    localStorage.setItem('kechen_lang', 'zh');
     btn.textContent = '\ud83c\udf10';
     btn.title = '\u81ea\u52a8\u7ffb\u8bd1\u9875\u9762 / Auto-translate page';
     showAutoToast('\u5df2\u5207\u56de\u4e3a\u539f\u59cb\u8bed\u8a00');
@@ -234,6 +241,7 @@ function autoTranslatePage() {
     mb2.textContent = mb2.getAttribute('data-en');
   }
   autoTransActive = true;
+  localStorage.setItem('kechen_lang', 'en');
   btn.textContent = '\u21a9';
   btn.title = '\u8fd8\u539f / Restore original';
   btn.classList.remove('translating');
