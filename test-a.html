@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test A - Set</title>
+<style>
+  body { font-family: sans-serif; padding: 30px; background: #111; color: #fff; font-size: 18px; }
+  button { padding: 15px 30px; font-size: 18px; margin: 10px; }
+  .box { background: #222; padding: 20px; margin: 15px 0; border-radius: 10px; }
+  .green { color: #0f0; }
+  .red { color: #f00; }
+</style>
+</head>
+<body>
+<h2>📝 页面 A — 写入 localStorage</h2>
+
+<div class="box">
+  <b>当前 localStorage.kechen_test =</b> <span id="val" style="font-size:24px;">读取中...</span>
+</div>
+
+<button onclick="setStorage()" style="background:#0a0;">✍ 写入 'hello_from_A'</button>
+<button onclick="clearStorage()" style="background:#a00;">🗑 清除</button>
+
+<div class="box" id="status"></div>
+
+<p><a href="test-b.html" style="color:#88f;font-size:20px;">→ 去页面 B 验证</a></p>
+
+<script>
+var elVal = document.getElementById('val');
+var elStatus = document.getElementById('status');
+
+function show() {
+  var v = localStorage.getItem('kechen_test');
+  elVal.textContent = v === null ? '(空)' : '"' + v + '"';
+  elVal.className = v === 'hello_from_A' ? 'green' : 'red';
+}
+
+window.setStorage = function() {
+  try {
+    localStorage.setItem('kechen_test', 'hello_from_A');
+    elStatus.innerHTML = '<span class="green">✅ 写入成功！localStorage.kechen_test = "hello_from_A"</span>';
+  } catch(e) {
+    elStatus.innerHTML = '<span class="red">❌ 写入失败: ' + e.message + '</span>';
+  }
+  show();
+};
+
+window.clearStorage = function() {
+  localStorage.removeItem('kechen_test');
+  elStatus.innerHTML = '🗑 已清除';
+  show();
+};
+
+show();
+</script>
+</body>
+</html>
