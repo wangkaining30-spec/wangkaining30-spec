@@ -171,9 +171,30 @@ function initDataZh() {
 }
 document.addEventListener('DOMContentLoaded', function() {
   initDataZh();
-  // Auto-translate if page was already in English mode
+  // Auto-translate if page was already in English mode (directly, without toggle)
   if (autoTransActive) {
-    setTimeout(function() { autoTranslatePage(); }, 100);
+    setTimeout(function() {
+      var btn = document.getElementById('autoTransBtn');
+      var all = document.querySelectorAll('[data-en]');
+      var count = 0;
+      for (var i = 0; i < all.length; i++) {
+        var e = all[i];
+        if (e.closest && e.closest('script, style, noscript')) continue;
+        if (e.closest && e.closest('button')) continue;
+        var en = e.getAttribute('data-en');
+        if (en && en.trim()) {
+          e.setAttribute('data-auto-en', en);
+          e.textContent = en;
+          count++;
+        }
+      }
+      if (btn) {
+        btn.textContent = '\u21a9';
+        btn.title = '\u8fd8\u539f / Restore original';
+        btn.classList.remove('translating');
+      }
+      showAutoToast(count + ' \u4e2a\u5143\u7d20\u5df2\u7ffb\u8bd1\uff0c\u70b9\u51fb \ud83c\udf10 \u53ef\u8fd8\u539f');
+    }, 100);
   }
 });
 
