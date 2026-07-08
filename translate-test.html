@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>翻译测试</title>
+<style>
+  body { font-family: sans-serif; padding: 20px; background: #111; color: #eee; }
+  button { padding: 10px 20px; font-size: 16px; margin: 10px; }
+  a { color: #88f; margin: 0 10px; }
+  .result { margin: 20px 0; padding: 10px; background: #222; border-radius: 8px; }
+</style>
+</head>
+<body>
+<h1>🔬 翻译 localStorage 互通测试</h1>
+
+<nav>
+  <a href="#" data-zh>客尘</a>
+  <a href="#" data-zh>关于</a>
+  <a href="#" data-zh>兴趣</a>
+  <a href="#" data-zh>模型</a>
+  <a href="#" data-zh>文章</a>
+  <a href="#" data-zh>作品</a>
+  <a href="#" data-zh>联系</a>
+  <button onclick="autoTranslatePage()" id="autoTransBtn">🌐 翻译</button>
+</nav>
+
+<div class="result">
+  <strong>localStorage.kechen_lang =</strong> <span id="storageDisplay">(读取中...)</span>
+</div>
+
+<div class="result">
+  <strong>导航文字：</strong><span id="navDisplay"></span>
+</div>
+
+<p>
+  <a href="https://wangkaining30-spec.github.io/wangkaining30-spec/works/minecraft.html">→ 去子页面 (minecraft)</a>
+</p>
+
+<script>
+// === INLINE TRANSLATE SCRIPT (identical to subpages) ===
+(function(){
+  var EN_MAP = {
+    '作品': 'work',
+    '本名': 'real name',
+    '联系': 'connect',
+    '笔名': 'pen name',
+    '坐标': 'coordinate',
+    '文章': 'article',
+    '年龄': 'age',
+    '模型': 'Model',
+    '关于': 'about',
+    '兴趣': 'interest',
+    '客尘': 'guest dust',
+    '浙江绍兴': 'Shaoxing, Zhejiang',
+    '联系我：': 'Contact me:',
+    '宇宙探索者': 'space explorer',
+    'AI 创作者': 'AI Creator',
+    '← 返回作品列表': '← Back to works',
+    'Minecraft 模组评价': 'Minecraft Mod Review',
+    '游戏 · 开发 · 创作': 'Games · Dev · Creation',
+    '已完成': 'Completed',
+    '计划中': 'Planned',
+  };
+  
+  var active = localStorage.getItem('kechen_lang') === 'en';
+  
+  window.autoTranslatePage = function() {
+    active = !active;
+    localStorage.setItem('kechen_lang', active ? 'en' : 'zh');
+    console.log('🔵 Translate toggled. active=' + active + ', localStorage=' + localStorage.getItem('kechen_lang'));
+    
+    var els = document.querySelectorAll('[data-zh]');
+    for (var i = 0; i < els.length; i++) {
+      var e = els[i];
+      if (e.closest && e.closest('script, style, noscript')) continue;
+      if (e.parentElement) {
+        var p = e.parentElement;
+        while (p) {
+          if (['SCRIPT','STYLE','NOSCRIPT'].indexOf(p.tagName) >= 0) { e = null; break; }
+          p = p.parentElement;
+        }
+        if (!e) continue;
+      }
+      var zh = e.getAttribute('data-zh');
+      if (!zh || !zh.trim()) { zh = (e.textContent || '').trim(); if (!zh) continue; e.setAttribute('data-zh', zh); }
+      e.textContent = active ? (EN_MAP[zh] || zh) : zh;
+    }
+    
+    var btn = document.getElementById('autoTransBtn');
+    if (btn) {
+      btn.textContent = active ? '↩ 恢复' : '🌐 翻译';
+      btn.style.opacity = active ? '1' : '0.6';
+    }
+    
+    updateDisplay();
+  };
+  
+  // Auto-translate if already in English mode
+  if (active) {
+    console.log('🟢 Auto-translating because localStorage.kechen_lang = en');
+    var _els = document.querySelectorAll('[data-zh]');
+    for (var _i = 0; _i < _els.length; _i++) {
+      var _e = _els[_i];
+      if (_e.closest && _e.closest('script, style, noscript')) continue;
+      if (_e.parentElement) {
+        var _p = _e.parentElement;
+        while (_p) {
+          if (['SCRIPT','STYLE','NOSCRIPT'].indexOf(_p.tagName) >= 0) { _e = null; break; }
+          _p = _p.parentElement;
+        }
+        if (!_e) continue;
+      }
+      var _zh = _e.getAttribute('data-zh');
+      if (!_zh || !_zh.trim()) { _zh = (_e.textContent || '').trim(); if (!_zh) continue; _e.setAttribute('data-zh', _zh); }
+      _e.textContent = EN_MAP[_zh] || _zh;
+    }
+    var _btn = document.getElementById('autoTransBtn');
+    if (_btn) { _btn.textContent = '↩ 恢复'; _btn.style.opacity = '1'; }
+  } else {
+    console.log('⚪ Not auto-translating. localStorage.kechen_lang = ' + localStorage.getItem('kechen_lang'));
+  }
+  
+  function updateDisplay() {
+    document.getElementById('storageDisplay').textContent = '"' + (localStorage.getItem('kechen_lang') || '(空)') + '"';
+    var navs = document.querySelectorAll('nav a[data-zh]');
+    document.getElementById('navDisplay').textContent = [...navs].map(a => a.textContent).join(' | ');
+  }
+  
+  updateDisplay();
+})();
+</script>
+
+<p style="margin-top: 30px; color: #888; font-size: 12px;">打开控制台（F12）查看日志，确认 localStorage 读写是否正常。</p>
+</body>
+</html>
