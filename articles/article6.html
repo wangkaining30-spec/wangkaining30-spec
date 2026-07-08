@@ -74,55 +74,28 @@
   </script>
 
 <script>
+// 极简翻译脚本 — 无 closest，无复杂遍历，最大兼容性
 (function(){
-  // inline translate fallback (no guard - always active)
-  var EN_MAP = {
-  '作品': 'work',
-  '本名': 'real name',
-  '联系': 'connect',
-  '笔名': 'pen name',
-  '坐标': 'coordinate',
-  '文章': 'article',
-  '年龄': 'age',
-  '模型': 'Model',
-  '关于': 'about',
-  '兴趣': 'interest',
-  '客尘': 'guest dust',
-  '膨胀期': 'expansion period',
-  '计划中': 'in plan',
-  '关于我': 'About me',
-  '进行中': 'in progress',
-  '王铠宁': 'Wang Kaining',
-  '积累期': 'accumulation period',
-  '临界点': 'critical point',
-  '收缩期': 'systole',
-  '已完成': 'Completed',
-  '时间原子': 'time atoms',
-  '研究意义': 'Research significance',
-  '引力粒子': 'gravitational particle',
-  '负一物质': 'negative one matter',
-  '浙江绍兴': 'Shaoxing, Zhejiang',
-  '更多系列': 'More series',
-  '更新日志': 'Change log',
-  '哲学思辨': 'philosophical speculation',
-  '普通物质': 'Ordinary matter',
-  '兴趣领域': 'areas of interest',
-  '14 岁': '14 years old',
-  '游戏探索': 'Game exploration',
-  '联系我：': 'Contact me:',
-  '宇宙探索者': 'space explorer',
-  '暗能量本质': 'The nature of dark energy',
-  '时间物质性': 'time materiality',
-  '写作与创作': 'Writing and Creation',
-  '大爆炸起因': 'Cause of the big bang',
-  'AI 创作者': 'AI Creator',
-  '宇宙循环引擎': 'cosmic cycle engine',
-  '个人网站上线': 'Personal website online',
-  '宇宙呼吸模型': 'cosmic breathing model',
-  '视觉艺术创作': 'visual art creation',
-  '思想起源与随笔': 'Origins of Thoughts and Essays',
-  '作品 / 项目': 'Works/Projects',
-  '哲学与人生思考': 'Philosophy and life thinking',
+  var M = {
+  '作品': 'work','本名': 'real name','联系': 'connect','笔名': 'pen name',
+  '坐标': 'coordinate','文章': 'article','年龄': 'age','模型': 'Model',
+  '关于': 'about','兴趣': 'interest','客尘': 'guest dust',
+  '膨胀期': 'expansion period','计划中': 'in plan','关于我': 'About me',
+  '进行中': 'in progress','王铠宁': 'Wang Kaining','积累期': 'accumulation period',
+  '临界点': 'critical point','收缩期': 'systole','已完成': 'Completed',
+  '时间原子': 'time atoms','研究意义': 'Research significance',
+  '引力粒子': 'gravitational particle','负一物质': 'negative one matter',
+  '浙江绍兴': 'Shaoxing, Zhejiang','更多系列': 'More series',
+  '更新日志': 'Change log','哲学思辨': 'philosophical speculation',
+  '普通物质': 'Ordinary matter','兴趣领域': 'areas of interest',
+  '14 岁': '14 years old','游戏探索': 'Game exploration',
+  '联系我：': 'Contact me:','宇宙探索者': 'space explorer',
+  '暗能量本质': 'The nature of dark energy','时间物质性': 'time materiality',
+  '写作与创作': 'Writing and Creation','大爆炸起因': 'Cause of the big bang',
+  'AI 创作者': 'AI Creator','宇宙循环引擎': 'cosmic cycle engine',
+  '个人网站上线': 'Personal website online','宇宙呼吸模型': 'cosmic breathing model',
+  '视觉艺术创作': 'visual art creation','思想起源与随笔': 'Origins of Thoughts and Essays',
+  '作品 / 项目': 'Works/Projects','哲学与人生思考': 'Philosophy and life thinking',
   '宇宙物理与科幻': 'Cosmic Physics and Science Fiction',
   '记录思想发展历程': 'Record the development of ideas',
   '点击阅读全文 →': 'Click to read the full text →',
@@ -151,7 +124,7 @@
   '探讨意识本质、AI 本质与虚拟世界真实性': 'Explore the nature of consciousness, the nature of AI, and the authenticity of virtual worlds',
   '深度玩家，精通《我的世界》指令与高级玩法': 'Deep player, proficient in "Minecraft" commands and advanced gameplay',
   '从归源衰变到引力元素：宇宙模型的深度续论': 'From origin decay to gravitational elements: an in-depth continuation of the universe model',
-  '我们的人生，是不是早就被写好的"幻灯片"？': 'Is our life a "slideshow" that has been written long ago?',
+  '我们的人生，是不是早就被写好的“幻灯片”？': 'Is our life a “slideshow” that has been written long ago?',
   '稳定相负一物质总量突破阈值，引力粒子被唤醒': 'The total amount of matter in the stable phase negative one breaks through the threshold, and the gravitational particles are awakened',
   '《我的世界》高级指令系统与红石机械装置合集': '"Minecraft" advanced command system and redstone mechanical device collection',
   '浙江绍兴 · 宇宙探索者 · AI 创作者': 'Shaoxing, Zhejiang · Universe Explorer · AI Creator',
@@ -186,51 +159,46 @@
   '最基本的物理实体，构成奇点。活性相与稳定相之间的相变，驱动宇宙膨胀。': 'The most basic physical entities constitute singularities. The phase transition between active and stable phases drives the expansion of the universe.',
   '从零元素和时间原子合成的可见宇宙物质。构成星系、恒星、及一切可观测结构。': 'Visible cosmic matter synthesized from zero elements and atoms of time. Constituting galaxies, stars, and all observable structures.',
   '以负一物质相变机制替代奇点爆炸的单一事件，宇宙起源成为循环相变的自然结果': 'The single event of singularity explosion is replaced by a minus one matter phase change mechanism, and the origin of the universe becomes a natural result of cyclic phase changes.',
-  '设想时间由"时间原子"构成，具有内在方向性和物理实体性，为时间箭头提供微观解释': 'Imagine that time is composed of "time atoms", which have inherent directionality and physical entity, providing a microscopic explanation for the arrow of time.',
+  '设想时间由“时间原子”构成，具有内在方向性和物理实体性，为时间箭头提供微观解释': 'Imagine that time is composed of "time atoms", which have inherent directionality and physical entity, providing a microscopic explanation for the arrow of time.',
   '在保留宇宙膨胀观测一致性的前提下，为暗能量状态方程、星系旋转曲线等提供替代解释路径': 'Provide alternative explanation paths for the dark energy state equation, galaxy rotation curve, etc. while retaining the consistency of observations of universe expansion.',
   'Elemental Cosmology — 从负一物质到引力粒子阈值觉醒的假说框架': 'Elemental Cosmology — A hypothetical framework for threshold awakening from negative one matter to gravitational particles',
   '设想归源衰变假说、趋势不对称原理、宇宙结构失稳假说、奇点相变引爆机制、四维种子假说、相变化石与骨相假说、以及引力元素假说。': 'Consider the hypothesis of origin decay, the principle of trend asymmetry, the instability hypothesis of the universe structure, the singularity phase change detonation mechanism, the four-dimensional seed hypothesis, the phase change stone and bone phase hypothesis, and the gravitational element hypothesis.',
-  '以化学元素周期表的逻辑为框架，设想一套完整的"宇宙元素体系"：引力元素、-1号元素、0号元素（暗能量·混沌）、时间原子、以及由它们衍生出的普通物质世界。': 'Using the logic of the periodic table of chemical elements as a framework, we imagine a complete "cosmic element system": gravitational elements, element -1, element 0 (dark energy and chaos), time atoms, and the ordinary material world derived from them.',
+  '以化学元素周期表的逻辑为框架，设想一套完整的“宇宙元素体系”：引力元素、-1号元素、0号元素（暗能量·混沌）、时间原子、以及由它们衍生出的普通物质世界。': 'Using the logic of the periodic table of chemical elements as a framework, we imagine a complete "cosmic element system": gravitational elements, element -1, element 0 (dark energy and chaos), time atoms, and the ordinary material world derived from them.',
   '一个宇宙尺度的物质-能量双向循环模型：黑洞/白洞系统将普通物质转化为暗能量，驱动宇宙加速膨胀；中子星系统则将暗物质/暗能量逆向转化为普通物质与可观测辐射。': 'A cosmic-scale matter-energy two-way circulation model: the black hole/white hole system converts ordinary matter into dark energy, driving the accelerated expansion of the universe; the neutron star system reversely converts dark matter/dark energy into ordinary matter and observable radiation.',
-  '从小学时看的一本天文科普书出发，对黑洞"不合理"的疑问引出了一个童年猜想：黑洞内部是否在进行某种"销毁机制"？由黑洞奇点中的"爆炸"唤醒，探讨宇宙的终极命运。': 'Starting from a popular astronomy book I read in elementary school, the "irrational" question about black holes led to a childhood conjecture: Is there some kind of "destruction mechanism" going on inside the black hole? Awakened by the "explosion" in the black hole singularity, we explore the ultimate fate of the universe.',
-  '以"绝对零度能否达到"为起点，探讨暗能量作为宇宙背景能量场的存在，设想暗能量是"0号元素"——元素周期表诞生之前的本源能量，并以中国神话中的"混沌"为其命名。': 'Taking "whether absolute zero can be achieved" as the starting point, we explore the existence of dark energy as the background energy field of the universe. We imagine that dark energy is "Element 0" - the original energy before the birth of the periodic table of elements, and named it after "chaos" in Chinese mythology.',
-  '从网络视频中"维度"和"命运"的讨论出发，以一个初二学生的视角，用"幻灯片"隐喻思考四维空间与宿命论：如果时间是一张静态的四维胶片，我们的人生是否早已被注定？': 'Starting from the discussion of "dimension" and "destiny" in online videos, from the perspective of a second-year junior high school student, we use the metaphor of "slideshow" to think about four-dimensional space and fatalism: If time is a static four-dimensional film, is our life already doomed?',
-  '2026年4月19日，与DeepSeek进行了长达数小时的思想对话。从"真理的边界"一路追问到"宇宙的边界"，记录了一个14岁少年对宇宙、真理、时间、意识的连续追问与思考。': 'On April 19, 2026, I had a several-hour intellectual conversation with DeepSeek. From the "border of truth" to the "border of the universe", it records a 14-year-old boy\'s continuous questioning and thinking about the universe, truth, time and consciousness.',
-  '英文原版论文。系统阐述以"元素"层级光谱为基础的假设性宇宙学框架：引力粒子、-1号物质、0号元素（暗能量·混沌）、时间原子、以及引力粒子阈值觉醒机制。（英文原文，附中文导读）': 'Original English paper. Systematically expounds the hypothetical cosmological framework based on the "element" level spectrum: gravitational particles, -1 matter, 0 element (dark energy and chaos), time atoms, and the threshold awakening mechanism of gravitational particles. (Original English text, with Chinese introduction)',
+  '从小学时看的一本天文科普书出发，对黑洞“不合理”的疑问引出了一个童年猜想：黑洞内部是否在进行某种“销毁机制”？由黑洞奇点中的“爆炸”唤醒，探讨宇宙的终极命运。': 'Starting from a popular astronomy book I read in elementary school, the "irrational" question about black holes led to a childhood conjecture: Is there some kind of "destruction mechanism" going on inside the black hole? Awakened by the "explosion" in the black hole singularity, we explore the ultimate fate of the universe.',
+  '以“绝对零度能否达到”为起点，探讨暗能量作为宇宙背景能量场的存在，设想暗能量是“0号元素”——元素周期表诞生之前的本源能量，并以中国神话中的“混沌”为其命名。': 'Taking "whether absolute zero can be achieved" as the starting point, we explore the existence of dark energy as the background energy field of the universe. We imagine that dark energy is "Element 0" - the original energy before the birth of the periodic table of elements, and named it after "chaos" in Chinese mythology.',
+  '从网络视频中“维度”和“命运”的讨论出发，以一个初二学生的视角，用“幻灯片”隐喻思考四维空间与宿命论：如果时间是一张静态的四维胶片，我们的人生是否早已被注定？': 'Starting from the discussion of "dimension" and "destiny" in online videos, from the perspective of a second-year junior high school student, we use the metaphor of "slideshow" to think about four-dimensional space and fatalism: If time is a static four-dimensional film, is our life already doomed?',
+  '2026年4月19日，与DeepSeek进行了长达数小时的思想对话。从“真理的边界”一路追问到“宇宙的边界”，记录了一个14岁少年对宇宙、真理、时间、意识的连续追问与思考。': 'On April 19, 2026, I had a several-hour intellectual conversation with DeepSeek. From the "border of truth" to the "border of the universe", it records a 14-year-old boy's continuous questioning and thinking about the universe, truth, time and consciousness.',
+  '英文原版论文。系统阐述以“元素”层级光谱为基础的假设性宇宙学框架：引力粒子、-1号物质、0号元素（暗能量·混沌）、时间原子、以及引力粒子阈值觉醒机制。（英文原文，附中文导读）': 'Original English paper. Systematically expounds the hypothetical cosmological framework based on the "element" level spectrum: gravitational particles, -1 matter, 0 element (dark energy and chaos), time atoms, and the threshold awakening mechanism of gravitational particles. (Original English text, with Chinese introduction)',
   '⚠️ 本模型为探索性假说，尚未经同行评审，不构成已确立的科学理论。核心想法来自作者本人（王铠宁 / 客尘），AI 辅助了文字整理、语言润色与可视化呈现。文中所有机制均为定性猜想，尚无数学形式化与定量预测，欢迎批评与讨论。': '⚠️ This model is an exploratory hypothesis that has not yet been peer-reviewed and does not constitute an established scientific theory. The core idea comes from the author himself (Wang Kaining/Kechen), and AI assists in text organization, language polishing and visual presentation. All mechanisms in this article are qualitative conjectures, and there is no mathematical formalization or quantitative prediction. Criticism and discussion are welcome.',
   '14 岁的宇宙探索者，热爱物理、哲学与 AI 创作。相信星空之下，每一个问题都值得被追问。': 'A 14-year-old universe explorer, passionate about physics, philosophy, and AI creation. I believe that under the starry sky, every question is worth asking.',
 };
-  var active = localStorage.getItem('kechen_lang') === 'en';
-  window.autoTranslatePage = function() {
-    active = !active;
-    localStorage.setItem('kechen_lang', active ? 'en' : 'zh');
-    var els = document.querySelectorAll('[data-zh]');
-    for (var i = 0; i < els.length; i++) {
-      var e = els[i];
-      if (e.closest && e.closest('script, style, noscript')) continue;
-      if (e.parentElement) { var p = e.parentElement; while (p) { if (['SCRIPT','STYLE','NOSCRIPT'].indexOf(p.tagName) >= 0) { e = null; break; } p = p.parentElement; } if (!e) continue; }
-      var zh = e.getAttribute('data-zh');
-      if (!zh || !zh.trim()) { zh = (e.textContent || '').trim(); if (!zh) continue; e.setAttribute('data-zh', zh); }
-      e.textContent = active ? (EN_MAP[zh] || zh) : zh;
-    }
-    var btn = document.getElementById('autoTransBtn');
-    if (btn) btn.style.opacity = active ? '1' : '0.6';
+  
+  var on = localStorage.getItem('kechen_lang') === 'en';
+  
+  window.autoTranslatePage = function(){
+    on = !on;
+    localStorage.setItem('kechen_lang', on ? 'en' : 'zh');
+    apply();
   };
   
-  // Auto-translate if page was already in English mode
-  if (active) {
-    var _els = document.querySelectorAll('[data-zh]');
-    for (var _i = 0; _i < _els.length; _i++) {
-      var _e = _els[_i];
-      if (_e.closest && _e.closest('script, style, noscript')) continue;
-      if (_e.parentElement) { var _p = _e.parentElement; while (_p) { if (['SCRIPT','STYLE','NOSCRIPT'].indexOf(_p.tagName) >= 0) { _e = null; break; } _p = _p.parentElement; } if (!_e) continue; }
-      var _zh = _e.getAttribute('data-zh');
-      if (!_zh || !_zh.trim()) { _zh = (_e.textContent || '').trim(); if (!_zh) continue; _e.setAttribute('data-zh', _zh); }
-      _e.textContent = EN_MAP[_zh] || _zh;
+  function apply(){
+    var els = document.querySelectorAll('[data-zh]');
+    for (var i = 0; i < els.length; i++){
+      var e = els[i];
+      var zh = e.getAttribute('data-zh');
+      if (!zh || !zh.trim()){
+        zh = (e.textContent || '').trim();
+        if (!zh) continue;
+        e.setAttribute('data-zh', zh);
+      }
+      e.textContent = on ? (M[zh] || zh) : zh;
     }
-    var _btn = document.getElementById('autoTransBtn');
-    if (_btn) _btn.style.opacity = '1';
+    var b = document.getElementById('autoTransBtn');
+    if (b) b.style.opacity = on ? '1' : '0.6';
   }
+  
+  if (on) apply();
 })();
 </script>
 </body>
