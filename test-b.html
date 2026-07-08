@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test B - Read</title>
+<style>
+  body { font-family: sans-serif; padding: 30px; background: #111; color: #fff; font-size: 18px; }
+  .box { background: #222; padding: 20px; margin: 15px 0; border-radius: 10px; }
+  .green { color: #0f0; }
+  .red { color: #f00; }
+</style>
+</head>
+<body>
+<h2>📖 页面 B — 读取 localStorage</h2>
+
+<div class="box">
+  <b>localStorage.kechen_test =</b> <span id="val" style="font-size:30px;">读取中...</span>
+</div>
+
+<div class="box" id="result"></div>
+
+<p><a href="test-a.html" style="color:#88f;font-size:20px;">← 回页面 A</a></p>
+
+<script>
+var v = localStorage.getItem('kechen_test');
+var elVal = document.getElementById('val');
+var elResult = document.getElementById('result');
+
+if (v === 'hello_from_A') {
+  elVal.innerHTML = '"<span class="green">' + v + '</span>"';
+  elResult.innerHTML = '<span class="green">✅ 跨页面 localStorage 互通正常！页面 A 写入的值在页面 B 能读到。</span>';
+} else if (v === null) {
+  elVal.innerHTML = '<span class="red">(空)</span>';
+  elResult.innerHTML = '<span class="red">❌ localStorage 为空。请先回到页面 A，点击"写入"按钮，再回到这里。</span>';
+} else {
+  elVal.textContent = '"' + v + '"';
+  elResult.innerHTML = '<span class="red">⚠ 读到了值但内容不对: "' + v + '"</span>';
+}
+</script>
+</body>
+</html>
