@@ -327,7 +327,7 @@ lex: 1 1 100%; }
       if (e.closest && e.closest('script, style, noscript')) continue;
       if (e.parentElement) { var p = e.parentElement; while (p) { if (['SCRIPT','STYLE','NOSCRIPT'].indexOf(p.tagName) >= 0) { e = null; break; } p = p.parentElement; } if (!e) continue; }
       var zh = e.getAttribute('data-zh');
-      if (!zh || !zh.trim()) { zh = (e.textContent || '').trim(); if (!zh) continue; }
+      if (!zh || !zh.trim()) { zh = (e.textContent || '').trim(); if (!zh) continue; e.setAttribute('data-zh', zh); }
       e.textContent = active ? (EN_MAP[zh] || zh) : zh;
     }
     var btn = document.getElementById('autoTransBtn');
