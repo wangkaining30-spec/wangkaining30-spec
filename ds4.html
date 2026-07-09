@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ds4 - 王铠宁训练的本地AI模型</title>
+<style>
+:root {
+    --bg: #0d1117; --card: #161b22; --input: #21262d;
+    --accent: #58a6ff; --text: #e6edf3; --sub: #8b949e;
+    --bubble-you: #1f6feb22; --bubble-bot: #161b22;
+    --border: #30363d;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: -apple-system, "PingFang SC", "Noto Sans SC", sans-serif;
+    background: var(--bg); color: var(--text);
+    height: 100vh; display: flex; flex-direction: column;
+    max-width: 800px; margin: 0 auto;
+}
+header {
+    padding: 14px 20px; background: var(--card);
+    border-bottom: 1px solid var(--border); text-align: center;
+}
+header h1 { font-size: 1.2rem; font-weight: 600; }
+header .sub { font-size: 0.75rem; color: var(--sub); margin-top: 2px; }
+header .badge {
+    display: inline-block; background: var(--accent); color: #fff;
+    font-size: 0.65rem; padding: 1px 7px; border-radius: 8px; margin-left: 4px;
+}
+header a { color: var(--sub); font-size: 0.7rem; text-decoration: none; }
+header a:hover { color: var(--accent); }
+#chat {
+    flex: 1; overflow-y: auto; padding: 16px;
+    display: flex; flex-direction: column; gap: 10px;
+}
+.msg {
+    max-width: 88%; padding: 10px 14px; border-radius: 12px;
+    line-height: 1.55; font-size: 0.9rem;
+    animation: fadeIn 0.2s ease;
+}
+.msg.user {
+    align-self: flex-end; background: var(--bubble-you);
+    border: 1px solid rgba(31,111,235,0.3);
+    border-bottom-right-radius: 3px;
+}
+.msg.bot {
+    align-self: flex-start; background: var(--bubble-bot);
+    border: 1px solid var(--border);
+    border-bottom-left-radius: 3px;
+}
+.msg .label { font-size: 0.65rem; color: var(--sub); margin-bottom: 3px; }
+.msg .time { font-size: 0.6rem; color: #484f58; margin-top: 4px; text-align: right; }
+#input-area {
+    padding: 12px 16px; background: var(--card);
+    border-top: 1px solid var(--border); display: flex; gap: 8px;
+}
+#prompt {
+    flex: 1; padding: 10px 14px; border-radius: 20px;
+    border: 1px solid var(--border); background: var(--input); color: var(--text);
+    font-size: 0.9rem; outline: none; transition: border-color 0.2s;
+}
+#prompt:focus { border-color: var(--accent); }
+#send {
+    padding: 8px 20px; border-radius: 20px;
+    border: none; background: var(--accent); color: #fff;
+    font-size: 0.9rem; font-weight: 600; cursor: pointer;
+}
+#send:disabled { opacity: 0.5; }
+#status { text-align: center; font-size: 0.7rem; color: var(--sub); padding: 4px; min-height: 20px; }
+.presets { display: flex; gap: 6px; flex-wrap: wrap; padding: 0 16px 8px; }
+.presets button {
+    padding: 4px 12px; border-radius: 12px; font-size: 0.72rem;
+    border: 1px solid var(--border); background: transparent;
+    color: var(--sub); cursor: pointer; transition: all 0.2s;
+}
+.presets button:hover { border-color: var(--accent); color: var(--text); }
+.typing { display: flex; gap: 3px; padding: 8px 14px; }
+.typing span { width: 6px; height: 6px; border-radius: 50%; background: var(--sub); animation: bounce 1.4s infinite; }
+.typing span:nth-child(2) { animation-delay: 0.2s; }
+.typing span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } }
+@keyframes bounce { 0%,60%,100% { transform: translateY(0); } 30% { transform: translateY(-4px); } }
+@media (max-width: 480px) { #chat { padding: 10px; } .msg { max-width: 94%; font-size: 0.85rem; } }
+</style>
+</head>
+<body>
+<header>
+    <h1>🤖 ds4 <span class="badge">v3</span></h1>
+    <div class="sub">由王铠宁从零训练的本地AI模型 · 4.37M参数 · GGUF格式</div>
+    <a href="/wangkaining30-spec/">← 返回客尘主页</a>
+</header>
+<div class="presets">
+    <button onclick="ask('你好')">👋 你好</button>
+    <button onclick="ask('ds4是什么')">❓ ds4是什么</button>
+    <button onclick="ask('知识就是力量')">💡 知识</button>
+    <button onclick="ask('介绍一下王铠宁')">🧑 王铠宁</button>
+</div>
+<div id="chat">
+    <div class="msg bot">
+        <div class="label">ds4</div>
+        你好！我是 ds4，由王铠宁从零训练的本地 AI 模型。<br>
+        我运行在 ds4pro 推理引擎上，使用 GGUF 格式，<br>
+        可以在手机上本地运行，不需要联网。
+        <div class="time">刚刚</div>
+    </div>
+</div>
+<div id="status"></div>
+<div id="input-area">
+    <input id="prompt" type="text" placeholder="输入消息..." autofocus
+           onkeydown="if(event.key==='Enter') send()">
+    <button id="send" onclick="send()">发送</button>
+</div>
+<script>
+// API 配置：部署后编辑此地址，或通过 URL 参数指定：?api=https://xxx.up.railway.app
+const params = new URLSearchParams(location.search);
+const DEFAULT_API = '';  // 请填写你的 Railway 地址，如 https://ds4-api.up.railway.app
+const API = params.get('api') || DEFAULT_API || '/api/generate';
+const chat = document.getElementById('chat');
+const input = document.getElementById('prompt');
+const sendBtn = document.getElementById('send');
+const statusEl = document.getElementById('status');
+
+// 启动时检测 API
+(async function checkAPI() {
+    if (!DEFAULT_API && !params.get('api')) {
+        statusEl.innerHTML = '⚠️ API 未配置 · 点击预设按钮查看演示· <a href="#" style="color:var(--accent)" onclick="alert('请在 Railway 部署后编辑 ds4.html 中的 DEFAULT_API 变量')">如何部署?</a>';
+        return;
+    }
+    statusEl.textContent = '🔌 检测 API 连接...';
+    try {
+        const resp = await fetch(API.replace('/generate', '/health'), { signal: AbortSignal.timeout(5000) });
+        const data = await resp.json();
+        if (data.status === 'ok') {
+            statusEl.textContent = '✅ 在线 · 模型: ' + (data.model || 'ds4');
+            return;
+        }
+    } catch (_) {}
+    statusEl.textContent = '⚠️ API 未连接 · 请确保后端已部署';
+})();
+
+function addMsg(role, text) {
+    const div = document.createElement('div');
+    div.className = 'msg ' + role;
+    const label = role === 'user' ? '你' : 'ds4';
+    const now = new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+    div.innerHTML = '<div class="label">' + label + '</div>' + escapeHtml(text) + '<div class="time">' + now + '</div>';
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+}
+
+function addTyping() {
+    const div = document.createElement('div');
+    div.className = 'msg bot';
+    div.innerHTML = '<div class="typing"><span></span><span></span><span></span></div>';
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+    return div;
+}
+
+function escapeHtml(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+async function send() {
+    const prompt = input.value.trim();
+    if (!prompt) return;
+    addMsg('user', prompt);
+    input.value = '';
+    sendBtn.disabled = true;
+    
+    if (!DEFAULT_API && !params.get('api')) {
+        // 没有 API 时，显示演示回复
+        const demos = {
+            '你好': '你好的深度学习推理引擎。',
+            'ds4是什么': 'ds4是一个由王铠宁创建的本地AI模型。',
+            '知识就是力量': '知识就是力量。',
+        };
+        const reply = demos[prompt] || '这是预设演示。请在 Railway 部署后端 API 以启用实时推理。';
+        setTimeout(() => {
+            addMsg('bot', reply);
+            statusEl.textContent = 'ℹ️ 当前为演示模式，部署后端即可实时推理';
+            sendBtn.disabled = false;
+            input.focus();
+        }, 300);
+        return;
+    }
+    
+    statusEl.textContent = '⏳ 推理中...';
+    const typing = addTyping();
+    try {
+        const resp = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt }) });
+        const data = await resp.json();
+        typing.remove();
+        if (data.success) {
+            addMsg('bot', data.response || '(空)');
+            statusEl.textContent = '✅ 就绪';
+        } else {
+            addMsg('bot', '❌ 错误: ' + (data.error || '未知'));
+            statusEl.textContent = '❌ ' + (data.error || '推理失败');
+        }
+    } catch (e) {
+        typing.remove();
+        addMsg('bot', '❌ 网络错误: ' + e.message);
+        statusEl.textContent = '❌ 无法连接到 API 服务器';
+    }
+    sendBtn.disabled = false;
+    input.focus();
+}
+
+function ask(text) { input.value = text; send(); }
+</script>
+</body>
+</html>
