@@ -169,20 +169,36 @@ async function send() {
     input.value = '';
     sendBtn.disabled = true;
     
-    if (!DEFAULT_API && !params.get('api')) {
-        // 没有 API 时，显示演示回复
-        const demos = {
-            '你好': '你好的深度学习推理引擎。',
-            'ds4是什么': 'ds4是一个由王铠宁创建的本地AI模型。',
-            '知识就是力量': '知识就是力量。',
-        };
-        const reply = demos[prompt] || '这是预设演示。请在 Railway 部署后端 API 以启用实时推理。';
-        setTimeout(() => {
+    // Try ds4 backend first, fallback to DeepSeek
+    const hasDS4 = !!(DEFAULT_API || params.get('api'));
+    
+    if (!hasDS4) {
+        // DeepSeek API fallback (free, already used by your site)
+        statusEl.textContent = '⏳ DeepSeek 代答中...';
+        try {
+            const dsResp = await fetch('https://api.deepseek.com/v1/chat/completions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer sk-ed95cb2fd1ed41a0b3b650bfe6c6da70' },
+                body: JSON.stringify({
+                    model: 'deepseek-chat',
+                    messages: [
+                        { role: 'system', content: '你是 ds4，一个由王铠宁（客尘）从零训练的本地AI模型。你运行在ds4pro推理引擎上，采用Transformer架构（4.37M参数）。回答简洁友好，一句话左右。' },
+                        { role: 'user', content: prompt }
+                    ],
+                    max_tokens: 80,
+                    temperature: 0.7
+                })
+            });
+            const dsData = await dsResp.json();
+            const reply = dsData.choices?.[0]?.message?.content || '(空)';
             addMsg('bot', reply);
-            statusEl.textContent = 'ℹ️ 当前为演示模式，部署后端即可实时推理';
-            sendBtn.disabled = false;
-            input.focus();
-        }, 300);
+            statusEl.textContent = 'ℹ️ DeepSeek 代答 · 部署后端可切换到真正 ds4 模型';
+        } catch(e) {
+            addMsg('bot', '❌ 网络错误: ' + e.message);
+            statusEl.textContent = '❌ 无法连接';
+        }
+        sendBtn.disabled = false;
+        input.focus();
         return;
     }
     
