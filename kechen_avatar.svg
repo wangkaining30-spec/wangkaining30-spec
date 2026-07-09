@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#1a1a3e"/>
+      <stop offset="100%" stop-color="#0a0a18"/>
+    </radialGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#b89b5b" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#b89b5b" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="softGlow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- 背景 -->
+  <rect width="400" height="400" rx="80" fill="url(#bg)"/>
+
+  <!-- 星点 -->
+  <circle cx="55" cy="70" r="1.2" fill="#fff" opacity="0.8"/>
+  <circle cx="120" cy="45" r="0.8" fill="#fff" opacity="0.6"/>
+  <circle cx="340" cy="60" r="1" fill="#fff" opacity="0.7"/>
+  <circle cx="290" cy="30" r="0.7" fill="#fff" opacity="0.5"/>
+  <circle cx="370" cy="140" r="1.1" fill="#fff" opacity="0.8"/>
+  <circle cx="25" cy="180" r="1" fill="#fff" opacity="0.6"/>
+  <circle cx="80" cy="310" r="0.8" fill="#fff" opacity="0.5"/>
+  <circle cx="330" cy="350" r="1" fill="#fff" opacity="0.7"/>
+  <circle cx="350" cy="280" r="0.6" fill="#fff" opacity="0.4"/>
+  <circle cx="50" cy="130" r="0.7" fill="#fff" opacity="0.5"/>
+  <circle cx="180" cy="20" r="0.9" fill="#fff" opacity="0.6"/>
+  <circle cx="310" cy="120" r="0.8" fill="#fff" opacity="0.5"/>
+
+  <!-- 光晕背景 -->
+  <circle cx="200" cy="175" r="140" fill="url(#glow)"/>
+
+  <!-- 轨道环 -->
+  <ellipse cx="200" cy="175" rx="110" ry="35" fill="none" stroke="#b89b5b" stroke-width="0.8" opacity="0.3" transform="rotate(-15,200,175)"/>
+  <ellipse cx="200" cy="175" rx="85" ry="25" fill="none" stroke="#b89b5b" stroke-width="0.5" opacity="0.2" transform="rotate(10,200,175)"/>
+
+  <!-- 中心行星/核心 -->
+  <circle cx="200" cy="175" r="56" fill="none" stroke="#b89b5b" stroke-width="1.5" opacity="0.5"/>
+  <circle cx="200" cy="175" r="48" fill="#12122a" stroke="#b89b5b" stroke-width="1" opacity="0.8"/>
+  <circle cx="200" cy="175" r="42" fill="#1a1a38"/>
+
+  <!-- 行星表面纹理 -->
+  <circle cx="185" cy="165" r="8" fill="#b89b5b" opacity="0.15"/>
+  <circle cx="215" cy="180" r="6" fill="#b89b5b" opacity="0.1"/>
+  <circle cx="195" cy="190" r="4" fill="#b89b5b" opacity="0.12"/>
+
+  <!-- 小行星（客尘的"尘"） -->
+  <circle cx="155" cy="145" r="3.5" fill="#b89b5b" opacity="0.7" filter="url(#softGlow)"/>
+  <circle cx="250" cy="200" r="2.5" fill="#b89b5b" opacity="0.5"/>
+  <circle cx="170" cy="210" r="2" fill="#b89b5b" opacity="0.4"/>
+  <circle cx="230" cy="150" r="1.8" fill="#b89b5b" opacity="0.35"/>
+
+  <!-- 文字：客尘 -->
+  <text x="200" y="195" text-anchor="middle" font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',sans-serif" font-size="46" font-weight="700" fill="#d4c08a" filter="url(#softGlow)" letter-spacing="8">客尘</text>
+
+  <!-- 底部小字 -->
+  <text x="200" y="310" text-anchor="middle" font-family="'PingFang SC','Noto Sans SC',sans-serif" font-size="12" fill="#b89b5b" opacity="0.5" letter-spacing="4">GUEST DUST</text>
+
+  <!-- 装饰线 -->
+  <line x1="120" y1="325" x2="280" y2="325" stroke="#b89b5b" stroke-width="0.5" opacity="0.3"/>
+
+  <!-- 四角星芒 -->
+  <g transform="translate(200,175)" opacity="0.15">
+    <line x1="-65" y1="0" x2="65" y2="0" stroke="#d4c08a" stroke-width="0.5"/>
+    <line x1="0" y1="-65" x2="0" y2="65" stroke="#d4c08a" stroke-width="0.5"/>
+  </g>
+</svg>
