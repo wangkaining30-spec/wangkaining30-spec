@@ -20,4 +20,4 @@ RUN cd ds4pro && g++ -std=c++17 -O3 -pthread -o train_ds4 train_main.cpp
 
 EXPOSE 8080
 
-CMD ["python3", "web/server.py", "--port", "8080"]
+CMD python3 web/server.py --port ${PORT:-8080}
