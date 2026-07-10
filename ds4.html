@@ -125,7 +125,7 @@ const statusEl = document.getElementById('status');
 // 启动时检测 API
 (async function checkAPI() {
     if (!DEFAULT_API && !params.get('api')) {
-        statusEl.innerHTML = '⚠️ API 未配置 · 点击预设按钮查看演示· <a href="#" style="color:var(--accent)" onclick="alert('请在 Railway 部署后编辑 ds4.html 中的 DEFAULT_API 变量')">如何部署?</a>';
+        statusEl.textContent = 'ℹ️ DeepSeek 代答模式 · 直接发送消息即可';
         return;
     }
     statusEl.textContent = '🔌 检测 API 连接...';
