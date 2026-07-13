@@ -125,7 +125,7 @@ const statusEl = document.getElementById('status');
 // 启动时检测 API
 (async function checkAPI() {
     if (!DEFAULT_API && !params.get('api')) {
-        statusEl.textContent = 'ℹ️ DeepSeek 代答模式 · 直接发送消息即可';
+        statusEl.textContent = 'ℹ️ 离线演示模式 · 免费使用 · 无需API Key';
         return;
     }
     statusEl.textContent = '🔌 检测 API 连接...';
@@ -161,6 +161,32 @@ function addTyping() {
 
 function escapeHtml(s) {
     return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+
+// 离线演示回复（不依赖任何API，0费用）
+function getOfflineReply(msg) {
+    const q = msg.toLowerCase();
+    if (q.includes('你好') || q.includes('hi') || q.includes('hello')) return '你好！我是 ds4，由王铠宁（客尘）从零训练的本地AI模型。';
+    if (q.includes('谁') || q.includes('作者') || q.includes('创造') || q.includes('客尘') || q.includes('王铠宁')) return '我是王铠宁（笔名客尘）从零训练的 ds4 语言模型，4.37M参数，纯C++实现。';
+    if (q.includes('ds4') || q.includes('是什么')) return 'ds4 是一个4.37M参数的Transformer语言模型，848词表，256维×4层×4头，GGUF格式仅16MB，可在手机上本地运行。';
+    if (q.includes('参数') || q.includes('架构') || q.includes('模型')) return 'ds4: 4.37M参数，848词表，256维，4层，4头注意力，GGUF格式，~130ms推理延迟。';
+    if (q.includes('训练') || q.includes('数据')) return 'ds4 在 wiki_zh 中文语料上训练，纯C++实现，无第三方深度学习框架依赖。';
+    if (q.includes('部署') || q.includes('运行')) return 'ds4 可在手机上本地运行（GGUF格式16MB），也可通过Railway部署为API服务，或使用GitHub Pages + DeepSeek代答。';
+    if (q.includes('知识') || q.includes('力量')) return '知识就是力量——ds4 通过在海量中文语料上预训练获得语言能力，再通过微调适应特定任务。';
+    if (q.includes('爱') || q.includes('喜欢')) return '作为一个AI模型，我没有情感，但我被设计为友好、有帮助的助手。😊';
+    if (q.includes('谢谢') || q.includes('感谢') || q.includes('thx')) return '不客气！有问题随时问我。';
+    if (q.includes('再见') || q.includes('拜拜') || q.includes('bye')) return '再见！记得部署后端来体验真正的 ds4 推理哦～';
+    
+    // Default creative replies
+    const defaults = [
+        '这是一个很好的问题。ds4 目前运行在离线演示模式，配置后端后可获得完整推理能力。',
+        '有意思！等 ds4 后端部署后，我可以给你更准确的回答。',
+        '离线模式下我只能给出预设回复。去 Railway 开启 Public Networking 就能体验真正的 ds4 推理！',
+        '这个问题超出离线模式的预设范围了～不过真正的 ds4 模型可以处理任意中文输入。',
+        '🤔 好问题！当前是离线演示模式，建议部署后端以获得完整 AI 推理体验。'
+    ];
+    return defaults[Math.floor(Math.random() * defaults.length)];
 }
 
 async function send() {
