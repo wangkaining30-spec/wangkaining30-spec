@@ -179,7 +179,7 @@ async function send() {
         try {
             const dsResp = await fetch('https://api.deepseek.com/v1/chat/completions', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer sk-ed95cb2fd1ed41a0b3b650bfe6c6da70' },
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer YOUR_DEEPSEEK_API_KEY' },
                 body: JSON.stringify({
                     model: 'deepseek-chat',
                     messages: [
